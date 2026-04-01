@@ -807,6 +807,7 @@
           <div class="extra-list" id="extra-sam"></div>
           <select class="day-select day-select-extra" onchange="addActivity('sam',this)">
             <option value="">+ activité</option>
+            <option value="repos">↩ Repos</option>
             <option value="run">Run</option>
             <option value="bike">Bike</option>
             <option value="walk">Marche</option>
@@ -820,6 +821,7 @@
           <div class="extra-list" id="extra-dim"></div>
           <select class="day-select day-select-extra" onchange="addActivity('dim',this)">
             <option value="">+ activité</option>
+            <option value="repos">↩ Repos</option>
             <option value="run">Run</option>
             <option value="bike">Bike</option>
             <option value="walk">Marche</option>
@@ -1031,24 +1033,65 @@
     yoga:  { cls: 'extra-yoga',  label: 'Yoga' }
   };
 
-  // Weekend days — first activity replaces Repos, subsequent ones stack
   const weekendDays = ['sam', 'dim'];
-  const dayActivities = {}; // { lun: ['run','yoga'], sam: ['bike'] }
+  const ALL_DAYS = ['lun','mar','mer','jeu','ven','sam','dim'];
+  const PLANNING_KEY = 'fab_planning_v1';
+
+  // ── PERSISTANCE PLANNING ─────────────────────────────────────────
+  function getISOWeekStr() {
+    const d = new Date();
+    const day = d.getDay() === 0 ? 7 : d.getDay(); // lundi = 1
+    const monday = new Date(d);
+    monday.setDate(d.getDate() - day + 1);
+    return monday.toISOString().slice(0, 10); // "2026-03-30"
+  }
+
+  function loadPlanning() {
+    try {
+      const raw = JSON.parse(localStorage.getItem(PLANNING_KEY));
+      if (!raw) return {};
+      // Si la semaine stockée ≠ semaine actuelle → reset
+      if (raw.week !== getISOWeekStr()) {
+        localStorage.removeItem(PLANNING_KEY);
+        return {};
+      }
+      return raw.activities || {};
+    } catch(e) { return {}; }
+  }
+
+  function savePlanning() {
+    localStorage.setItem(PLANNING_KEY, JSON.stringify({
+      week: getISOWeekStr(),
+      activities: dayActivities
+    }));
+  }
+
+  // Initialisation depuis localStorage
+  const dayActivities = loadPlanning();
 
   function addActivity(day, sel) {
     if (!sel.value) return;
     const val = sel.value;
     sel.value = '';
 
-    if (!dayActivities[day]) dayActivities[day] = [];
-    if (dayActivities[day].includes(val)) return; // no duplicate
+    // Option "repos" sur Sam/Dim → reset complet
+    if (val === 'repos') {
+      dayActivities[day] = [];
+      savePlanning();
+      renderDay(day);
+      return;
+    }
 
+    if (!dayActivities[day]) dayActivities[day] = [];
+    if (dayActivities[day].includes(val)) return;
     dayActivities[day].push(val);
+    savePlanning();
     renderDay(day);
   }
 
   function removeActivity(day, val) {
     dayActivities[day] = (dayActivities[day] || []).filter(v => v !== val);
+    savePlanning();
     renderDay(day);
   }
 
@@ -1057,14 +1100,12 @@
     const acts = dayActivities[day] || [];
     const isWeekend = weekendDays.includes(day);
 
-    // Weekend: update main badge with first activity, or reset to Repos
     if (isWeekend) {
       const badge = document.getElementById('main-badge-' + day);
       if (acts.length > 0) {
         const cfg = dayConfig[acts[0]];
         badge.className = 'day-badge ' + cfg.cls;
         badge.textContent = cfg.label;
-        // render remaining as extra items
         list.innerHTML = acts.slice(1).map(v => extraItem(day, v)).join('');
       } else {
         badge.className = 'day-badge badge-rest';
@@ -1072,7 +1113,6 @@
         list.innerHTML = '';
       }
     } else {
-      // Weekdays: all activities stack below fixed badge
       list.innerHTML = acts.map(v => extraItem(day, v)).join('');
     }
   }
@@ -1084,6 +1124,12 @@
       <button class="rm" onclick="removeActivity('${day}','${val}')">✕</button>
     </div>`;
   }
+
+  // Restaurer toutes les cartes au chargement
+  function initPlanning() {
+    ALL_DAYS.forEach(day => renderDay(day));
+  }
+  initPlanning();
 
   // Date & age
   function getISOWeek(d) {
