@@ -617,14 +617,53 @@
     .header-sub { text-align: left; }
     .header-sub:last-child { align-self: flex-end; text-align: right; }
 
-    /* WEEK GRID */
-    .week-row-top { grid-template-columns: repeat(2, 1fr); }
-    .week-row-bot { grid-template-columns: repeat(3, 1fr); width: 100%; }
-    .day-card { padding: 8px 5px; }
-    .day-name { font-size: 9px; margin-bottom: 6px; }
-    .day-badge { font-size: 10px; padding: 4px 5px; }
-    .day-select { font-size: 8px; padding: 3px 4px; }
-    .extra-item { font-size: 8px; }
+    /* WEEK GRID — liste compacte sur mobile */
+    .week-grid { gap: 6px; }
+    .week-row-top,
+    .week-row-bot {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      grid-template-columns: unset;
+      width: 100% !important;
+    }
+    .day-card {
+      display: grid;
+      grid-template-columns: 40px 1fr auto;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      text-align: left;
+      border-radius: 8px;
+    }
+    .day-name {
+      font-size: 10px;
+      margin-bottom: 0;
+      text-align: center;
+    }
+    .day-badge {
+      font-size: 11px;
+      padding: 4px 8px;
+      width: auto;
+    }
+    .extra-list {
+      grid-column: 2;
+      margin-top: 0;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 3px;
+    }
+    .day-select {
+      font-size: 9px;
+      padding: 4px 6px;
+      margin-top: 0;
+      width: auto;
+      grid-column: 3;
+    }
+    /* réorganisation des éléments dans la card mobile */
+    .day-card > .day-badge { grid-column: 2; grid-row: 1; }
+    .day-card > .extra-list { grid-column: 2; grid-row: 2; }
+    .day-card > .day-select { grid-column: 3; grid-row: 1 / 3; align-self: center; }
 
     /* HIIT */
     .hiit-row { padding: 12px 14px; gap: 10px; }
