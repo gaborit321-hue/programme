@@ -1,26 +1,11 @@
 {
   "name": "Programme",
   "short_name": "Programme",
-  "description": "Programme Sport & Nutrition — Lean Bulk · Force-Endurance",
-  "start_url": "/programme/index.html",
-  "scope": "/programme/",
+  "start_url": ".",
   "display": "standalone",
-  "orientation": "portrait",
   "background_color": "#f2f0eb",
   "theme_color": "#f2f0eb",
-  "lang": "fr",
   "icons": [
-    {
-      "src": "icon.png",
-      "sizes": "any",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "icon.png",
-      "sizes": "any",
-      "type": "image/png",
-      "purpose": "maskable"
-    }
+    { "src": "icon.png", "sizes": "any", "type": "image/png" }
   ]
 }
