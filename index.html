@@ -101,10 +101,16 @@
 
   /* WEEK GRID */
   .week-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
+    display: flex;
+    flex-direction: column;
     gap: 8px;
   }
+  .week-row {
+    display: grid;
+    gap: 8px;
+  }
+  .week-row-top  { grid-template-columns: repeat(4, 1fr); }
+  .week-row-bot  { grid-template-columns: repeat(3, 1fr); width: 75%; margin: 0 auto; }
   .day-card {
     background: var(--bg2);
     border: 1px solid var(--border);
@@ -611,8 +617,9 @@
     .header-sub { text-align: left; }
     .header-sub:last-child { align-self: flex-end; text-align: right; }
 
-    /* WEEK GRID — 4 cols then 3 cols on smallest */
-    .week-grid { grid-template-columns: repeat(4, 1fr); gap: 6px; }
+    /* WEEK GRID */
+    .week-row-top { grid-template-columns: repeat(2, 1fr); }
+    .week-row-bot { grid-template-columns: repeat(3, 1fr); width: 100%; }
     .day-card { padding: 8px 5px; }
     .day-name { font-size: 9px; margin-bottom: 6px; }
     .day-badge { font-size: 10px; padding: 4px 5px; }
@@ -687,96 +694,100 @@
   <section>
     <div class="section-label">Planning hebdomadaire</div>
     <div class="week-grid">
-      <div class="day-card">
-        <div class="day-name">Lun</div>
-        <div class="day-badge badge-hiit">HIIT</div>
-        <div class="extra-list" id="extra-lun"></div>
-        <select class="day-select day-select-extra" onchange="addActivity('lun',this)">
-          <option value="">+ activité</option>
-          <option value="run">Run</option>
-          <option value="bike">Bike</option>
-          <option value="walk">Marche</option>
-          <option value="rando">Rando</option>
-          <option value="yoga">Yoga</option>
-        </select>
+      <div class="week-row week-row-top">
+        <div class="day-card">
+          <div class="day-name">Lun</div>
+          <div class="day-badge badge-hiit">HIIT</div>
+          <div class="extra-list" id="extra-lun"></div>
+          <select class="day-select day-select-extra" onchange="addActivity('lun',this)">
+            <option value="">+ activité</option>
+            <option value="run">Run</option>
+            <option value="bike">Bike</option>
+            <option value="walk">Marche</option>
+            <option value="rando">Rando</option>
+            <option value="yoga">Yoga</option>
+          </select>
+        </div>
+        <div class="day-card">
+          <div class="day-name">Mar</div>
+          <div class="day-badge badge-squash">Squash</div>
+          <div class="extra-list" id="extra-mar"></div>
+          <select class="day-select day-select-extra" onchange="addActivity('mar',this)">
+            <option value="">+ activité</option>
+            <option value="run">Run</option>
+            <option value="bike">Bike</option>
+            <option value="walk">Marche</option>
+            <option value="rando">Rando</option>
+            <option value="yoga">Yoga</option>
+          </select>
+        </div>
+        <div class="day-card">
+          <div class="day-name">Mer</div>
+          <div class="day-badge badge-hiit">HIIT</div>
+          <div class="extra-list" id="extra-mer"></div>
+          <select class="day-select day-select-extra" onchange="addActivity('mer',this)">
+            <option value="">+ activité</option>
+            <option value="run">Run</option>
+            <option value="bike">Bike</option>
+            <option value="walk">Marche</option>
+            <option value="rando">Rando</option>
+            <option value="yoga">Yoga</option>
+          </select>
+        </div>
+        <div class="day-card">
+          <div class="day-name">Jeu</div>
+          <div class="day-badge badge-squash">Squash</div>
+          <div class="extra-list" id="extra-jeu"></div>
+          <select class="day-select day-select-extra" onchange="addActivity('jeu',this)">
+            <option value="">+ activité</option>
+            <option value="run">Run</option>
+            <option value="bike">Bike</option>
+            <option value="walk">Marche</option>
+            <option value="rando">Rando</option>
+            <option value="yoga">Yoga</option>
+          </select>
+        </div>
       </div>
-      <div class="day-card">
-        <div class="day-name">Mar</div>
-        <div class="day-badge badge-squash">Squash</div>
-        <div class="extra-list" id="extra-mar"></div>
-        <select class="day-select day-select-extra" onchange="addActivity('mar',this)">
-          <option value="">+ activité</option>
-          <option value="run">Run</option>
-          <option value="bike">Bike</option>
-          <option value="walk">Marche</option>
-          <option value="rando">Rando</option>
-          <option value="yoga">Yoga</option>
-        </select>
-      </div>
-      <div class="day-card">
-        <div class="day-name">Mer</div>
-        <div class="day-badge badge-hiit">HIIT</div>
-        <div class="extra-list" id="extra-mer"></div>
-        <select class="day-select day-select-extra" onchange="addActivity('mer',this)">
-          <option value="">+ activité</option>
-          <option value="run">Run</option>
-          <option value="bike">Bike</option>
-          <option value="walk">Marche</option>
-          <option value="rando">Rando</option>
-          <option value="yoga">Yoga</option>
-        </select>
-      </div>
-      <div class="day-card">
-        <div class="day-name">Jeu</div>
-        <div class="day-badge badge-squash">Squash</div>
-        <div class="extra-list" id="extra-jeu"></div>
-        <select class="day-select day-select-extra" onchange="addActivity('jeu',this)">
-          <option value="">+ activité</option>
-          <option value="run">Run</option>
-          <option value="bike">Bike</option>
-          <option value="walk">Marche</option>
-          <option value="rando">Rando</option>
-          <option value="yoga">Yoga</option>
-        </select>
-      </div>
-      <div class="day-card">
-        <div class="day-name">Ven</div>
-        <div class="day-badge badge-hiit">HIIT</div>
-        <div class="extra-list" id="extra-ven"></div>
-        <select class="day-select day-select-extra" onchange="addActivity('ven',this)">
-          <option value="">+ activité</option>
-          <option value="run">Run</option>
-          <option value="bike">Bike</option>
-          <option value="walk">Marche</option>
-          <option value="rando">Rando</option>
-          <option value="yoga">Yoga</option>
-        </select>
-      </div>
-      <div class="day-card" id="card-sam">
-        <div class="day-name">Sam</div>
-        <div class="day-badge badge-rest" id="main-badge-sam">Repos</div>
-        <div class="extra-list" id="extra-sam"></div>
-        <select class="day-select day-select-extra" onchange="addActivity('sam',this)">
-          <option value="">+ activité</option>
-          <option value="run">Run</option>
-          <option value="bike">Bike</option>
-          <option value="walk">Marche</option>
-          <option value="rando">Rando</option>
-          <option value="yoga">Yoga</option>
-        </select>
-      </div>
-      <div class="day-card" id="card-dim">
-        <div class="day-name">Dim</div>
-        <div class="day-badge badge-rest" id="main-badge-dim">Repos</div>
-        <div class="extra-list" id="extra-dim"></div>
-        <select class="day-select day-select-extra" onchange="addActivity('dim',this)">
-          <option value="">+ activité</option>
-          <option value="run">Run</option>
-          <option value="bike">Bike</option>
-          <option value="walk">Marche</option>
-          <option value="rando">Rando</option>
-          <option value="yoga">Yoga</option>
-        </select>
+      <div class="week-row week-row-bot">
+        <div class="day-card">
+          <div class="day-name">Ven</div>
+          <div class="day-badge badge-hiit">HIIT</div>
+          <div class="extra-list" id="extra-ven"></div>
+          <select class="day-select day-select-extra" onchange="addActivity('ven',this)">
+            <option value="">+ activité</option>
+            <option value="run">Run</option>
+            <option value="bike">Bike</option>
+            <option value="walk">Marche</option>
+            <option value="rando">Rando</option>
+            <option value="yoga">Yoga</option>
+          </select>
+        </div>
+        <div class="day-card" id="card-sam">
+          <div class="day-name">Sam</div>
+          <div class="day-badge badge-rest" id="main-badge-sam">Repos</div>
+          <div class="extra-list" id="extra-sam"></div>
+          <select class="day-select day-select-extra" onchange="addActivity('sam',this)">
+            <option value="">+ activité</option>
+            <option value="run">Run</option>
+            <option value="bike">Bike</option>
+            <option value="walk">Marche</option>
+            <option value="rando">Rando</option>
+            <option value="yoga">Yoga</option>
+          </select>
+        </div>
+        <div class="day-card" id="card-dim">
+          <div class="day-name">Dim</div>
+          <div class="day-badge badge-rest" id="main-badge-dim">Repos</div>
+          <div class="extra-list" id="extra-dim"></div>
+          <select class="day-select day-select-extra" onchange="addActivity('dim',this)">
+            <option value="">+ activité</option>
+            <option value="run">Run</option>
+            <option value="bike">Bike</option>
+            <option value="walk">Marche</option>
+            <option value="rando">Rando</option>
+            <option value="yoga">Yoga</option>
+          </select>
+        </div>
       </div>
     </div>
   </section>
@@ -960,7 +971,7 @@
 
 <footer>
   <span>PROGRAMME FAB · LEAN BULK · FORCE-ENDURANCE</span>
-  <span>SPORT &amp; NUTRITION · v1.0</span>
+  <span>SPORT &amp; NUTRITION · v<span id="app-version">1.2</span></span>
 </footer>
 
 <script>
@@ -1309,6 +1320,11 @@
       navigator.serviceWorker.register('./sw.js');
     });
   }
+  // Lire la version depuis sw.js
+  fetch('./sw.js').then(r => r.text()).then(txt => {
+    const m = txt.match(/VERSION\s*=\s*['"]([^'"]+)['"]/);
+    if (m) document.getElementById('app-version').textContent = m[1];
+  });
 </script>
 </body>
 </html>
