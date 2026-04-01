@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Programme Fab — Sport & Nutrition</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:   #f2f0eb;
+    --bg2:  #eceae4;
+    --bg3:  #e4e1da;
+    --border:  rgba(0,0,0,0.07);
+    --border2: rgba(0,0,0,0.13);
+    --text:  #1e1d1a;
+    --muted: #7a7670;
+    --dim:   #b0ada7;
+    --hiit:  #c93a1f;
+    --hiit-bg: rgba(201,58,31,0.1);
+    --squash:  #2563c4;
+    --squash-bg: rgba(37,99,196,0.1);
+    --ride:  #1a9e4a;
+    --ride-bg: rgba(26,158,74,0.1);
+    --pro:   #d4620a;
+    --pro-bg: rgba(212,98,10,0.1);
+    --glu:   #1a9e4a;
+    --glu-bg: rgba(26,158,74,0.08);
+    --lip:   #b08800;
+    --lip-bg: rgba(176,136,0,0.08);
+    --warn:  #c0392b;
+    --warn-bg: rgba(192,57,43,0.07);
+    --accent: #c93a1f;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+    padding: 40px 24px 80px;
+  }
+
+  /* HEADER */
+  header {
+    max-width: 960px;
+    margin: 0 auto 48px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border2);
+    padding-bottom: 20px;
+  }
+  .header-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px;
+    letter-spacing: .04em;
+    line-height: 1;
+    color: var(--text);
+  }
+  .header-title span { color: var(--accent); }
+  .header-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    text-align: right;
+  }
+
+  /* LAYOUT */
+  .main { max-width: 960px; margin: 0 auto; display: flex; flex-direction: column; gap: 40px; }
+
+  /* SECTION LABEL */
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* WEEK GRID */
+  .week-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+  }
+  .day-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 8px;
+    text-align: center;
+    transition: border-color .2s;
+  }
+  .day-card:hover { border-color: var(--border2); }
+  .day-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .day-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 5px 8px;
+    border-radius: 6px;
+    letter-spacing: .02em;
+    width: 100%;
+    line-height: 1.3;
+  }
+  .badge-hiit { background: var(--hiit-bg); color: var(--hiit); border: 1px solid rgba(229,69,42,.2); }
+  .badge-squash { background: var(--squash-bg); color: var(--squash); border: 1px solid rgba(59,130,246,.2); }
+  .badge-ride { background: var(--ride-bg); color: var(--ride); border: 1px solid rgba(34,197,94,.2); }
+  .day-note {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 6px;
+    line-height: 1.4;
+  }
+
+  /* HIIT BLOCKS */
+  .hiit-grid { display: flex; flex-direction: column; gap: 8px; }
+
+  .hiit-row {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 18px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 16px;
+    transition: border-color .2s;
+  }
+  .hiit-row:hover { border-color: var(--border2); }
+  .hiit-row.alt-week { border-left: 3px solid var(--accent); }
+
+  .exo-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 3px;
+  }
+  .exo-sub { font-size: 12px; color: var(--muted); }
+  .week-pill {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: .08em;
+    background: rgba(229,69,42,.12);
+    color: var(--accent);
+    border: 1px solid rgba(229,69,42,.25);
+    padding: 2px 7px;
+    border-radius: 4px;
+    margin-right: 8px;
+  }
+  .week-pill.b { background: rgba(59,130,246,.12); color: var(--squash); border-color: rgba(59,130,246,.25); }
+
+  .sets-badge {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: .04em;
+    color: var(--accent);
+    min-width: 40px;
+    text-align: right;
+  }
+
+  /* NUTRITION */
+  .meal-list { display: flex; flex-direction: column; gap: 8px; }
+  .meal-row {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 18px;
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 16px;
+    align-items: start;
+    transition: border-color .2s;
+  }
+  .meal-row:hover { border-color: var(--border2); }
+  .meal-row.post-hiit {
+    border-color: rgba(229,69,42,.3);
+    background: rgba(229,69,42,.05);
+  }
+  .meal-time {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--muted);
+    padding-top: 2px;
+    line-height: 1.5;
+  }
+  .meal-time .label {
+    display: block;
+    font-size: 10px;
+    color: var(--dim);
+    margin-top: 2px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+  }
+  .meal-content { font-size: 13px; color: var(--text); line-height: 1.8; }
+  .tag {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    font-weight: 500;
+    padding: 1px 6px;
+    border-radius: 4px;
+    vertical-align: middle;
+    letter-spacing: .06em;
+    margin-left: 4px;
+  }
+  .tag-p { background: var(--pro-bg); color: var(--pro); border: 1px solid rgba(249,115,22,.2); }
+  .tag-g { background: var(--glu-bg); color: var(--glu); border: 1px solid rgba(34,197,94,.2); }
+  .tag-f { background: var(--lip-bg); color: var(--lip); border: 1px solid rgba(234,179,8,.2); }
+  .meal-warn {
+    font-size: 11px;
+    color: var(--warn);
+    margin-top: 6px;
+    padding: 6px 10px;
+    background: var(--warn-bg);
+    border-radius: 6px;
+    border: 1px solid rgba(239,68,68,.15);
+  }
+
+  /* LEGEND */
+  .legend {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+  .leg {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+  }
+  .leg-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  /* TIPS BOX */
+  .tips-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .tip-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+  }
+  .tip-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    color: rgba(0,0,0,0.1);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .tip-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .tip-body { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+  /* FOOTER */
+  footer {
+    max-width: 960px;
+    margin: 60px auto 0;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--dim);
+    letter-spacing: .08em;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* FADE IN */
+  .main > * {
+    animation: fadeUp .5s ease both;
+  }
+  .main > *:nth-child(1) { animation-delay: .05s; }
+  .main > *:nth-child(2) { animation-delay: .12s; }
+  .main > *:nth-child(3) { animation-delay: .19s; }
+  .main > *:nth-child(4) { animation-delay: .26s; }
+  .main > *:nth-child(5) { animation-delay: .33s; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* SEM A/B VISIBILITY */
+  .sem-a, .sem-b { transition: opacity .3s; }
+  body.week-a .sem-b { display: none; }
+  body.week-b .sem-a { display: none; }
+
+  /* DAY SELECTOR */
+  .day-select {
+    margin-top: 7px;
+    width: 100%;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: .04em;
+    padding: 4px 5px;
+    cursor: pointer;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    text-align: center;
+    transition: border-color .2s, color .2s;
+  }
+  .day-select:hover, .day-select:focus { border-color: var(--accent); }
+  .day-select option { background: #e4e1da; color: #1e1d1a; }
+  .day-select-extra { margin-top: 5px; opacity: .6; }
+  .day-select-extra:hover, .day-select-extra:focus { opacity: 1; }
+  .extra-list {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin-top: 4px;
+  }
+  .extra-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 9px;
+    font-family: 'DM Mono', monospace;
+    font-weight: 500;
+    padding: 2px 5px 2px 7px;
+    border-radius: 4px;
+    letter-spacing: .04em;
+  }
+  .extra-item .rm {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: inherit;
+    opacity: .5;
+    font-size: 9px;
+    padding: 0 0 0 4px;
+    line-height: 1;
+    transition: opacity .15s;
+  }
+  .extra-item .rm:hover { opacity: 1; }
+  .extra-ride  { background: rgba(26,158,74,.1);  color: #1a7a3a; border: 1px solid rgba(26,158,74,.25); }
+  .extra-walk  { background: rgba(109,40,217,.08); color: #6d28d9; border: 1px solid rgba(109,40,217,.2); }
+  .extra-rando { background: rgba(161,98,7,.1);   color: #a16207; border: 1px solid rgba(161,98,7,.25); }
+  .extra-yoga  { background: rgba(190,24,93,.08);  color: #be185d; border: 1px solid rgba(190,24,93,.2); }
+  .day-card .day-badge.badge-yoga  { background: rgba(190,24,93,.08);  color: #be185d; border: 1px solid rgba(190,24,93,.2); }
+  .day-card .day-badge.badge-rest  { background: rgba(100,100,90,.08); color: #5a5a50; border: 1px solid rgba(100,100,90,.2); }
+  .day-card .day-badge.badge-walk  { background: rgba(109,40,217,.08); color: #6d28d9; border: 1px solid rgba(109,40,217,.2); }
+  .day-card .day-badge.badge-rando { background: rgba(161,98,7,.1);   color: #a16207; border: 1px solid rgba(161,98,7,.25); }
+
+  /* WEIGHT BADGE */
+  #hdr-weight {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--accent);
+    border: 1px solid rgba(229,69,42,.3);
+    background: rgba(229,69,42,.08);
+    padding: 2px 8px;
+    border-radius: 5px;
+    transition: background .2s, border-color .2s;
+    letter-spacing: .04em;
+  }
+  #hdr-weight:hover { background: rgba(229,69,42,.16); border-color: rgba(229,69,42,.5); }
+
+  /* SUIVI OVERLAY */
+  #suivi-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    z-index: 100;
+    overflow-y: auto;
+    padding: 40px 24px 80px;
+    animation: fadeUp .3s ease both;
+  }
+  #suivi-overlay.open { display: block; }
+
+  .suivi-header {
+    max-width: 960px;
+    margin: 0 auto 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border2);
+    padding-bottom: 20px;
+  }
+  .suivi-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    letter-spacing: .04em;
+    color: var(--text);
+  }
+  .suivi-title span { color: var(--accent); }
+  .btn-back {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: color .2s, border-color .2s;
+  }
+  .btn-back:hover { color: var(--text); border-color: var(--accent); }
+
+  .suivi-main { max-width: 960px; margin: 0 auto; display: flex; flex-direction: column; gap: 32px; }
+
+  /* ENTRY FORM */
+  .entry-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  .entry-card-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .entry-card-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .entry-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 12px;
+    align-items: end;
+  }
+  .entry-field label {
+    display: block;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .entry-field input {
+    width: 100%;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 16px;
+    padding: 10px 14px;
+    outline: none;
+    transition: border-color .2s;
+  }
+  .entry-field input:focus { border-color: var(--accent); }
+  .entry-field input::placeholder { color: var(--dim); }
+  .btn-save {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    padding: 11px 20px;
+    cursor: pointer;
+    transition: opacity .2s;
+    white-space: nowrap;
+  }
+  .btn-save:hover { opacity: .85; }
+  .save-confirm {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--ride);
+    margin-top: 10px;
+    opacity: 0;
+    transition: opacity .3s;
+  }
+  .save-confirm.show { opacity: 1; }
+
+  /* STATS ROW */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }
+  .stat-box {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+  }
+  .stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .stat-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: .04em;
+    color: var(--text);
+    line-height: 1;
+  }
+  .stat-val span { font-size: 14px; color: var(--muted); margin-left: 2px; }
+  .stat-delta {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    margin-top: 4px;
+  }
+  .delta-up { color: #ef4444; }
+  .delta-down { color: var(--ride); }
+  .delta-neu { color: var(--muted); }
+
+  /* CHART */
+  .chart-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  .chart-wrap { position: relative; height: 220px; margin-top: 16px; }
+  canvas { width: 100% !important; }
+
+  /* LOG TABLE */
+  .log-table { width: 100%; border-collapse: collapse; }
+  .log-table th {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: left;
+    padding: 0 0 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .log-table td {
+    font-size: 12px;
+    color: var(--text);
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-family: 'DM Mono', monospace;
+  }
+  .log-table td.muted { color: var(--muted); }
+  .log-table td.delta-up { color: #ef4444; }
+  .log-table td.delta-down { color: var(--ride); }
+  .log-del {
+    background: none;
+    border: none;
+    color: var(--dim);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0 4px;
+    transition: color .15s;
+  }
+  .btn-save, .btn-back { min-height: 44px; touch-action: manipulation; }
+  .day-select { min-height: 32px; touch-action: manipulation; }
+  .log-del, .extra-item .rm { min-width: 32px; min-height: 32px; display: inline-flex; align-items: center; justify-content: center; touch-action: manipulation; }
+
+  @media (max-width: 640px) {
+    /* BODY */
+    body { padding: 20px 14px 60px; font-size: 13px; }
+
+    /* HEADER */
+    header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .header-title { font-size: 38px; }
+    .header-sub { text-align: left; }
+    .header-sub:last-child { align-self: flex-end; text-align: right; }
+
+    /* WEEK GRID — 4 cols then 3 cols on smallest */
+    .week-grid { grid-template-columns: repeat(4, 1fr); gap: 6px; }
+    .day-card { padding: 8px 5px; }
+    .day-name { font-size: 9px; margin-bottom: 6px; }
+    .day-badge { font-size: 10px; padding: 4px 5px; }
+    .day-select { font-size: 8px; padding: 3px 4px; }
+    .extra-item { font-size: 8px; }
+
+    /* HIIT */
+    .hiit-row { padding: 12px 14px; gap: 10px; }
+    .exo-name { font-size: 12px; }
+    .exo-sub { font-size: 11px; }
+    .sets-badge { font-size: 17px; min-width: 32px; }
+
+    /* HIIT section label — wrap gracefully */
+    #hiit-section-label { flex-wrap: wrap; gap: 4px; }
+
+    /* PLAN JOURNALIER */
+    .meal-row {
+      grid-template-columns: 64px 1fr;
+      gap: 10px;
+      padding: 12px 14px;
+    }
+    .meal-time { font-size: 10px; }
+    .meal-content { font-size: 12px; }
+    .meal-warn { font-size: 10px; }
+
+    /* TIPS */
+    .tips-grid { grid-template-columns: 1fr; }
+    .tip-num { font-size: 24px; }
+
+    /* SUIVI */
+    #suivi-overlay { padding: 20px 14px 60px; }
+    .suivi-header { margin-bottom: 24px; }
+    .suivi-title { font-size: 30px; }
+    .entry-card { padding: 16px; }
+    .entry-row { grid-template-columns: 1fr 1fr; }
+    .btn-save { grid-column: span 2; }
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .stat-val { font-size: 22px; }
+    .chart-wrap { height: 180px; }
+    .log-table td, .log-table th { font-size: 10px; padding: 8px 0; }
+
+    /* SECTION LABEL wrap */
+    .section-label { flex-wrap: wrap; }
+  }
+
+  @media (max-width: 380px) {
+    .week-grid { grid-template-columns: repeat(4, 1fr); gap: 4px; }
+    .day-badge { font-size: 9px; }
+    .meal-row { grid-template-columns: 54px 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-title">PROGRAMME<br><span>FAB</span></div>
+  <div class="header-sub">
+    Sport &amp; Nutrition<br>
+    Lean bulk · Force-endurance<br>
+    Objectif : prise de muscle propre
+  </div>
+  <div class="header-sub" style="text-align:right; min-width:140px;">
+    <span id="hdr-date" style="color:var(--text); font-size:12px;"></span><br>
+    <span id="hdr-age" style="color:var(--muted); font-size:10px;"></span><br>
+    <span style="font-family:'DM Mono',monospace; font-size:11px; color:var(--muted); letter-spacing:.04em; margin-right:6px;">183 cm</span><span id="hdr-weight" onclick="openSuivi()" style="cursor:pointer; margin-top:4px; display:inline-block;"></span>
+  </div>
+</header>
+
+<div class="main">
+
+  <!-- SEMAINE -->
+  <section>
+    <div class="section-label">Planning hebdomadaire</div>
+    <div class="week-grid">
+      <div class="day-card">
+        <div class="day-name">Lun</div>
+        <div class="day-badge badge-hiit">HIIT</div>
+        <div class="extra-list" id="extra-lun"></div>
+        <select class="day-select day-select-extra" onchange="addActivity('lun',this)">
+          <option value="">+ activité</option>
+          <option value="run">Run</option>
+          <option value="bike">Bike</option>
+          <option value="walk">Marche</option>
+          <option value="rando">Rando</option>
+          <option value="yoga">Yoga</option>
+        </select>
+      </div>
+      <div class="day-card">
+        <div class="day-name">Mar</div>
+        <div class="day-badge badge-squash">Squash</div>
+        <div class="extra-list" id="extra-mar"></div>
+        <select class="day-select day-select-extra" onchange="addActivity('mar',this)">
+          <option value="">+ activité</option>
+          <option value="run">Run</option>
+          <option value="bike">Bike</option>
+          <option value="walk">Marche</option>
+          <option value="rando">Rando</option>
+          <option value="yoga">Yoga</option>
+        </select>
+      </div>
+      <div class="day-card">
+        <div class="day-name">Mer</div>
+        <div class="day-badge badge-hiit">HIIT</div>
+        <div class="extra-list" id="extra-mer"></div>
+        <select class="day-select day-select-extra" onchange="addActivity('mer',this)">
+          <option value="">+ activité</option>
+          <option value="run">Run</option>
+          <option value="bike">Bike</option>
+          <option value="walk">Marche</option>
+          <option value="rando">Rando</option>
+          <option value="yoga">Yoga</option>
+        </select>
+      </div>
+      <div class="day-card">
+        <div class="day-name">Jeu</div>
+        <div class="day-badge badge-squash">Squash</div>
+        <div class="extra-list" id="extra-jeu"></div>
+        <select class="day-select day-select-extra" onchange="addActivity('jeu',this)">
+          <option value="">+ activité</option>
+          <option value="run">Run</option>
+          <option value="bike">Bike</option>
+          <option value="walk">Marche</option>
+          <option value="rando">Rando</option>
+          <option value="yoga">Yoga</option>
+        </select>
+      </div>
+      <div class="day-card">
+        <div class="day-name">Ven</div>
+        <div class="day-badge badge-hiit">HIIT</div>
+        <div class="extra-list" id="extra-ven"></div>
+        <select class="day-select day-select-extra" onchange="addActivity('ven',this)">
+          <option value="">+ activité</option>
+          <option value="run">Run</option>
+          <option value="bike">Bike</option>
+          <option value="walk">Marche</option>
+          <option value="rando">Rando</option>
+          <option value="yoga">Yoga</option>
+        </select>
+      </div>
+      <div class="day-card" id="card-sam">
+        <div class="day-name">Sam</div>
+        <div class="day-badge badge-rest" id="main-badge-sam">Repos</div>
+        <div class="extra-list" id="extra-sam"></div>
+        <select class="day-select day-select-extra" onchange="addActivity('sam',this)">
+          <option value="">+ activité</option>
+          <option value="run">Run</option>
+          <option value="bike">Bike</option>
+          <option value="walk">Marche</option>
+          <option value="rando">Rando</option>
+          <option value="yoga">Yoga</option>
+        </select>
+      </div>
+      <div class="day-card" id="card-dim">
+        <div class="day-name">Dim</div>
+        <div class="day-badge badge-rest" id="main-badge-dim">Repos</div>
+        <div class="extra-list" id="extra-dim"></div>
+        <select class="day-select day-select-extra" onchange="addActivity('dim',this)">
+          <option value="">+ activité</option>
+          <option value="run">Run</option>
+          <option value="bike">Bike</option>
+          <option value="walk">Marche</option>
+          <option value="rando">Rando</option>
+          <option value="yoga">Yoga</option>
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <!-- HIIT -->
+  <section>
+    <div class="section-label" id="hiit-section-label">Séances HIIT — structure des exercices</div>
+    <div class="hiit-grid">
+
+      <div class="hiit-row alt-week sem-a">
+        <div>
+          <div class="exo-name">
+            <span class="week-pill">SEM A</span>25 Pompes lestées + Squats parallèles
+          </div>
+          <div class="exo-sub">Gilet lesté · 1 min repos · si genoux au sol → garder le même poids</div>
+        </div>
+        <div class="sets-badge">×6</div>
+      </div>
+
+      <div class="hiit-row alt-week sem-b">
+        <div>
+          <div class="exo-name">
+            <span class="week-pill b">SEM B</span>25 Pompes lestées + 25 Soulevé de terre roumain unilatéral
+          </div>
+          <div class="exo-sub">Gilet lesté · 1 min repos · travail stabilisation unilatérale</div>
+        </div>
+        <div class="sets-badge">×6</div>
+      </div>
+
+      <div class="hiit-row alt-week sem-a">
+        <div>
+          <div class="exo-name">
+            <span class="week-pill">SEM A</span>Gainage latéral 45s/côté + 25 crunchs bicycle
+          </div>
+          <div class="exo-sub">1 min repos · obliques + stabilisation latérale</div>
+        </div>
+        <div class="sets-badge">×4</div>
+      </div>
+
+      <div class="hiit-row alt-week sem-b">
+        <div>
+          <div class="exo-name">
+            <span class="week-pill b">SEM B</span>Planche haute 1 min + 25 relevés jambes/bassin
+          </div>
+          <div class="exo-sub">1 min repos · gainage + chaîne postérieure</div>
+        </div>
+        <div class="sets-badge">×4</div>
+      </div>
+
+      <div class="hiit-row alt-week sem-a">
+        <div>
+          <div class="exo-name">
+            <span class="week-pill">SEM A</span>Dead bug 10 reps/côté + 20 crunchs hollow hold 3s
+          </div>
+          <div class="exo-sub">1 min repos · transverse + core profond · zéro matériel</div>
+        </div>
+        <div class="sets-badge">×4</div>
+      </div>
+
+      <div class="hiit-row alt-week sem-b">
+        <div>
+          <div class="exo-name">
+            <span class="week-pill b">SEM B</span>25 relevés de jambe + 6 rollouts
+          </div>
+          <div class="exo-sub">1 min repos · abdos profonds · excellent exercice core</div>
+        </div>
+        <div class="sets-badge">×4</div>
+      </div>
+
+      <div class="hiit-row alt-week sem-a">
+        <div>
+          <div class="exo-name">
+            <span class="week-pill">SEM A</span>10 Curl classique (prise supination) + 10 Superman
+          </div>
+          <div class="exo-sub">Curl : sur banc · chef court du biceps · enchaîné sans pause → Superman : 1 sec contraction en haut · lombaires + trapèzes inférieurs</div>
+        </div>
+        <div class="sets-badge">×4</div>
+      </div>
+
+      <div class="hiit-row alt-week sem-b">
+        <div>
+          <div class="exo-name">
+            <span class="week-pill b">SEM B</span>10 Curl marteau (prise neutre) + 10 Rowing unilatéral
+          </div>
+          <div class="exo-sub">Curl : sur banc · brachial + avant-bras · enchaîné sans pause → Rowing : coude vers le plafond · grand dorsal · appui banc</div>
+        </div>
+        <div class="sets-badge">×4</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PLAN JOURNALIER -->
+  <section>
+    <div class="section-label">Plan journalier <span style="font-size:9px; color:var(--muted); text-transform:none; letter-spacing:0; font-family:'DM Sans',sans-serif;">(lun–ven · le week-end peut varier : lever, repas…)</span></div>
+    <div class="legend">
+      <div class="leg"><div class="leg-dot" style="background:var(--pro)"></div>Protéines</div>
+      <div class="leg"><div class="leg-dot" style="background:var(--glu)"></div>Glucides</div>
+      <div class="leg"><div class="leg-dot" style="background:var(--lip)"></div>Lipides</div>
+    </div>
+    <div class="meal-list">
+
+      <div class="meal-row">
+        <div class="meal-time">07h00<span class="label">Réveil</span></div>
+        <div class="meal-content" style="color:var(--muted)">Lever · hydratation</div>
+      </div>
+
+      <div class="meal-row">
+        <div class="meal-time">08h00<span class="label">Petit déj</span></div>
+        <div class="meal-content">
+          Checker lait d'amande + whey<span class="tag tag-p">PRO</span> + créatine · café<br>
+          Croque : 2 toasts<span class="tag tag-g">GLU</span> · philadelphia light · 2 tranches blanc de poulet<span class="tag tag-p">PRO</span> · emmental<span class="tag tag-f">LIP</span>
+        </div>
+      </div>
+
+      <div class="meal-row">
+        <div class="meal-time">10h00<span class="label">Collation</span></div>
+        <div class="meal-content">Café</div>
+      </div>
+
+      <div class="meal-row">
+        <div class="meal-time">12h30<span class="label">Déjeuner</span></div>
+        <div class="meal-content">
+          1 avocat<span class="tag tag-f">LIP</span> · fromage<span class="tag tag-p">PRO</span><span class="tag tag-f">LIP</span><br>
+          3 œufs mollets<span class="tag tag-p">PRO</span><span class="tag tag-f">LIP</span><br>
+          2 tranches de pain<span class="tag tag-g">GLU</span>
+          <div class="meal-warn">⚠ Jours intenses (squash, bike, run) : ajouter riz ou patate douce</div>
+        </div>
+      </div>
+
+      <div class="meal-row">
+        <div class="meal-time">19h00<span class="label">Dîner</span></div>
+        <div class="meal-content">
+          200g poulet<span class="tag tag-p">PRO</span><br>
+          70g riz cru<span class="tag tag-g">GLU</span> · ½ concombre
+          <div class="meal-warn">⚠ Soirs de séance intense : monter à 100–120g de riz</div>
+        </div>
+      </div>
+
+      <div class="meal-row">
+        <div class="meal-time">21h00<span class="label">Snack</span></div>
+        <div class="meal-content">Yaourt protéiné<span class="tag tag-p">PRO</span> — synthèse protéique nocturne</div>
+      </div>
+
+      <div class="meal-row post-hiit">
+        <div class="meal-time" style="color:var(--accent)">Post-HIIT<span class="label" style="color:rgba(229,69,42,.5)">Récup</span></div>
+        <div class="meal-content">Checker lait d'amande + whey<span class="tag tag-p">PRO</span></div>
+      </div>
+
+      <div class="meal-row">
+        <div class="meal-time">22h00<span class="label">Couché</span></div>
+        <div class="meal-content" style="color:var(--muted)">Lecture · 1h max</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- TIPS -->
+  <section>
+    <div class="section-label">Points clés</div>
+    <div class="tips-grid">
+      <div class="tip-card">
+        <div class="tip-num">01</div>
+        <div class="tip-title">Progression lest</div>
+        <div class="tip-body">Monter le poids uniquement quand toutes les séries sont complètes avec bonne forme. Genoux au sol = garder le même poids.</div>
+      </div>
+      <div class="tip-card">
+        <div class="tip-num">02</div>
+        <div class="tip-title">Protéines cible</div>
+        <div class="tip-body">Viser 140–160g/jour (~2g/kg). La whey post-HIIT et le yaourt du soir sont les deux leviers les plus importants.</div>
+      </div>
+      <div class="tip-card">
+        <div class="tip-num">03</div>
+        <div class="tip-title">Glucides intelligents</div>
+        <div class="tip-body">Augmenter riz et glucides complexes les jours de squash, bike ou run long. Pas nécessaire les jours de repos.</div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <span>PROGRAMME FAB · LEAN BULK · FORCE-ENDURANCE</span>
+  <span>SPORT &amp; NUTRITION · v1.0</span>
+</footer>
+
+<script>
+  const dayConfig = {
+    ride:  { cls: 'badge-ride',  label: 'Run / Bike' },
+    run:   { cls: 'badge-ride',  label: 'Run' },
+    bike:  { cls: 'badge-ride',  label: 'Bike' },
+    rest:  { cls: 'badge-rest',  label: 'Repos' },
+    walk:  { cls: 'badge-walk',  label: 'Marche' },
+    rando: { cls: 'badge-rando', label: 'Rando' },
+    yoga:  { cls: 'badge-yoga',  label: 'Yoga' }
+  };
+  const extraConfig = {
+    run:   { cls: 'extra-ride',  label: 'Run' },
+    bike:  { cls: 'extra-ride',  label: 'Bike' },
+    walk:  { cls: 'extra-walk',  label: 'Marche' },
+    rando: { cls: 'extra-rando', label: 'Rando' },
+    yoga:  { cls: 'extra-yoga',  label: 'Yoga' }
+  };
+
+  // Weekend days — first activity replaces Repos, subsequent ones stack
+  const weekendDays = ['sam', 'dim'];
+  const dayActivities = {}; // { lun: ['run','yoga'], sam: ['bike'] }
+
+  function addActivity(day, sel) {
+    if (!sel.value) return;
+    const val = sel.value;
+    sel.value = '';
+
+    if (!dayActivities[day]) dayActivities[day] = [];
+    if (dayActivities[day].includes(val)) return; // no duplicate
+
+    dayActivities[day].push(val);
+    renderDay(day);
+  }
+
+  function removeActivity(day, val) {
+    dayActivities[day] = (dayActivities[day] || []).filter(v => v !== val);
+    renderDay(day);
+  }
+
+  function renderDay(day) {
+    const list = document.getElementById('extra-' + day);
+    const acts = dayActivities[day] || [];
+    const isWeekend = weekendDays.includes(day);
+
+    // Weekend: update main badge with first activity, or reset to Repos
+    if (isWeekend) {
+      const badge = document.getElementById('main-badge-' + day);
+      if (acts.length > 0) {
+        const cfg = dayConfig[acts[0]];
+        badge.className = 'day-badge ' + cfg.cls;
+        badge.textContent = cfg.label;
+        // render remaining as extra items
+        list.innerHTML = acts.slice(1).map(v => extraItem(day, v)).join('');
+      } else {
+        badge.className = 'day-badge badge-rest';
+        badge.textContent = 'Repos';
+        list.innerHTML = '';
+      }
+    } else {
+      // Weekdays: all activities stack below fixed badge
+      list.innerHTML = acts.map(v => extraItem(day, v)).join('');
+    }
+  }
+
+  function extraItem(day, val) {
+    const cfg = extraConfig[val];
+    return `<div class="extra-item ${cfg.cls}">
+      ${cfg.label}
+      <button class="rm" onclick="removeActivity('${day}','${val}')">✕</button>
+    </div>`;
+  }
+
+  // Date & age
+  function getISOWeek(d) {
+    const date = new Date(d);
+    date.setHours(0,0,0,0);
+    date.setDate(date.getDate() + 3 - (date.getDay()+6) % 7);
+    const week1 = new Date(date.getFullYear(), 0, 4);
+    return 1 + Math.round(((date - week1) / 86400000 - 3 + (week1.getDay()+6) % 7) / 7);
+  }
+
+  function updateHeader() {
+    const now = new Date();
+    const birth = new Date(1989, 10, 7);
+    const days = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+    const months = ['jan','fév','mar','avr','mai','jun','jul','aoû','sep','oct','nov','déc'];
+    const dateStr = days[now.getDay()] + ' ' + now.getDate() + ' ' + months[now.getMonth()] + ' ' + now.getFullYear();
+    document.getElementById('hdr-date').textContent = dateStr;
+    let years = now.getFullYear() - birth.getFullYear();
+    let months2 = now.getMonth() - birth.getMonth();
+    let daysDiff = now.getDate() - birth.getDate();
+    if (daysDiff < 0) { months2--; daysDiff += new Date(now.getFullYear(), now.getMonth(), 0).getDate(); }
+    if (months2 < 0) { years--; months2 += 12; }
+    document.getElementById('hdr-age').textContent = years + ' ans · ' + months2 + ' mois · ' + daysDiff + ' j';
+
+    // Numéro de semaine → SEM A (impaire) / SEM B (paire)
+    const weekNum = getISOWeek(now);
+    const isSemA = weekNum % 2 !== 0;
+    document.body.classList.remove('week-a','week-b');
+    document.body.classList.add(isSemA ? 'week-a' : 'week-b');
+    const semLabel = isSemA ? 'SEM A' : 'SEM B';
+    const semColor = isSemA ? 'var(--accent)' : 'var(--squash)';
+    document.getElementById('hiit-section-label').innerHTML =
+      `Séances HIIT — <span style="color:${semColor};font-weight:600;">Semaine ${weekNum} · ${semLabel}</span>`;
+
+    // Weight badge
+    const entries = getEntries();
+    const wEl = document.getElementById('hdr-weight');
+    if (entries.length > 0) {
+      wEl.textContent = entries[entries.length-1].poids + ' kg';
+    } else {
+      wEl.textContent = '— kg';
+    }
+  }
+  updateHeader();
+  setInterval(updateHeader, 60000);
+
+  // ── SUIVI ──────────────────────────────────────────────────────────
+  const STORAGE_KEY = 'fab_suivi_v1';
+
+  function getEntries() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+    catch(e) { return []; }
+  }
+  function saveEntries(arr) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+  }
+
+  function openSuivi() {
+    document.getElementById('suivi-overlay').classList.add('open');
+    renderSuivi();
+  }
+  function closeSuivi() {
+    document.getElementById('suivi-overlay').classList.remove('open');
+    updateHeader();
+  }
+
+  function todayStr() {
+    const d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+  function fmtDate(s) {
+    const [y,m,d] = s.split('-');
+    const months = ['jan','fév','mar','avr','mai','jun','jul','aoû','sep','oct','nov','déc'];
+    return d + ' ' + months[parseInt(m)-1] + ' ' + y;
+  }
+
+  function saveEntry() {
+    const poids = parseFloat(document.getElementById('inp-poids').value);
+    const kcal  = parseInt(document.getElementById('inp-kcal').value) || null;
+    if (!poids || poids < 30 || poids > 300) return;
+    const entries = getEntries();
+    const today = todayStr();
+    const idx = entries.findIndex(e => e.date === today);
+    const entry = { date: today, poids, kcal };
+    if (idx >= 0) entries[idx] = entry;
+    else entries.push(entry);
+    entries.sort((a,b) => a.date.localeCompare(b.date));
+    saveEntries(entries);
+    document.getElementById('inp-poids').value = '';
+    document.getElementById('inp-kcal').value = '';
+    const conf = document.getElementById('save-confirm');
+    conf.classList.add('show');
+    setTimeout(() => conf.classList.remove('show'), 2000);
+    renderSuivi();
+    updateHeader();
+  }
+
+  function deleteEntry(date) {
+    const entries = getEntries().filter(e => e.date !== date);
+    saveEntries(entries);
+    renderSuivi();
+    updateHeader();
+  }
+
+  let chartPoids = null, chartKcal = null;
+
+  function renderSuivi() {
+    const entries = getEntries();
+    const last30 = entries.slice(-30);
+
+    // Stats
+    const weights = entries.map(e => e.poids);
+    const current = weights.length ? weights[weights.length-1] : null;
+    const min = weights.length ? Math.min(...weights) : null;
+    const max = weights.length ? Math.max(...weights) : null;
+    const delta7 = entries.length >= 2 ? (entries[entries.length-1].poids - entries[Math.max(0,entries.length-8)].poids).toFixed(1) : null;
+
+    function fmtStat(v, u) { return v != null ? `<div class="stat-val">${v}<span>${u}</span></div>` : `<div class="stat-val" style="color:var(--dim)">—</div>`; }
+    function deltaClass(d) { return d > 0 ? 'delta-up' : d < 0 ? 'delta-down' : 'delta-neu'; }
+
+    document.getElementById('stat-current').innerHTML = fmtStat(current,'kg');
+    document.getElementById('stat-delta').innerHTML = delta7 != null
+      ? `<div class="stat-val ${deltaClass(+delta7)}" style="font-size:24px">${delta7>0?'+':''}${delta7}<span>kg</span></div>`
+      : `<div class="stat-val" style="color:var(--dim)">—</div>`;
+    document.getElementById('stat-min').innerHTML = fmtStat(min,'kg');
+    document.getElementById('stat-max').innerHTML = fmtStat(max,'kg');
+
+    // Charts
+    const labels = last30.map(e => fmtDate(e.date));
+    const poidsData = last30.map(e => e.poids);
+    const kcalData  = last30.map(e => e.kcal);
+
+    const chartOpts = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false } },
+      scales: {
+        x: { ticks: { color: '#7a7670', font: { family: 'DM Mono', size: 9 }, maxTicksLimit: 7 }, grid: { color: 'rgba(0,0,0,0.06)' } },
+        y: { ticks: { color: '#7a7670', font: { family: 'DM Mono', size: 9 } }, grid: { color: 'rgba(0,0,0,0.06)' } }
+      }
+    };
+
+    if (chartPoids) chartPoids.destroy();
+    chartPoids = new Chart(document.getElementById('chart-poids'), {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          data: poidsData,
+          borderColor: '#c93a1f',
+          backgroundColor: 'rgba(201,58,31,0.06)',
+          borderWidth: 2,
+          pointRadius: 3,
+          pointBackgroundColor: '#c93a1f',
+          tension: 0.3,
+          fill: true
+        }]
+      },
+      options: { ...chartOpts, scales: { ...chartOpts.scales, y: { ...chartOpts.scales.y, suggestedMin: min ? min-2 : undefined } } }
+    });
+
+    if (chartKcal) chartKcal.destroy();
+    chartKcal = new Chart(document.getElementById('chart-kcal'), {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [{
+          data: kcalData,
+          backgroundColor: 'rgba(26,158,74,0.2)',
+          borderColor: '#1a9e4a',
+          borderWidth: 1,
+          borderRadius: 4
+        }]
+      },
+      options: chartOpts
+    });
+
+    // Log table
+    const tbody = document.getElementById('log-tbody');
+    const sorted = [...entries].reverse().slice(0,20);
+    tbody.innerHTML = sorted.map((e,i) => {
+      const prev = entries[entries.indexOf(e)-1];
+      let deltaHtml = '<td class="muted">—</td>';
+      if (prev) {
+        const d = (e.poids - prev.poids).toFixed(1);
+        const cls = d > 0 ? 'delta-up' : d < 0 ? 'delta-down' : 'muted';
+        deltaHtml = `<td class="${cls}">${d>0?'+':''}${d} kg</td>`;
+      }
+      return `<tr>
+        <td class="muted">${fmtDate(e.date)}</td>
+        <td>${e.poids} kg</td>
+        ${deltaHtml}
+        <td class="muted">${e.kcal ? e.kcal+' kcal' : '—'}</td>
+        <td><button class="log-del" onclick="deleteEntry('${e.date}')">✕</button></td>
+      </tr>`;
+    }).join('');
+  }
+</script>
+
+<!-- SUIVI OVERLAY -->
+<div id="suivi-overlay">
+  <div class="suivi-header">
+    <div class="suivi-title">SUIVI<br><span>POIDS & KCAL</span></div>
+    <button class="btn-back" onclick="closeSuivi()">← Retour</button>
+  </div>
+  <div class="suivi-main">
+
+    <!-- Saisie -->
+    <div class="entry-card">
+      <div class="entry-card-title">Entrée du jour</div>
+      <div class="entry-row">
+        <div class="entry-field">
+          <label>Poids (kg)</label>
+          <input id="inp-poids" type="number" step="0.1" min="30" max="300" placeholder="75.4">
+        </div>
+        <div class="entry-field">
+          <label>Kcal dépensées</label>
+          <input id="inp-kcal" type="number" step="10" min="0" placeholder="450">
+        </div>
+        <button class="btn-save" onclick="saveEntry()">Enregistrer</button>
+      </div>
+      <div class="save-confirm" id="save-confirm">✓ Entrée enregistrée</div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-box">
+        <div class="stat-label">Poids actuel</div>
+        <div id="stat-current"><div class="stat-val" style="color:var(--dim)">—</div></div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Évolution 7j</div>
+        <div id="stat-delta"><div class="stat-val" style="color:var(--dim)">—</div></div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Mini enregistré</div>
+        <div id="stat-min"><div class="stat-val" style="color:var(--dim)">—</div></div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Maxi enregistré</div>
+        <div id="stat-max"><div class="stat-val" style="color:var(--dim)">—</div></div>
+      </div>
+    </div>
+
+    <!-- Graphique poids -->
+    <div class="chart-card">
+      <div class="entry-card-title">Évolution du poids (30 derniers jours)</div>
+      <div class="chart-wrap"><canvas id="chart-poids"></canvas></div>
+    </div>
+
+    <!-- Graphique kcal -->
+    <div class="chart-card">
+      <div class="entry-card-title">Kcal dépensées (30 derniers jours)</div>
+      <div class="chart-wrap"><canvas id="chart-kcal"></canvas></div>
+    </div>
+
+    <!-- Historique -->
+    <div class="entry-card">
+      <div class="entry-card-title">Historique</div>
+      <table class="log-table">
+        <thead><tr><th>Date</th><th>Poids</th><th>Δ</th><th>Kcal</th><th></th></tr></thead>
+        <tbody id="log-tbody"></tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+</body>
+</html>
