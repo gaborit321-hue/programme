@@ -1,4 +1,5 @@
-const CACHE_NAME = 'programme-v1';
+const VERSION = '1.1';
+const CACHE_NAME = `programme-v${VERSION}`;
 const ASSETS = [
   '/programme/',
   '/programme/index.html',
