@@ -1012,7 +1012,10 @@
 
 <footer>
   <span>PROGRAMME FAB · LEAN BULK · FORCE-ENDURANCE</span>
-  <span>SPORT &amp; NUTRITION · v<span id="app-version">1.2</span></span>
+  <span style="display:flex; align-items:center; gap:16px;">
+    <a href="programme_fab.pdf" target="_blank" style="font-family:'DM Mono',monospace; font-size:10px; color:var(--accent); text-decoration:none; letter-spacing:.08em; border:1px solid rgba(201,58,31,.3); padding:3px 10px; border-radius:5px; transition:background .2s;" onmouseover="this.style.background='rgba(201,58,31,.08)'" onmouseout="this.style.background='none'">↓ PDF</a>
+    <span>SPORT &amp; NUTRITION · v<span id="app-version">1.2</span></span>
+  </span>
 </footer>
 
 <script>
@@ -1131,6 +1134,14 @@
   }
   initPlanning();
 
+  // ── SUIVI ──────────────────────────────────────────────────────────
+  const STORAGE_KEY = 'fab_suivi_v1';
+
+  function getEntries() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+    catch(e) { return []; }
+  }
+
   // Date & age
   function getISOWeek(d) {
     const date = new Date(d);
@@ -1175,14 +1186,6 @@
   }
   updateHeader();
   setInterval(updateHeader, 60000);
-
-  // ── SUIVI ──────────────────────────────────────────────────────────
-  const STORAGE_KEY = 'fab_suivi_v1';
-
-  function getEntries() {
-    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
-    catch(e) { return []; }
-  }
   function saveEntries(arr) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
   }
