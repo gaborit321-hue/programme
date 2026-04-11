@@ -37,9 +37,9 @@
     --warn-bg: rgba(192,57,43,0.07);
     --accent: #c93a1f;
   }
- 
+
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
- 
+
   body {
     background: var(--bg);
     color: var(--text);
@@ -49,7 +49,7 @@
     min-height: 100vh;
     padding: 40px 24px 80px;
   }
- 
+
   /* HEADER */
   header {
     max-width: 960px;
@@ -76,10 +76,10 @@
     text-transform: uppercase;
     text-align: right;
   }
- 
+
   /* LAYOUT */
   .main { max-width: 960px; margin: 0 auto; display: flex; flex-direction: column; gap: 40px; }
- 
+
   /* SECTION LABEL */
   .section-label {
     font-family: 'DM Mono', monospace;
@@ -98,7 +98,7 @@
     height: 1px;
     background: var(--border);
   }
- 
+
   /* WEEK GRID */
   .week-grid {
     display: flex;
@@ -147,10 +147,10 @@
     margin-top: 6px;
     line-height: 1.4;
   }
- 
+
   /* HIIT BLOCKS */
   .hiit-grid { display: flex; flex-direction: column; gap: 8px; }
- 
+
   .hiit-row {
     background: var(--bg2);
     border: 1px solid var(--border);
@@ -164,7 +164,7 @@
   }
   .hiit-row:hover { border-color: var(--border2); }
   .hiit-row.alt-week { border-left: 3px solid var(--accent); }
- 
+
   .exo-name {
     font-size: 13px;
     font-weight: 500;
@@ -185,7 +185,7 @@
     margin-right: 8px;
   }
   .week-pill.b { background: rgba(59,130,246,.12); color: var(--squash); border-color: rgba(59,130,246,.25); }
- 
+
   .sets-badge {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 20px;
@@ -194,7 +194,7 @@
     min-width: 40px;
     text-align: right;
   }
- 
+
   /* NUTRITION */
   .meal-list { display: flex; flex-direction: column; gap: 8px; }
   .meal-row {
@@ -253,7 +253,7 @@
     border-radius: 6px;
     border: 1px solid rgba(239,68,68,.15);
   }
- 
+
   /* LEGEND */
   .legend {
     display: flex;
@@ -270,7 +270,7 @@
     font-family: 'DM Mono', monospace;
   }
   .leg-dot { width: 8px; height: 8px; border-radius: 50%; }
- 
+
   /* TIPS BOX */
   .tips-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
   .tip-card {
@@ -288,7 +288,7 @@
   }
   .tip-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
   .tip-body { font-size: 12px; color: var(--muted); line-height: 1.6; }
- 
+
   /* FOOTER */
   footer {
     max-width: 960px;
@@ -302,7 +302,7 @@
     display: flex;
     justify-content: space-between;
   }
- 
+
   /* FADE IN */
   .main > * {
     animation: fadeUp .5s ease both;
@@ -312,17 +312,17 @@
   .main > *:nth-child(3) { animation-delay: .19s; }
   .main > *:nth-child(4) { animation-delay: .26s; }
   .main > *:nth-child(5) { animation-delay: .33s; }
- 
+
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(12px); }
     to   { opacity: 1; transform: translateY(0); }
   }
- 
+
   /* SEM A/B VISIBILITY */
   .sem-a, .sem-b { transition: opacity .3s; }
   body.week-a .sem-b { display: none; }
   body.week-b .sem-a { display: none; }
- 
+
   /* DAY SELECTOR */
   .day-select {
     margin-top: 7px;
@@ -383,7 +383,7 @@
   .day-card .day-badge.badge-rest  { background: rgba(100,100,90,.08); color: #5a5a50; border: 1px solid rgba(100,100,90,.2); }
   .day-card .day-badge.badge-walk  { background: rgba(109,40,217,.08); color: #6d28d9; border: 1px solid rgba(109,40,217,.2); }
   .day-card .day-badge.badge-rando { background: rgba(161,98,7,.1);   color: #a16207; border: 1px solid rgba(161,98,7,.25); }
- 
+
   /* WEIGHT BADGE */
   #hdr-weight {
     font-family: 'DM Mono', monospace;
@@ -398,7 +398,7 @@
     letter-spacing: .04em;
   }
   #hdr-weight:hover { background: rgba(229,69,42,.16); border-color: rgba(229,69,42,.5); }
- 
+
   /* SUIVI OVERLAY */
   #suivi-overlay {
     display: none;
@@ -411,7 +411,7 @@
     animation: fadeUp .3s ease both;
   }
   #suivi-overlay.open { display: block; }
- 
+
   .suivi-header {
     max-width: 960px;
     margin: 0 auto 40px;
@@ -442,9 +442,9 @@
     transition: color .2s, border-color .2s;
   }
   .btn-back:hover { color: var(--text); border-color: var(--accent); }
- 
+
   .suivi-main { max-width: 960px; margin: 0 auto; display: flex; flex-direction: column; gap: 32px; }
- 
+
   /* ENTRY FORM */
   .entry-card {
     background: var(--bg2);
@@ -537,7 +537,7 @@
     transition: opacity .3s;
   }
   .save-confirm.show { opacity: 1; }
- 
+
   /* STATS ROW */
   .stats-row {
     display: grid;
@@ -575,7 +575,7 @@
   .delta-up { color: #ef4444; }
   .delta-down { color: var(--ride); }
   .delta-neu { color: var(--muted); }
- 
+
   /* CHART */
   .chart-card {
     background: var(--bg2);
@@ -585,7 +585,7 @@
   }
   .chart-wrap { position: relative; height: 220px; margin-top: 16px; }
   canvas { width: 100% !important; }
- 
+
   /* LOG TABLE */
   .log-table { width: 100%; border-collapse: collapse; }
   .log-table th {
@@ -620,11 +620,11 @@
   .btn-save, .btn-back { min-height: 44px; touch-action: manipulation; }
   .day-select { min-height: 32px; touch-action: manipulation; }
   .log-del, .extra-item .rm { min-width: 32px; min-height: 32px; display: inline-flex; align-items: center; justify-content: center; touch-action: manipulation; }
- 
+
   @media (max-width: 640px) {
     /* BODY */
     body { padding: 20px 14px 60px; font-size: 13px; }
- 
+
     /* HEADER */
     header {
       flex-direction: column;
@@ -635,7 +635,7 @@
     .header-title { font-size: 38px; }
     .header-sub { text-align: left; }
     .header-sub:last-child { align-self: flex-end; text-align: right; }
- 
+
     /* WEEK GRID — liste compacte sur mobile */
     .week-grid { gap: 6px; }
     .week-row-top,
@@ -683,16 +683,16 @@
     .day-card > .day-badge { grid-column: 2; grid-row: 1; }
     .day-card > .extra-list { grid-column: 2; grid-row: 2; }
     .day-card > .day-select { grid-column: 3; grid-row: 1 / 3; align-self: center; }
- 
+
     /* HIIT */
     .hiit-row { padding: 12px 14px; gap: 10px; }
     .exo-name { font-size: 12px; }
     .exo-sub { font-size: 11px; }
     .sets-badge { font-size: 17px; min-width: 32px; }
- 
+
     /* HIIT section label — wrap gracefully */
     #hiit-section-label { flex-wrap: wrap; gap: 4px; }
- 
+
     /* PLAN JOURNALIER */
     .meal-row {
       grid-template-columns: 64px 1fr;
@@ -702,11 +702,11 @@
     .meal-time { font-size: 10px; }
     .meal-content { font-size: 12px; }
     .meal-warn { font-size: 10px; }
- 
+
     /* TIPS */
     .tips-grid { grid-template-columns: 1fr; }
     .tip-num { font-size: 24px; }
- 
+
     /* SUIVI */
     #suivi-overlay { padding: 20px 14px 60px; }
     .suivi-header { margin-bottom: 24px; }
@@ -719,11 +719,11 @@
     .stat-val { font-size: 22px; }
     .chart-wrap { height: 180px; }
     .log-table td, .log-table th { font-size: 10px; padding: 8px 0; }
- 
+
     /* SECTION LABEL wrap */
     .section-label { flex-wrap: wrap; }
   }
- 
+
   @media (max-width: 380px) {
     .week-grid { grid-template-columns: repeat(4, 1fr); gap: 4px; }
     .day-badge { font-size: 9px; }
@@ -732,7 +732,7 @@
 </style>
 </head>
 <body>
- 
+
 <header>
   <div class="header-title">PROGRAMME<br><span>FAB</span></div>
   <div class="header-sub">
@@ -746,9 +746,9 @@
     <span style="font-family:'DM Mono',monospace; font-size:11px; color:var(--muted); letter-spacing:.04em; margin-right:6px;">183 cm</span><span id="hdr-weight" onclick="openSuivi()" style="cursor:pointer; margin-top:4px; display:inline-block;"></span>
   </div>
 </header>
- 
+
 <div class="main">
- 
+
   <!-- SEMAINE -->
   <section>
     <div class="section-label">Planning hebdomadaire</div>
@@ -852,12 +852,12 @@
       </div>
     </div>
   </section>
- 
+
   <!-- HIIT -->
   <section>
     <div class="section-label" id="hiit-section-label">Séances HIIT — structure des exercices</div>
     <div class="hiit-grid">
- 
+
       <div class="hiit-row alt-week sem-a">
         <div>
           <div class="exo-name">
@@ -867,7 +867,7 @@
         </div>
         <div class="sets-badge">×6</div>
       </div>
- 
+
       <div class="hiit-row alt-week sem-b">
         <div>
           <div class="exo-name">
@@ -877,7 +877,7 @@
         </div>
         <div class="sets-badge">×6</div>
       </div>
- 
+
       <div class="hiit-row alt-week sem-a">
         <div>
           <div class="exo-name">
@@ -887,7 +887,7 @@
         </div>
         <div class="sets-badge">×4</div>
       </div>
- 
+
       <div class="hiit-row alt-week sem-b">
         <div>
           <div class="exo-name">
@@ -897,7 +897,7 @@
         </div>
         <div class="sets-badge">×4</div>
       </div>
- 
+
       <div class="hiit-row alt-week sem-a">
         <div>
           <div class="exo-name">
@@ -907,7 +907,7 @@
         </div>
         <div class="sets-badge">×4</div>
       </div>
- 
+
       <div class="hiit-row alt-week sem-b">
         <div>
           <div class="exo-name">
@@ -917,7 +917,7 @@
         </div>
         <div class="sets-badge">×4</div>
       </div>
- 
+
       <div class="hiit-row alt-week sem-a">
         <div>
           <div class="exo-name">
@@ -927,7 +927,7 @@
         </div>
         <div class="sets-badge">×4</div>
       </div>
- 
+
       <div class="hiit-row alt-week sem-b">
         <div>
           <div class="exo-name">
@@ -937,10 +937,10 @@
         </div>
         <div class="sets-badge">×4</div>
       </div>
- 
+
     </div>
   </section>
- 
+
   <!-- PLAN JOURNALIER -->
   <section>
     <div class="section-label">Plan journalier <span style="font-size:9px; color:var(--muted); text-transform:none; letter-spacing:0; font-family:'DM Sans',sans-serif;">(lun–ven · le week-end peut varier : lever, repas…)</span></div>
@@ -950,12 +950,12 @@
       <div class="leg"><div class="leg-dot" style="background:var(--lip)"></div>Lipides</div>
     </div>
     <div class="meal-list">
- 
+
       <div class="meal-row">
         <div class="meal-time">07h00<span class="label">Réveil</span></div>
         <div class="meal-content" style="color:var(--muted)">Lever · hydratation</div>
       </div>
- 
+
       <div class="meal-row">
         <div class="meal-time">08h00<span class="label">Petit déj</span></div>
         <div class="meal-content">
@@ -963,12 +963,12 @@
           Croque : 2 toasts<span class="tag tag-g">GLU</span> · philadelphia light · 2 tranches blanc de poulet<span class="tag tag-p">PRO</span> · emmental<span class="tag tag-f">LIP</span>
         </div>
       </div>
- 
+
       <div class="meal-row">
         <div class="meal-time">10h00<span class="label">Collation</span></div>
         <div class="meal-content">Café</div>
       </div>
- 
+
       <div class="meal-row">
         <div class="meal-time">12h30<span class="label">Déjeuner</span></div>
         <div class="meal-content">
@@ -978,7 +978,7 @@
           <div class="meal-warn">⚠ Jours intenses (squash, bike, run) : ajouter riz ou patate douce</div>
         </div>
       </div>
- 
+
       <div class="meal-row">
         <div class="meal-time">19h00<span class="label">Dîner</span></div>
         <div class="meal-content">
@@ -987,25 +987,25 @@
           <div class="meal-warn">⚠ Soirs de séance intense : monter à 100–120g de riz</div>
         </div>
       </div>
- 
+
       <div class="meal-row">
         <div class="meal-time">21h00<span class="label">Snack</span></div>
         <div class="meal-content">Yaourt protéiné<span class="tag tag-p">PRO</span> — synthèse protéique nocturne</div>
       </div>
- 
+
       <div class="meal-row post-hiit">
         <div class="meal-time" style="color:var(--accent)">Post-HIIT<span class="label" style="color:rgba(229,69,42,.5)">Récup</span></div>
         <div class="meal-content">Checker lait d'amande + whey<span class="tag tag-p">PRO</span></div>
       </div>
- 
+
       <div class="meal-row">
         <div class="meal-time">22h00<span class="label">Couché</span></div>
         <div class="meal-content" style="color:var(--muted)">Lecture · 1h max</div>
       </div>
- 
+
     </div>
   </section>
- 
+
   <!-- TIPS -->
   <section>
     <div class="section-label">Points clés</div>
@@ -1027,9 +1027,9 @@
       </div>
     </div>
   </section>
- 
+
 </div>
- 
+
 <footer>
   <span>PROGRAMME FAB · LEAN BULK · FORCE-ENDURANCE</span>
   <span style="display:flex; align-items:center; gap:16px;">
@@ -1037,7 +1037,7 @@
     <span>SPORT &amp; NUTRITION · v<span id="app-version">1.2</span></span>
   </span>
 </footer>
- 
+
 <script>
   const dayConfig = {
     ride:  { cls: 'badge-ride',  label: 'Run / Bike' },
@@ -1055,11 +1055,11 @@
     rando: { cls: 'extra-rando', label: 'Rando' },
     yoga:  { cls: 'extra-yoga',  label: 'Yoga' }
   };
- 
+
   const weekendDays = ['sam', 'dim'];
   const ALL_DAYS = ['lun','mar','mer','jeu','ven','sam','dim'];
   const PLANNING_KEY = 'fab_planning_v1';
- 
+
   // ── PERSISTANCE PLANNING ─────────────────────────────────────────
   function getISOWeekStr() {
     const d = new Date();
@@ -1068,7 +1068,7 @@
     monday.setDate(d.getDate() - day + 1);
     return monday.toISOString().slice(0, 10); // "2026-03-30"
   }
- 
+
   function loadPlanning() {
     try {
       const raw = JSON.parse(localStorage.getItem(PLANNING_KEY));
@@ -1081,22 +1081,22 @@
       return raw.activities || {};
     } catch(e) { return {}; }
   }
- 
+
   function savePlanning() {
     localStorage.setItem(PLANNING_KEY, JSON.stringify({
       week: getISOWeekStr(),
       activities: dayActivities
     }));
   }
- 
+
   // Initialisation depuis localStorage
   const dayActivities = loadPlanning();
- 
+
   function addActivity(day, sel) {
     if (!sel.value) return;
     const val = sel.value;
     sel.value = '';
- 
+
     // Option "repos" sur Sam/Dim → reset complet
     if (val === 'repos') {
       dayActivities[day] = [];
@@ -1104,25 +1104,25 @@
       renderDay(day);
       return;
     }
- 
+
     if (!dayActivities[day]) dayActivities[day] = [];
     if (dayActivities[day].includes(val)) return;
     dayActivities[day].push(val);
     savePlanning();
     renderDay(day);
   }
- 
+
   function removeActivity(day, val) {
     dayActivities[day] = (dayActivities[day] || []).filter(v => v !== val);
     savePlanning();
     renderDay(day);
   }
- 
+
   function renderDay(day) {
     const list = document.getElementById('extra-' + day);
     const acts = dayActivities[day] || [];
     const isWeekend = weekendDays.includes(day);
- 
+
     if (isWeekend) {
       const badge = document.getElementById('main-badge-' + day);
       if (acts.length > 0) {
@@ -1139,7 +1139,7 @@
       list.innerHTML = acts.map(v => extraItem(day, v)).join('');
     }
   }
- 
+
   function extraItem(day, val) {
     const cfg = extraConfig[val];
     return `<div class="extra-item ${cfg.cls}">
@@ -1147,19 +1147,19 @@
       <button class="rm" onclick="removeActivity('${day}','${val}')">✕</button>
     </div>`;
   }
- 
+
   // Restaurer toutes les cartes au chargement
   function initPlanning() {
     ALL_DAYS.forEach(day => renderDay(day));
   }
   initPlanning();
- 
+
   // ── SUIVI ──────────────────────────────────────────────────────────
   const STORAGE_KEY = 'fab_suivi_v1';
- 
+
   // ── MAKE WEBHOOK ───────────────────────────────────────────────────
   const MAKE_WRITE_URL = 'https://hook.eu2.make.com/j9hw9pjwd515ym98h1so9qwnnvw2iy2a';
- 
+
   function setSyncStatus(state, msg) {
     const dot = document.getElementById('sync-dot');
     const lbl = document.getElementById('sync-label');
@@ -1168,7 +1168,7 @@
     lbl.textContent = msg;
     lbl.style.color = state === 'ok' ? 'var(--ride)' : state === 'err' ? 'var(--warn)' : state === 'spin' ? 'var(--squash)' : 'var(--dim)';
   }
- 
+
   async function syncToMake(payload) {
     setSyncStatus('spin', 'Sync en cours…');
     try {
@@ -1187,12 +1187,12 @@
       setSyncStatus('err', '✗ Réseau indisponible');
     }
   }
- 
+
   function getEntries() {
     try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
     catch(e) { return []; }
   }
- 
+
   // Date & age
   function getISOWeek(d) {
     const date = new Date(d);
@@ -1201,7 +1201,7 @@
     const week1 = new Date(date.getFullYear(), 0, 4);
     return 1 + Math.round(((date - week1) / 86400000 - 3 + (week1.getDay()+6) % 7) / 7);
   }
- 
+
   function updateHeader() {
     const now = new Date();
     const birth = new Date(1989, 10, 7);
@@ -1215,7 +1215,7 @@
     if (daysDiff < 0) { months2--; daysDiff += new Date(now.getFullYear(), now.getMonth(), 0).getDate(); }
     if (months2 < 0) { years--; months2 += 12; }
     document.getElementById('hdr-age').textContent = years + ' ans · ' + months2 + ' mois · ' + daysDiff + ' j';
- 
+
     // Numéro de semaine → SEM A (impaire) / SEM B (paire)
     const weekNum = getISOWeek(now);
     const isSemA = weekNum % 2 !== 0;
@@ -1225,7 +1225,7 @@
     const semColor = isSemA ? 'var(--accent)' : 'var(--squash)';
     document.getElementById('hiit-section-label').innerHTML =
       `Séances HIIT — <span style="color:${semColor};font-weight:600;">Semaine ${weekNum} · ${semLabel}</span>`;
- 
+
     // Weight badge
     const entries = getEntries();
     const wEl = document.getElementById('hdr-weight');
@@ -1240,7 +1240,7 @@
   function saveEntries(arr) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
   }
- 
+
   function openSuivi() {
     document.getElementById('suivi-overlay').classList.add('open');
     renderSuivi();
@@ -1251,7 +1251,7 @@
     document.getElementById('suivi-overlay').classList.remove('open');
     updateHeader();
   }
- 
+
   function todayStr() {
     const d = new Date();
     return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
@@ -1261,13 +1261,13 @@
     const months = ['jan','fév','mar','avr','mai','jun','jul','aoû','sep','oct','nov','déc'];
     return d + ' ' + months[parseInt(m)-1] + ' ' + y;
   }
- 
+
   // Pré-remplir le champ date à aujourd'hui à l'ouverture
   function initDateInput() {
     const inp = document.getElementById('inp-date');
     if (inp && !inp.value) inp.value = todayStr();
   }
- 
+
   function saveEntry() {
     const dateVal = document.getElementById('inp-date').value || todayStr();
     const poids = parseFloat(document.getElementById('inp-poids').value);
@@ -1291,7 +1291,7 @@
     // Sync Make
     syncToMake({ action: 'upsert', date: dateVal, poids, kcal });
   }
- 
+
   function deleteEntry(date) {
     const entries = getEntries().filter(e => e.date !== date);
     saveEntries(entries);
@@ -1300,35 +1300,35 @@
     // Sync Make
     syncToMake({ action: 'delete', date });
   }
- 
+
   let chartPoids = null, chartKcal = null;
- 
+
   function renderSuivi() {
     const entries = getEntries();
     const last30 = entries.slice(-30);
- 
+
     // Stats
     const weights = entries.map(e => e.poids);
     const current = weights.length ? weights[weights.length-1] : null;
     const min = weights.length ? Math.min(...weights) : null;
     const max = weights.length ? Math.max(...weights) : null;
     const delta7 = entries.length >= 2 ? (entries[entries.length-1].poids - entries[Math.max(0,entries.length-8)].poids).toFixed(1) : null;
- 
+
     function fmtStat(v, u) { return v != null ? `<div class="stat-val">${v}<span>${u}</span></div>` : `<div class="stat-val" style="color:var(--dim)">—</div>`; }
     function deltaClass(d) { return d > 0 ? 'delta-up' : d < 0 ? 'delta-down' : 'delta-neu'; }
- 
+
     document.getElementById('stat-current').innerHTML = fmtStat(current,'kg');
     document.getElementById('stat-delta').innerHTML = delta7 != null
       ? `<div class="stat-val ${deltaClass(+delta7)}" style="font-size:24px">${delta7>0?'+':''}${delta7}<span>kg</span></div>`
       : `<div class="stat-val" style="color:var(--dim)">—</div>`;
     document.getElementById('stat-min').innerHTML = fmtStat(min,'kg');
     document.getElementById('stat-max').innerHTML = fmtStat(max,'kg');
- 
+
     // Charts
     const labels = last30.map(e => fmtDate(e.date));
     const poidsData = last30.map(e => e.poids);
     const kcalData  = last30.map(e => e.kcal);
- 
+
     const chartOpts = {
       responsive: true,
       maintainAspectRatio: false,
@@ -1338,7 +1338,7 @@
         y: { ticks: { color: '#7a7670', font: { family: 'DM Mono', size: 9 } }, grid: { color: 'rgba(0,0,0,0.06)' } }
       }
     };
- 
+
     if (chartPoids) chartPoids.destroy();
     chartPoids = new Chart(document.getElementById('chart-poids'), {
       type: 'line',
@@ -1357,7 +1357,7 @@
       },
       options: { ...chartOpts, scales: { ...chartOpts.scales, y: { ...chartOpts.scales.y, suggestedMin: min ? min-2 : undefined } } }
     });
- 
+
     if (chartKcal) chartKcal.destroy();
     chartKcal = new Chart(document.getElementById('chart-kcal'), {
       type: 'bar',
@@ -1373,7 +1373,7 @@
       },
       options: chartOpts
     });
- 
+
     // Log table
     const tbody = document.getElementById('log-tbody');
     const sorted = [...entries].reverse().slice(0,20);
@@ -1395,7 +1395,7 @@
     }).join('');
   }
 </script>
- 
+
 <!-- SUIVI OVERLAY -->
 <div id="suivi-overlay">
   <div class="suivi-header">
@@ -1403,7 +1403,7 @@
     <button class="btn-back" onclick="closeSuivi()">← Retour</button>
   </div>
   <div class="suivi-main">
- 
+
     <!-- Saisie -->
     <div class="entry-card">
       <div class="entry-card-title">Entrée du jour</div>
@@ -1430,7 +1430,7 @@
         </div>
       </div>
     </div>
- 
+
     <!-- Stats -->
     <div class="stats-row">
       <div class="stat-box">
@@ -1450,19 +1450,19 @@
         <div id="stat-max"><div class="stat-val" style="color:var(--dim)">—</div></div>
       </div>
     </div>
- 
+
     <!-- Graphique poids -->
     <div class="chart-card">
       <div class="entry-card-title">Évolution du poids (30 derniers jours)</div>
       <div class="chart-wrap"><canvas id="chart-poids"></canvas></div>
     </div>
- 
+
     <!-- Graphique kcal -->
     <div class="chart-card">
       <div class="entry-card-title">Kcal dépensées (30 derniers jours)</div>
       <div class="chart-wrap"><canvas id="chart-kcal"></canvas></div>
     </div>
- 
+
     <!-- Historique -->
     <div class="entry-card">
       <div class="entry-card-title">Historique</div>
@@ -1471,10 +1471,10 @@
         <tbody id="log-tbody"></tbody>
       </table>
     </div>
- 
+
   </div>
 </div>
- 
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
   if ('serviceWorker' in navigator) {
