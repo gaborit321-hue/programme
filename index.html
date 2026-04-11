@@ -466,7 +466,7 @@
   .entry-card-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
   .entry-row {
     display: grid;
-    grid-template-columns: 1fr 1fr auto;
+    grid-template-columns: 1fr 1fr 1fr auto;
     gap: 12px;
     align-items: end;
   }
@@ -491,7 +491,26 @@
     outline: none;
     transition: border-color .2s;
   }
-  .entry-field input:focus { border-color: var(--accent); }
+  .entry-field input[type="date"] {
+    color-scheme: light;
+  }
+  .sync-status {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .sync-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--dim);
+    transition: background .3s;
+  }
+  .sync-dot.ok   { background: var(--ride); }
+  .sync-dot.err  { background: var(--warn); }
+  .sync-dot.spin { background: var(--squash); animation: pulse 1s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
   .entry-field input::placeholder { color: var(--dim); }
   .btn-save {
     background: var(--accent);
@@ -694,6 +713,7 @@
     .suivi-title { font-size: 30px; }
     .entry-card { padding: 16px; }
     .entry-row { grid-template-columns: 1fr 1fr; }
+    .entry-row .entry-field:first-child { grid-column: span 2; }
     .btn-save { grid-column: span 2; }
     .stats-row { grid-template-columns: repeat(2, 1fr); }
     .stat-val { font-size: 22px; }
@@ -1137,6 +1157,37 @@
   // ── SUIVI ──────────────────────────────────────────────────────────
   const STORAGE_KEY = 'fab_suivi_v1';
 
+  // ── MAKE WEBHOOK ───────────────────────────────────────────────────
+  const MAKE_WRITE_URL = 'https://hook.eu2.make.com/j9hw9pjwd515ym98h1so9qwnnvw2iy2a';
+
+  function setSyncStatus(state, msg) {
+    const dot = document.getElementById('sync-dot');
+    const lbl = document.getElementById('sync-label');
+    if (!dot || !lbl) return;
+    dot.className = 'sync-dot ' + state;
+    lbl.textContent = msg;
+    lbl.style.color = state === 'ok' ? 'var(--ride)' : state === 'err' ? 'var(--warn)' : state === 'spin' ? 'var(--squash)' : 'var(--dim)';
+  }
+
+  async function syncToMake(payload) {
+    setSyncStatus('spin', 'Sync en cours…');
+    try {
+      const res = await fetch(MAKE_WRITE_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) {
+        setSyncStatus('ok', '✓ Sync Make OK');
+        setTimeout(() => setSyncStatus('', 'Make connecté'), 3000);
+      } else {
+        setSyncStatus('err', '✗ Erreur ' + res.status);
+      }
+    } catch(e) {
+      setSyncStatus('err', '✗ Réseau indisponible');
+    }
+  }
+
   function getEntries() {
     try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
     catch(e) { return []; }
@@ -1193,6 +1244,8 @@
   function openSuivi() {
     document.getElementById('suivi-overlay').classList.add('open');
     renderSuivi();
+    initDateInput();
+    setSyncStatus('', 'Make connecté');
   }
   function closeSuivi() {
     document.getElementById('suivi-overlay').classList.remove('open');
@@ -1209,25 +1262,34 @@
     return d + ' ' + months[parseInt(m)-1] + ' ' + y;
   }
 
+  // Pré-remplir le champ date à aujourd'hui à l'ouverture
+  function initDateInput() {
+    const inp = document.getElementById('inp-date');
+    if (inp && !inp.value) inp.value = todayStr();
+  }
+
   function saveEntry() {
+    const dateVal = document.getElementById('inp-date').value || todayStr();
     const poids = parseFloat(document.getElementById('inp-poids').value);
     const kcal  = parseInt(document.getElementById('inp-kcal').value) || null;
     if (!poids || poids < 30 || poids > 300) return;
     const entries = getEntries();
-    const today = todayStr();
-    const idx = entries.findIndex(e => e.date === today);
-    const entry = { date: today, poids, kcal };
+    const idx = entries.findIndex(e => e.date === dateVal);
+    const entry = { date: dateVal, poids, kcal };
     if (idx >= 0) entries[idx] = entry;
     else entries.push(entry);
     entries.sort((a,b) => a.date.localeCompare(b.date));
     saveEntries(entries);
     document.getElementById('inp-poids').value = '';
     document.getElementById('inp-kcal').value = '';
+    document.getElementById('inp-date').value = todayStr();
     const conf = document.getElementById('save-confirm');
     conf.classList.add('show');
     setTimeout(() => conf.classList.remove('show'), 2000);
     renderSuivi();
     updateHeader();
+    // Sync Make
+    syncToMake({ action: 'upsert', date: dateVal, poids, kcal });
   }
 
   function deleteEntry(date) {
@@ -1235,6 +1297,8 @@
     saveEntries(entries);
     renderSuivi();
     updateHeader();
+    // Sync Make
+    syncToMake({ action: 'delete', date });
   }
 
   let chartPoids = null, chartKcal = null;
@@ -1345,6 +1409,10 @@
       <div class="entry-card-title">Entrée du jour</div>
       <div class="entry-row">
         <div class="entry-field">
+          <label>Date</label>
+          <input id="inp-date" type="date">
+        </div>
+        <div class="entry-field">
           <label>Poids (kg)</label>
           <input id="inp-poids" type="number" step="0.1" min="30" max="300" placeholder="75.4">
         </div>
@@ -1354,7 +1422,13 @@
         </div>
         <button class="btn-save" onclick="saveEntry()">Enregistrer</button>
       </div>
-      <div class="save-confirm" id="save-confirm">✓ Entrée enregistrée</div>
+      <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+        <div class="save-confirm" id="save-confirm">✓ Entrée enregistrée</div>
+        <div class="sync-status">
+          <div class="sync-dot" id="sync-dot"></div>
+          <span id="sync-label" style="color:var(--dim)">Make non configuré</span>
+        </div>
+      </div>
     </div>
 
     <!-- Stats -->
