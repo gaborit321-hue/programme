@@ -94,19 +94,20 @@
   .lang-mini button.active { background:var(--yellow-bg); border-color:var(--yellow-border); color:var(--yellow); }
 
   /* ── PAGES ── */
-  .page { display:none; padding:24px 20px 60px; max-width:600px; margin:0 auto; }
+  .page { display:none; padding:32px 20px 80px; max-width:600px; margin:0 auto; }
   .page.active { display:block; animation:fadeUp .3s ease both; }
   @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
 
   /* ── CHOICE PAGE ── */
   .choice-title {
     font-family:'Bebas Neue',sans-serif;
-    font-size:38px;
+    font-size:52px;
     letter-spacing:.04em;
+    line-height:1;
     color:var(--text);
     margin-bottom:6px;
   }
-  .choice-title span { color:var(--accent); }
+  .choice-title span { color:var(--teal); }
   .choice-sub {
     font-family:'DM Mono',monospace;
     font-size:10px;
@@ -374,7 +375,7 @@
 
   @media (max-width: 380px) {
     .timer-display { font-size:80px; }
-    .choice-title { font-size:30px; }
+    .choice-title { font-size:38px; }
   }
 </style>
 </head>
