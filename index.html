@@ -384,7 +384,100 @@
   .day-card .day-badge.badge-walk  { background: rgba(109,40,217,.08); color: #6d28d9; border: 1px solid rgba(109,40,217,.2); }
   .day-card .day-badge.badge-rando { background: rgba(161,98,7,.1);   color: #a16207; border: 1px solid rgba(161,98,7,.25); }
 
-  /* WEIGHT BADGE */
+  /* PHOTO */
+  .photo-btn {
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    color: var(--muted);
+    font-size: 20px;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: border-color .2s, color .2s, background .2s;
+    flex-shrink: 0;
+    align-self: end;
+  }
+  .photo-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(201,58,31,.06); }
+  .photo-preview {
+    display: none;
+    margin-top: 12px;
+    gap: 10px;
+    align-items: center;
+  }
+  .photo-preview.show { display: flex; }
+  .photo-preview img {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid var(--border2);
+  }
+  .photo-preview-info {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .photo-rm {
+    background: none;
+    border: none;
+    color: var(--dim);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 4px;
+    transition: color .15s;
+  }
+  .photo-rm:hover { color: var(--warn); }
+  .photo-sync {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+  }
+  /* PHOTO MODAL */
+  #photo-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 16px;
+    animation: fadeUp .2s ease both;
+  }
+  #photo-modal.open { display: flex; }
+  #photo-modal img {
+    max-width: 92vw;
+    max-height: 80vh;
+    object-fit: contain;
+    border-radius: 10px;
+  }
+  #photo-modal-date {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: .08em;
+  }
+  #photo-modal-close {
+    position: absolute;
+    top: 20px; right: 20px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 8px;
+    color: #fff;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: background .2s;
+  }
+  #photo-modal-close:hover { background: rgba(255,255,255,0.2); }
+
   #hdr-weight {
     font-family: 'DM Mono', monospace;
     font-size: 11px;
@@ -466,7 +559,7 @@
   .entry-card-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
   .entry-row {
     display: grid;
-    grid-template-columns: 160px 1fr 1fr auto;
+    grid-template-columns: 160px 1fr 1fr auto auto;
     gap: 12px;
     align-items: end;
   }
@@ -714,7 +807,8 @@
     .entry-card { padding: 16px; }
     .entry-row { grid-template-columns: 1fr 1fr; }
     .entry-row .entry-field:first-child { grid-column: span 2; }
-    .btn-save { grid-column: span 2; }
+    .btn-save { grid-column: span 1; }
+    .photo-btn { grid-column: span 1; }
     .stats-row { grid-template-columns: repeat(2, 1fr); }
     .stat-val { font-size: 22px; }
     .chart-wrap { height: 180px; }
@@ -1159,6 +1253,8 @@
 
   // ── MAKE WEBHOOK ───────────────────────────────────────────────────
   const MAKE_WRITE_URL = 'https://hook.eu2.make.com/j9hw9pjwd515ym98h1so9qwnnvw2iy2a';
+  const MAKE_PHOTO_URL = 'REMPLACER_PAR_URL_WEBHOOK_PHOTO';
+  const MAKE_READ_URL  = 'https://hook.eu2.make.com/s75w457yogkdl8oynqer79olnid741t8';
 
   function setSyncStatus(state, msg) {
     const dot = document.getElementById('sync-dot');
@@ -1241,11 +1337,48 @@
     localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
   }
 
+  async function restoreFromSheets() {
+    const btn = document.getElementById('btn-restore');
+    const lbl = document.getElementById('restore-label');
+    if (btn) btn.disabled = true;
+    if (lbl) { lbl.textContent = 'Restauration en cours…'; lbl.style.color = 'var(--squash)'; }
+    try {
+      const res = await fetch(MAKE_READ_URL);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const rows = await res.json();
+      // rows = tableau d'objets avec les colonnes du Sheet
+      const entries = rows
+        .filter(r => r[0] && r[1]) // date + poids obligatoires
+        .map(r => ({
+          date:  r[0].toString().trim(),
+          poids: parseFloat(r[1]),
+          kcal:  r[2] ? parseInt(r[2]) : null
+        }))
+        .filter(r => r.date && !isNaN(r.poids))
+        .sort((a,b) => a.date.localeCompare(b.date));
+      saveEntries(entries);
+      renderSuivi();
+      updateHeader();
+      if (lbl) { lbl.textContent = '✓ ' + entries.length + ' entrées restaurées'; lbl.style.color = 'var(--ride)'; }
+      if (btn) btn.disabled = false;
+    } catch(e) {
+      if (lbl) { lbl.textContent = '✗ Erreur : ' + e.message; lbl.style.color = 'var(--warn)'; }
+      if (btn) btn.disabled = false;
+    }
+  }
+
+  // Auto-restauration si localStorage vide au démarrage du suivi
+  function autoRestoreIfEmpty() {
+    const entries = getEntries();
+    if (entries.length === 0) restoreFromSheets();
+  }
+
   function openSuivi() {
     document.getElementById('suivi-overlay').classList.add('open');
     renderSuivi();
     initDateInput();
     setSyncStatus('', 'Make connecté');
+    autoRestoreIfEmpty();
   }
   function closeSuivi() {
     document.getElementById('suivi-overlay').classList.remove('open');
@@ -1290,6 +1423,15 @@
     updateHeader();
     // Sync Make
     syncToMake({ action: 'upsert', date: dateVal, poids, kcal });
+    // Photo : stockage local + sync Make
+    if (currentPhotoBase64) {
+      const photos = getPhotos();
+      photos[dateVal] = currentPhotoBase64;
+      savePhotos(photos);
+      syncPhotoToMake(dateVal, currentPhotoBase64);
+      // Ne pas reset l'aperçu tout de suite (le label de sync s'affiche)
+      setTimeout(() => removePhoto(), 3000);
+    }
   }
 
   function deleteEntry(date) {
@@ -1300,6 +1442,88 @@
     // Sync Make
     syncToMake({ action: 'delete', date });
   }
+
+  // ── PHOTO ──────────────────────────────────────────────────────────
+  let currentPhotoBase64 = null;
+  let currentPhotoName = null;
+  const PHOTO_KEY = 'fab_photos_v1';
+
+  function getPhotos() {
+    try { return JSON.parse(localStorage.getItem(PHOTO_KEY)) || {}; }
+    catch(e) { return {}; }
+  }
+  function savePhotos(obj) {
+    try { localStorage.setItem(PHOTO_KEY, JSON.stringify(obj)); }
+    catch(e) {
+      // localStorage plein → supprimer les plus anciennes
+      const sorted = Object.keys(obj).sort();
+      if (sorted.length > 1) {
+        delete obj[sorted[0]];
+        savePhotos(obj);
+      }
+    }
+  }
+
+  function compressPhoto(base64, maxW, quality, cb) {
+    const img = new Image();
+    img.onload = () => {
+      const ratio = Math.min(maxW / img.width, maxW / img.height, 1);
+      const w = Math.round(img.width * ratio);
+      const h = Math.round(img.height * ratio);
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      cb(canvas.toDataURL('image/jpeg', quality));
+    };
+    img.src = base64;
+  }
+
+  function triggerPhoto() {
+    document.getElementById('inp-photo').click();
+  }
+
+  function onPhotoSelected(input) {
+    const file = input.files[0];
+    if (!file) return;
+    currentPhotoName = file.name;
+    const reader = new FileReader();
+    reader.onload = e => {
+      // Compression : max 600px, qualité 0.7 (~80-150Ko)
+      compressPhoto(e.target.result, 600, 0.7, compressed => {
+        currentPhotoBase64 = compressed;
+        document.getElementById('photo-thumb').src = compressed;
+        document.getElementById('photo-name').textContent = Math.round(compressed.length * 0.75 / 1024) + ' Ko';
+        document.getElementById('photo-sync-label').textContent = 'Prête · sera sauvegardée avec l\'entrée';
+        document.getElementById('photo-preview').classList.add('show');
+      });
+    };
+    reader.readAsDataURL(file);
+    input.value = '';
+  }
+
+  function removePhoto() {
+    currentPhotoBase64 = null;
+    currentPhotoName = null;
+    document.getElementById('photo-preview').classList.remove('show');
+    document.getElementById('photo-thumb').src = '';
+  }
+
+  async function syncPhotoToMake(date, base64) {
+    if (!base64 || MAKE_PHOTO_URL === 'REMPLACER_PAR_URL_WEBHOOK_PHOTO') return;
+    document.getElementById('photo-sync-label').textContent = 'Envoi Make en cours…';
+    try {
+      const res = await fetch(MAKE_PHOTO_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ date, photo: base64, filename: date + '.jpg' })
+      });
+      document.getElementById('photo-sync-label').textContent = res.ok ? '✓ Photo sauvegardée sur Drive' : '✗ Erreur ' + res.status;
+    } catch(e) {
+      document.getElementById('photo-sync-label').textContent = '✗ Réseau indisponible';
+    }
+  }
+
+  
 
   let chartPoids = null, chartKcal = null;
 
@@ -1376,6 +1600,7 @@
 
     // Log table
     const tbody = document.getElementById('log-tbody');
+    const photos = getPhotos();
     const sorted = [...entries].reverse().slice(0,20);
     tbody.innerHTML = sorted.map((e,i) => {
       const prev = entries[entries.indexOf(e)-1];
@@ -1385,7 +1610,11 @@
         const cls = d > 0 ? 'delta-up' : d < 0 ? 'delta-down' : 'muted';
         deltaHtml = `<td class="${cls}">${d>0?'+':''}${d} kg</td>`;
       }
+      const photoHtml = photos[e.date]
+        ? `<td><img src="${photos[e.date]}" style="width:40px;height:40px;object-fit:cover;border-radius:6px;border:1px solid var(--border2);cursor:pointer;" onclick="openPhotoModal('${e.date}')" title="Voir la photo"></td>`
+        : `<td></td>`;
       return `<tr>
+        ${photoHtml}
         <td class="muted">${fmtDate(e.date)}</td>
         <td>${e.poids} kg</td>
         ${deltaHtml}
@@ -1400,7 +1629,13 @@
 <div id="suivi-overlay">
   <div class="suivi-header">
     <div class="suivi-title">SUIVI<br><span>POIDS & KCAL</span></div>
-    <button class="btn-back" onclick="closeSuivi()">← Retour</button>
+    <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
+      <button class="btn-back" onclick="closeSuivi()">← Retour</button>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span id="restore-label" style="font-family:'DM Mono',monospace; font-size:10px; color:var(--muted);"></span>
+        <button id="btn-restore" class="btn-back" style="font-size:10px; padding:5px 12px;" onclick="restoreFromSheets()">↓ Restaurer depuis Sheets</button>
+      </div>
+    </div>
   </div>
   <div class="suivi-main">
 
@@ -1421,6 +1656,16 @@
           <input id="inp-kcal" type="number" step="10" min="0" placeholder="450">
         </div>
         <button class="btn-save" onclick="saveEntry()">Enregistrer</button>
+        <button class="photo-btn" onclick="triggerPhoto()" title="Ajouter une photo">📷</button>
+        <input type="file" id="inp-photo" accept="image/*" capture="environment" style="display:none" onchange="onPhotoSelected(this)">
+      </div>
+      <div class="photo-preview" id="photo-preview">
+        <img id="photo-thumb" src="" alt="aperçu">
+        <div class="photo-preview-info">
+          <span id="photo-name"></span><br>
+          <span id="photo-sync-label">Prête à envoyer avec l'entrée</span>
+        </div>
+        <button class="photo-rm" onclick="removePhoto()">✕</button>
       </div>
       <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
         <div class="save-confirm" id="save-confirm">✓ Entrée enregistrée</div>
@@ -1467,7 +1712,7 @@
     <div class="entry-card">
       <div class="entry-card-title">Historique</div>
       <table class="log-table">
-        <thead><tr><th>Date</th><th>Poids</th><th>Δ</th><th>Kcal</th><th></th></tr></thead>
+        <thead><tr><th></th><th>Date</th><th>Poids</th><th>Δ</th><th>Kcal</th><th></th></tr></thead>
         <tbody id="log-tbody"></tbody>
       </table>
     </div>
@@ -1475,8 +1720,26 @@
   </div>
 </div>
 
+<!-- PHOTO MODAL -->
+<div id="photo-modal" onclick="closePhotoModal()">
+  <button id="photo-modal-close" onclick="closePhotoModal()">✕ Fermer</button>
+  <img id="photo-modal-img" src="" alt="photo">
+  <div id="photo-modal-date"></div>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
+  function openPhotoModal(date) {
+    const photos = getPhotos();
+    if (!photos[date]) return;
+    document.getElementById('photo-modal-img').src = photos[date];
+    document.getElementById('photo-modal-date').textContent = fmtDate(date);
+    document.getElementById('photo-modal').classList.add('open');
+  }
+  function closePhotoModal() {
+    document.getElementById('photo-modal').classList.remove('open');
+  }
+
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('./sw.js');
