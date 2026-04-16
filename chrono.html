@@ -469,30 +469,32 @@ const T = {
     thu_day_label: 'THU · HIIT',
     sat_day_label: 'SAT · HIIT',
   },
-  hu: {
-    back: 'Vissza', top_title: 'Időzítő',
-    choice_title: 'IDŐZÍTŐ', choice_sub: 'Válaszd ki az edzésedet',
-    thu_day: 'Csütörtök', thu_name: 'HIIT KARDIÓZÁS', thu_meta: '8 gyakorlat · 20mp munka / 10mp pihenő · 5 kör',
-    sat_day: 'Szombat', sat_name: 'HIIT + FENÉK', sat_meta: '3 gyakorlat · 45mp munka / 15mp pihenő · 5 kör',
-    exo_label: 'Gyakorlat', next_label: 'Következő →',
-    round_label: 'Kör', of_label: '/',
-    btn_start: 'INDÍTÁS', btn_pause: 'SZÜNET', btn_resume: 'FOLYTATÁS', btn_reset: 'Visszaállít',
-    phase_ready: 'KÉSZ', phase_work: 'MUNKA', phase_rest: 'PIHENŐ', phase_done: 'KÉSZ',
-    exo_list_label: 'Gyakorlatok',
-    finish_title: 'EDZÉS TELJESÍTVE!', finish_sub: 'Szuper munka 💪',
-    next_exo_prefix: 'Következő →',
-    thu_exos: ['Jumping jacks','Hegyimászó','Guggolóugrás','High knees','Módosított burpee','Hátralépős kitörések','Fekvőtámasz','Plank válltapogatás'],
-    sat_exos: ['Guggolóugrás','Burpee','Ugrókilépés'],
-    thu_day_label: 'CSÜ · HIIT',
-    sat_day_label: 'SZO · HIIT',
+  fr: {
+    back: 'Retour', top_title: 'Chrono',
+    choice_title: 'TIMER', choice_sub: 'Choisir la séance',
+    thu_day: 'Additionnel 1', thu_name: 'HIIT ADD. 1', thu_meta: '8 exercices · 20s travail / 10s repos · 5 rounds',
+    sat_day: 'Additionnel 2', sat_name: 'HIIT ADD. 2', sat_meta: '3 exercices · 45s travail / 15s repos · 5 rounds',
+    exo_label: 'Exercice', next_label: 'Suivant →',
+    round_label: 'Round', of_label: '/',
+    btn_start: 'DÉMARRER', btn_pause: 'PAUSE', btn_resume: 'REPRENDRE', btn_reset: 'Reset',
+    phase_ready: 'PRÊT', phase_work: 'TRAVAIL', phase_rest: 'REPOS', phase_done: 'TERMINÉ',
+    phase_round_rest: 'REPOS INTER-SÉRIE', next_round_prefix: 'Prochain →',
+    exo_list_label: 'Exercices',
+    finish_title: 'SÉANCE TERMINÉE !', finish_sub: 'Beau travail 💪',
+    next_exo_prefix: 'Suivant →',
+    thu_exos: ['Jumping jacks','Mountain climbers','Squat jumps','High knees','Modified burpees','Reverse lunges','Push-ups','Plank shoulder taps'],
+    sat_exos: ['Squat jumps','Burpees','Jump lunges'],
+    thu_day_label: 'HIIT ADDITIONNEL 1',
+    sat_day_label: 'HIIT ADDITIONNEL 2',
+    rc_sub: 'Repos inter-séries', rc_label: 'Temps de récupération entre les rounds', rc_seconds: 'secondes', rc_go: "C'EST PARTI →",
   }
 };
 
-let currentLang = 'en';
+let currentLang = 'fr';
 
 function setLang(lang) {
   currentLang = lang;
-  document.querySelectorAll('.lang-mini button').forEach(b => b.classList.toggle('active', b.textContent.toLowerCase() === lang));
+  document.querySelectorAll('.lang-mini button').forEach(b => b.classList.toggle('active', b.id === 'btn-' + lang));
   const d = T[lang];
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const k = el.getAttribute('data-i18n');
