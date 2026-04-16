@@ -16,7 +16,7 @@
     --lvl3:#c93a1f; --lvl3-bg:rgba(201,58,31,0.08);
   }
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-  body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; font-size:14px; line-height:1.6; min-height:100vh; padding:40px 24px 80px; }
+  body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; font-size:14px; line-height:1.6; min-height:100vh; padding:40px 24px 100px; }
   header { max-width:960px; margin:0 auto 48px; display:flex; align-items:flex-end; justify-content:space-between; border-bottom:1px solid var(--border2); padding-bottom:20px; }
   .header-title { font-family:'Bebas Neue',sans-serif; font-size:52px; letter-spacing:.04em; line-height:1; }
   .header-title span { color:var(--accent); }
@@ -69,6 +69,12 @@
   .main > *:nth-child(1){animation-delay:.05s} .main > *:nth-child(2){animation-delay:.1s}
   .main > *:nth-child(3){animation-delay:.15s} .main > *:nth-child(4){animation-delay:.2s}
   .main > *:nth-child(5){animation-delay:.25s}
+  .bottom-nav { position:fixed; bottom:0; left:0; right:0; background:var(--bg2); border-top:1px solid var(--border2); display:flex; z-index:50; padding-bottom:env(safe-area-inset-bottom); }
+  .nav-item { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:10px 4px 8px; text-decoration:none; color:var(--muted); font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.06em; text-transform:uppercase; gap:4px; cursor:pointer; transition:color .2s; border:none; background:none; -webkit-tap-highlight-color:transparent; }
+  .nav-item:hover { color:var(--text); }
+  .nav-item.active { color:var(--accent); }
+  .nav-item svg { width:20px; height:20px; stroke-width:1.5; fill:none; stroke:currentColor; }
+
   @media (max-width:640px) {
     body { padding:20px 14px 60px; }
     header { flex-direction:column; align-items:flex-start; gap:12px; margin-bottom:28px; }
@@ -353,5 +359,24 @@ function toggleExo(card) { card.classList.toggle('open'); }
 
 applyLang();
 </script>
+<nav class="bottom-nav">
+  <a class="nav-item" href="index.html">
+    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    Programme
+  </a>
+  <button class="nav-item active">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.5"/><path d="M12 7c-1 2-3 3.5-5 4m5-4c1 2 3 3.5 5 4M9.5 11l-2 6m7-6l2 6M10 14l4 0"/></svg>
+    Acro Yoga
+  </button>
+  <a class="nav-item" href="chrono.html">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="7"/><path d="M12 10v3l2 2"/><path d="M10 3h4M12 3v3"/></svg>
+    Chrono
+  </a>
+  <a class="nav-item" href="index.html#suivi">
+    <svg viewBox="0 0 24 24"><path d="M3 17l4-8 4 4 4-6 4 4"/></svg>
+    Suivi
+  </a>
+</nav>
+
 </body>
 </html>
