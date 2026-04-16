@@ -1617,6 +1617,7 @@
   }
 
   function openSuivi() {
+    window._logShowAll = false;
     document.getElementById('suivi-overlay').classList.add('open');
     renderSuivi();
     initDateInput();
@@ -1861,8 +1862,12 @@
     // Log table
     const tbody = document.getElementById('log-tbody');
     const photos = getPhotos();
-    const sorted = [...entries].reverse().slice(0,20);
-    tbody.innerHTML = sorted.map((e,i) => {
+    const sorted = [...entries].reverse();
+    const showAll = window._logShowAll || false;
+    const visible = showAll ? sorted : sorted.slice(0, 7);
+    const hidden = sorted.length - 7;
+
+    tbody.innerHTML = visible.map((e,i) => {
       const prev = entries[entries.indexOf(e)-1];
       let deltaHtml = '<td class="muted">—</td>';
       if (prev) {
@@ -1883,6 +1888,26 @@
         <td><button class="log-del" onclick="deleteEntry('${e.date}')">✕</button></td>
       </tr>`;
     }).join('');
+
+    // Bouton voir tout / réduire
+    const btnRow = document.getElementById('log-toggle-row');
+    if (btnRow) {
+      if (!showAll && hidden > 0) {
+        btnRow.innerHTML = `<td colspan="7" style="text-align:center; padding:12px 0;">
+          <button onclick="window._logShowAll=true; renderSuivi();" style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.08em; text-transform:uppercase; background:none; border:1px solid var(--border2); border-radius:6px; color:var(--muted); padding:7px 18px; cursor:pointer; transition:all .2s;" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--muted)'">
+            ↓ Voir ${hidden} entrée${hidden>1?'s':''} de plus
+          </button>
+        </td>`;
+      } else if (showAll && sorted.length > 7) {
+        btnRow.innerHTML = `<td colspan="7" style="text-align:center; padding:12px 0;">
+          <button onclick="window._logShowAll=false; renderSuivi();" style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.08em; text-transform:uppercase; background:none; border:1px solid var(--border2); border-radius:6px; color:var(--muted); padding:7px 18px; cursor:pointer; transition:all .2s;" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--muted)'">
+            ↑ Réduire
+          </button>
+        </td>`;
+      } else {
+        btnRow.innerHTML = '';
+      }
+    }
   }
 </script>
 
@@ -1995,6 +2020,7 @@
       <table class="log-table">
         <thead><tr><th></th><th>Date</th><th>Poids</th><th>Δ</th><th>Kcal</th><th>Activités</th><th></th></tr></thead>
         <tbody id="log-tbody"></tbody>
+        <tfoot><tr id="log-toggle-row"></tr></tfoot>
       </table>
     </div>
 
