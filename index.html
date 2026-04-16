@@ -379,6 +379,8 @@
   .extra-walk  { background: rgba(109,40,217,.08); color: #6d28d9; border: 1px solid rgba(109,40,217,.2); }
   .extra-rando { background: rgba(161,98,7,.1);   color: #a16207; border: 1px solid rgba(161,98,7,.25); }
   .extra-yoga  { background: rgba(190,24,93,.08);  color: #be185d; border: 1px solid rgba(190,24,93,.2); }
+  .extra-hiit  { background: var(--hiit-bg); color: var(--hiit); border: 1px solid rgba(201,58,31,.2); }
+  .extra-squash{ background: var(--squash-bg); color: var(--squash); border: 1px solid rgba(37,99,196,.2); }
   .day-card .day-badge.badge-yoga  { background: rgba(190,24,93,.08);  color: #be185d; border: 1px solid rgba(190,24,93,.2); }
   .day-card .day-badge.badge-rest  { background: rgba(100,100,90,.08); color: #5a5a50; border: 1px solid rgba(100,100,90,.2); }
   .day-card .day-badge.badge-walk  { background: rgba(109,40,217,.08); color: #6d28d9; border: 1px solid rgba(109,40,217,.2); }
@@ -850,10 +852,13 @@
       <div class="week-row week-row-top">
         <div class="day-card">
           <div class="day-name">Lun</div>
-          <div class="day-badge badge-hiit">HIIT</div>
+          <div class="day-badge badge-hiit" id="main-badge-lun">HIIT</div>
           <div class="extra-list" id="extra-lun"></div>
           <select class="day-select day-select-extra" onchange="addActivity('lun',this)">
             <option value="">+ activité</option>
+            <option value="repos">↩ Repos</option>
+            <option value="default">↺ Défaut</option>
+            <option value="squash">Squash</option>
             <option value="run">Run</option>
             <option value="bike">Bike</option>
             <option value="walk">Marche</option>
@@ -863,10 +868,13 @@
         </div>
         <div class="day-card">
           <div class="day-name">Mar</div>
-          <div class="day-badge badge-squash">Squash</div>
+          <div class="day-badge badge-squash" id="main-badge-mar">Squash</div>
           <div class="extra-list" id="extra-mar"></div>
           <select class="day-select day-select-extra" onchange="addActivity('mar',this)">
             <option value="">+ activité</option>
+            <option value="repos">↩ Repos</option>
+            <option value="default">↺ Défaut</option>
+            <option value="hiit">HIIT</option>
             <option value="run">Run</option>
             <option value="bike">Bike</option>
             <option value="walk">Marche</option>
@@ -876,10 +884,13 @@
         </div>
         <div class="day-card">
           <div class="day-name">Mer</div>
-          <div class="day-badge badge-hiit">HIIT</div>
+          <div class="day-badge badge-hiit" id="main-badge-mer">HIIT</div>
           <div class="extra-list" id="extra-mer"></div>
           <select class="day-select day-select-extra" onchange="addActivity('mer',this)">
             <option value="">+ activité</option>
+            <option value="repos">↩ Repos</option>
+            <option value="default">↺ Défaut</option>
+            <option value="squash">Squash</option>
             <option value="run">Run</option>
             <option value="bike">Bike</option>
             <option value="walk">Marche</option>
@@ -889,10 +900,13 @@
         </div>
         <div class="day-card">
           <div class="day-name">Jeu</div>
-          <div class="day-badge badge-squash">Squash</div>
+          <div class="day-badge badge-squash" id="main-badge-jeu">Squash</div>
           <div class="extra-list" id="extra-jeu"></div>
           <select class="day-select day-select-extra" onchange="addActivity('jeu',this)">
             <option value="">+ activité</option>
+            <option value="repos">↩ Repos</option>
+            <option value="default">↺ Défaut</option>
+            <option value="hiit">HIIT</option>
             <option value="run">Run</option>
             <option value="bike">Bike</option>
             <option value="walk">Marche</option>
@@ -904,10 +918,13 @@
       <div class="week-row week-row-bot">
         <div class="day-card">
           <div class="day-name">Ven</div>
-          <div class="day-badge badge-hiit">HIIT</div>
+          <div class="day-badge badge-hiit" id="main-badge-ven">HIIT</div>
           <div class="extra-list" id="extra-ven"></div>
           <select class="day-select day-select-extra" onchange="addActivity('ven',this)">
             <option value="">+ activité</option>
+            <option value="repos">↩ Repos</option>
+            <option value="default">↺ Défaut</option>
+            <option value="squash">Squash</option>
             <option value="run">Run</option>
             <option value="bike">Bike</option>
             <option value="walk">Marche</option>
@@ -1134,6 +1151,8 @@
 
 <script>
   const dayConfig = {
+    hiit:  { cls: 'badge-hiit',  label: 'HIIT' },
+    squash:{ cls: 'badge-squash',label: 'Squash' },
     ride:  { cls: 'badge-ride',  label: 'Run / Bike' },
     run:   { cls: 'badge-ride',  label: 'Run' },
     bike:  { cls: 'badge-ride',  label: 'Bike' },
@@ -1143,11 +1162,19 @@
     yoga:  { cls: 'badge-yoga',  label: 'Yoga' }
   };
   const extraConfig = {
+    hiit:  { cls: 'extra-hiit',  label: 'HIIT' },
+    squash:{ cls: 'extra-squash',label: 'Squash' },
     run:   { cls: 'extra-ride',  label: 'Run' },
     bike:  { cls: 'extra-ride',  label: 'Bike' },
     walk:  { cls: 'extra-walk',  label: 'Marche' },
     rando: { cls: 'extra-rando', label: 'Rando' },
     yoga:  { cls: 'extra-yoga',  label: 'Yoga' }
+  };
+
+  // Activités par défaut pour chaque jour (programme Bratislava)
+  const DEFAULT_ACTIVITIES = {
+    lun: ['hiit'], mar: ['squash'], mer: ['hiit'],
+    jeu: ['squash'], ven: ['hiit'], sam: [], dim: []
   };
 
   const weekendDays = ['sam', 'dim'];
@@ -1166,14 +1193,13 @@
   function loadPlanning() {
     try {
       const raw = JSON.parse(localStorage.getItem(PLANNING_KEY));
-      if (!raw) return {};
-      // Si la semaine stockée ≠ semaine actuelle → reset
+      if (!raw) return JSON.parse(JSON.stringify(DEFAULT_ACTIVITIES));
       if (raw.week !== getISOWeekStr()) {
         localStorage.removeItem(PLANNING_KEY);
-        return {};
+        return JSON.parse(JSON.stringify(DEFAULT_ACTIVITIES));
       }
-      return raw.activities || {};
-    } catch(e) { return {}; }
+      return raw.activities || JSON.parse(JSON.stringify(DEFAULT_ACTIVITIES));
+    } catch(e) { return JSON.parse(JSON.stringify(DEFAULT_ACTIVITIES)); }
   }
 
   function savePlanning() {
@@ -1191,9 +1217,16 @@
     const val = sel.value;
     sel.value = '';
 
-    // Option "repos" sur Sam/Dim → reset complet
+    // Option "repos" → reset complet
     if (val === 'repos') {
       dayActivities[day] = [];
+      savePlanning();
+      renderDay(day);
+      return;
+    }
+    // Option "défaut" → restaurer les activités par défaut
+    if (val === 'default') {
+      dayActivities[day] = [...(DEFAULT_ACTIVITIES[day] || [])];
       savePlanning();
       renderDay(day);
       return;
@@ -1230,7 +1263,22 @@
         list.innerHTML = '';
       }
     } else {
-      list.innerHTML = acts.map(v => extraItem(day, v)).join('');
+      // Jours de semaine : tout est dans extra-list, badge principal statique remplacé
+      const mainBadge = document.getElementById('main-badge-' + day);
+      if (mainBadge) {
+        if (acts.length > 0) {
+          const cfg = dayConfig[acts[0]];
+          mainBadge.className = 'day-badge ' + cfg.cls;
+          mainBadge.innerHTML = cfg.label + ` <button class="rm" style="color:inherit;opacity:.6;font-size:9px;" onclick="removeActivity('${day}','${acts[0]}')">✕</button>`;
+          list.innerHTML = acts.slice(1).map(v => extraItem(day, v)).join('');
+        } else {
+          mainBadge.className = 'day-badge badge-rest';
+          mainBadge.innerHTML = 'Repos';
+          list.innerHTML = '';
+        }
+      } else {
+        list.innerHTML = acts.map(v => extraItem(day, v)).join('');
+      }
     }
   }
 
@@ -1247,6 +1295,14 @@
     ALL_DAYS.forEach(day => renderDay(day));
   }
   initPlanning();
+
+  // Retourne les activités du jour courant sous forme de string "HIIT, Run"
+  function getTodayActivities() {
+    const dayNames = ['dim','lun','mar','mer','jeu','ven','sam'];
+    const today = dayNames[new Date().getDay()];
+    const acts = dayActivities[today] || [];
+    return acts.map(v => extraConfig[v] ? extraConfig[v].label : v).join(', ');
+  }
 
   // ── SUIVI ──────────────────────────────────────────────────────────
   const STORAGE_KEY = 'fab_suivi_v1';
@@ -1440,14 +1496,16 @@
     const idx = entries.findIndex(e => e.date === dateVal);
 
     let entry;
+    const todayActivities = getTodayActivities();
     if (idx >= 0) {
       // Entrée existante → merge : on écrase seulement les champs remplis
       entry = { ...entries[idx] };
       if (poids) entry.poids = poids;
       if (kcal)  entry.kcal  = kcal;
+      if (todayActivities) entry.activites = todayActivities;
       entries[idx] = entry;
     } else {
-      entry = { date: dateVal, poids: poids || null, kcal: kcal || null };
+      entry = { date: dateVal, poids: poids || null, kcal: kcal || null, activites: todayActivities || null };
       entries.push(entry);
     }
 
@@ -1461,8 +1519,8 @@
     setTimeout(() => conf.classList.remove('show'), 2000);
     renderSuivi();
     updateHeader();
-    // Sync Make — envoie l'entrée mergée complète
-    syncToMake({ action: 'upsert', date: dateVal, poids: entry.poids, kcal: entry.kcal });
+    // Sync Make — envoie l'entrée mergée complète + activités du jour
+    syncToMake({ action: 'upsert', date: dateVal, poids: entry.poids, kcal: entry.kcal, activites: entry.activites });
     // Photo
     if (currentPhotoBase64) {
       const photos = getPhotos();
@@ -1655,9 +1713,10 @@
       return `<tr>
         ${photoHtml}
         <td class="muted">${fmtDate(e.date)}</td>
-        <td>${e.poids} kg</td>
+        <td>${e.poids ? e.poids + ' kg' : '<span style="color:var(--dim)">—</span>'}</td>
         ${deltaHtml}
         <td class="muted">${e.kcal ? e.kcal+' kcal' : '—'}</td>
+        <td class="muted" style="font-size:10px;">${e.activites || '—'}</td>
         <td><button class="log-del" onclick="deleteEntry('${e.date}')">✕</button></td>
       </tr>`;
     }).join('');
@@ -1751,7 +1810,7 @@
     <div class="entry-card">
       <div class="entry-card-title">Historique</div>
       <table class="log-table">
-        <thead><tr><th></th><th>Date</th><th>Poids</th><th>Δ</th><th>Kcal</th><th></th></tr></thead>
+        <thead><tr><th></th><th>Date</th><th>Poids</th><th>Δ</th><th>Kcal</th><th>Activités</th><th></th></tr></thead>
         <tbody id="log-tbody"></tbody>
       </table>
     </div>
