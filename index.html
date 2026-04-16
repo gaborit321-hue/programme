@@ -1350,12 +1350,35 @@
       const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/)[1]);
       const rows = json.table.rows;
       const entries = rows
-        .map(r => ({
-          date:  r.c[0] && r.c[0].v ? r.c[0].v.toString().trim() : null,
-          poids: r.c[1] && r.c[1].v ? parseFloat(r.c[1].v) : null,
-          kcal:  r.c[2] && r.c[2].v ? parseInt(r.c[2].v) : null
-        }))
+        .map(r => {
+          let date = null;
+          if (r.c[0] && r.c[0].v) {
+            const v = r.c[0].v.toString().trim();
+            const mGviz = v.match(/Date\((\d+),(\d+),(\d+)\)/);
+            const mFr   = v.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+            const mIso  = v.match(/^(\d{4}-\d{2}-\d{2})/);
+            if (mGviz) {
+              date = mGviz[1] + '-' + String(parseInt(mGviz[2])+1).padStart(2,'0') + '-' + String(mGviz[3]).padStart(2,'0');
+            } else if (mFr) {
+              // DD/MM/YYYY → YYYY-MM-DD
+              date = mFr[3] + '-' + mFr[2] + '-' + mFr[1];
+            } else if (mIso) {
+              date = mIso[1];
+            }
+          }
+          return {
+            date,
+            poids: r.c[1] && r.c[1].v ? parseFloat(r.c[1].v) : null,
+            kcal:  r.c[2] && r.c[2].v ? parseInt(r.c[2].v) : null
+          };
+        })
         .filter(r => r.date && !isNaN(r.poids) && r.poids > 0)
+        .reduce((acc, r) => {
+          // garder la dernière entrée par date
+          const idx = acc.findIndex(e => e.date === r.date);
+          if (idx >= 0) acc[idx] = r; else acc.push(r);
+          return acc;
+        }, [])
         .sort((a,b) => a.date.localeCompare(b.date));
       saveEntries(entries);
       renderSuivi();
@@ -1404,14 +1427,30 @@
 
   function saveEntry() {
     const dateVal = document.getElementById('inp-date').value || todayStr();
-    const poids = parseFloat(document.getElementById('inp-poids').value);
-    const kcal  = parseInt(document.getElementById('inp-kcal').value) || null;
-    if (!poids || poids < 30 || poids > 300) return;
+    const poidsVal = document.getElementById('inp-poids').value;
+    const kcalVal  = document.getElementById('inp-kcal').value;
+    const poids = poidsVal ? parseFloat(poidsVal) : null;
+    const kcal  = kcalVal  ? parseInt(kcalVal)    : null;
+
+    // Au moins un des deux doit être rempli
+    if (!poids && !kcal) return;
+    if (poids && (poids < 30 || poids > 300)) return;
+
     const entries = getEntries();
     const idx = entries.findIndex(e => e.date === dateVal);
-    const entry = { date: dateVal, poids, kcal };
-    if (idx >= 0) entries[idx] = entry;
-    else entries.push(entry);
+
+    let entry;
+    if (idx >= 0) {
+      // Entrée existante → merge : on écrase seulement les champs remplis
+      entry = { ...entries[idx] };
+      if (poids) entry.poids = poids;
+      if (kcal)  entry.kcal  = kcal;
+      entries[idx] = entry;
+    } else {
+      entry = { date: dateVal, poids: poids || null, kcal: kcal || null };
+      entries.push(entry);
+    }
+
     entries.sort((a,b) => a.date.localeCompare(b.date));
     saveEntries(entries);
     document.getElementById('inp-poids').value = '';
@@ -1422,15 +1461,14 @@
     setTimeout(() => conf.classList.remove('show'), 2000);
     renderSuivi();
     updateHeader();
-    // Sync Make
-    syncToMake({ action: 'upsert', date: dateVal, poids, kcal });
-    // Photo : stockage local + sync Make
+    // Sync Make — envoie l'entrée mergée complète
+    syncToMake({ action: 'upsert', date: dateVal, poids: entry.poids, kcal: entry.kcal });
+    // Photo
     if (currentPhotoBase64) {
       const photos = getPhotos();
       photos[dateVal] = currentPhotoBase64;
       savePhotos(photos);
       syncPhotoToMake(dateVal, currentPhotoBase64);
-      // Ne pas reset l'aperçu tout de suite (le label de sync s'affiche)
       setTimeout(() => removePhoto(), 3000);
     }
   }
@@ -1649,11 +1687,11 @@
           <input id="inp-date" type="date">
         </div>
         <div class="entry-field">
-          <label>Poids (kg)</label>
+          <label>Poids (kg) — optionnel</label>
           <input id="inp-poids" type="number" step="0.1" min="30" max="300" placeholder="75.4">
         </div>
         <div class="entry-field">
-          <label>Kcal dépensées</label>
+          <label>Kcal dépensées — optionnel</label>
           <input id="inp-kcal" type="number" step="10" min="0" placeholder="450">
         </div>
         <button class="btn-save" onclick="saveEntry()">Enregistrer</button>
