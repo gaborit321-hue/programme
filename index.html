@@ -566,9 +566,9 @@
     position: fixed;
     inset: 0;
     background: var(--bg);
-    z-index: 100;
+    z-index: 60;
     overflow-y: auto;
-    padding: 40px 24px 80px;
+    padding: 40px 24px 100px;
     animation: fadeUp .3s ease both;
   }
   #suivi-overlay.open { display: block; }
@@ -852,7 +852,7 @@
     .tip-num { font-size: 24px; }
 
     /* SUIVI */
-    #suivi-overlay { padding: 20px 14px 60px; }
+    #suivi-overlay { padding: 20px 14px 90px; }
     .suivi-header { margin-bottom: 24px; }
     .suivi-title { font-size: 30px; }
     .entry-card { padding: 16px; }
@@ -1619,6 +1619,7 @@
   function openSuivi() {
     window._logShowAll = false;
     document.getElementById('suivi-overlay').classList.add('open');
+    document.getElementById('suivi-nav').style.display = 'flex';
     renderSuivi();
     initDateInput();
     setSyncStatus('', 'Make connecté');
@@ -1626,6 +1627,7 @@
   }
   function closeSuivi() {
     document.getElementById('suivi-overlay').classList.remove('open');
+    document.getElementById('suivi-nav').style.display = 'none';
     updateHeader();
   }
 
@@ -2027,7 +2029,26 @@
   </div>
 </div>
 
-<!-- PHOTO MODAL -->
+<!-- NAV SUIVI (fixe, hors overlay) -->
+<nav class="bottom-nav" id="suivi-nav" style="display:none; z-index:70;">
+  <a class="nav-item" href="index.html" onclick="closeSuivi(); return false;">
+    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    Programme
+  </a>
+  <a class="nav-item" href="acroyoga.html">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.5"/><path d="M12 7c-1 2-3 3.5-5 4m5-4c1 2 3 3.5 5 4M9.5 11l-2 6m7-6l2 6M10 14l4 0"/></svg>
+    Acro Yoga
+  </a>
+  <a class="nav-item" href="chrono.html">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="7"/><path d="M12 10v3l2 2"/><path d="M10 3h4M12 3v3"/></svg>
+    Chrono
+  </a>
+  <button class="nav-item active">
+    <svg viewBox="0 0 24 24"><path d="M3 17l4-8 4 4 4-6 4 4"/></svg>
+    Suivi
+  </button>
+</nav>
+
 <input type="file" id="inp-photo-history" accept="image/*" capture="environment" style="display:none" onchange="onHistoryPhotoSelected(this)">
 <div id="photo-modal" onclick="closePhotoModal()">
   <button id="photo-modal-close" onclick="closePhotoModal()">✕ Fermer</button>
