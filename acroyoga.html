@@ -16,8 +16,9 @@
     --lvl3:#c93a1f; --lvl3-bg:rgba(201,58,31,0.08);
   }
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-  body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; font-size:14px; line-height:1.6; min-height:100vh; padding:24px 24px 100px; }
-  header { max-width:960px; margin:0 auto 48px; display:flex; align-items:flex-end; justify-content:space-between; border-bottom:1px solid var(--border2); padding-bottom:20px; }
+  body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; font-size:14px; line-height:1.6; min-height:100vh; padding:0 0 100px; }
+  .top-bar { background:var(--bg2); border-bottom:1px solid var(--border2); display:flex; align-items:center; justify-content:space-between; padding:10px 20px; }
+  .main { padding:0 24px; max-width:960px; margin:0 auto; display:flex; flex-direction:column; gap:40px; }
   .header-title { font-family:'Bebas Neue',sans-serif; font-size:52px; letter-spacing:.04em; line-height:1; }
   .header-title span { color:var(--accent); }
   .header-sub { font-family:'DM Mono',monospace; font-size:11px; color:var(--muted); letter-spacing:.08em; text-transform:uppercase; line-height:1.8; }
@@ -75,27 +76,32 @@
   .nav-item.active { color:var(--accent); }
   .nav-item svg { width:20px; height:20px; stroke-width:1.5; fill:none; stroke:currentColor; }
 
+  .top-bar { background:var(--bg2); border-bottom:1px solid var(--border2); display:flex; align-items:center; justify-content:space-between; padding:10px 20px; }
+  .top-title { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+  .lang-mini { display:flex; gap:4px; }
+  .lang-mini button { font-family:'DM Mono',monospace; font-size:9px; font-weight:600; letter-spacing:.08em; background:none; border:1px solid var(--border2); border-radius:4px; color:var(--muted); padding:3px 8px; cursor:pointer; transition:all .18s; }
+  .lang-mini button.active { background:rgba(14,122,138,.1); border-color:rgba(14,122,138,.3); color:#0e7a8a; }
+
   @media (max-width:640px) {
-    body { padding:20px 14px 60px; }
-    header { flex-direction:column; align-items:flex-start; gap:12px; margin-bottom:28px; }
+    .main { padding:0 14px; }
     .header-title { font-size:38px; }
-    .header-actions { justify-content:flex-start; }
     .roles-grid { grid-template-columns:1fr; }
     .exo-header { grid-template-columns:auto 1fr auto; gap:10px; }
   }
 </style>
 </head>
 <body>
-<header style="background:var(--bg2); border-bottom:1px solid var(--border2); display:flex; align-items:center; justify-content:space-between; padding:10px 20px; margin:0 0 0 0; max-width:none;">
+<div class="top-bar">
   <span style="width:44px;"></span>
-  <span style="font-family:'DM Mono',monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted);">Acro Yoga</span>
-  <div style="display:flex; gap:4px;">
-    <button id="btn-fr" onclick="setLang('fr')" style="font-family:'DM Mono',monospace; font-size:9px; font-weight:600; letter-spacing:.08em; background:var(--accent-bg); border:1px solid var(--accent-border); border-radius:4px; color:var(--accent); padding:3px 8px; cursor:pointer; transition:all .18s;">FR</button>
-    <button id="btn-en" onclick="setLang('en')" style="font-family:'DM Mono',monospace; font-size:9px; font-weight:600; letter-spacing:.08em; background:none; border:1px solid var(--border2); border-radius:4px; color:var(--muted); padding:3px 8px; cursor:pointer; transition:all .18s;">EN</button>
+  <span class="top-title">Acro Yoga</span>
+  <div class="lang-mini">
+    <button onclick="setLang('fr')" id="btn-fr" class="active">FR</button>
+    <button onclick="setLang('en')" id="btn-en">EN</button>
   </div>
-</header>
+</div>
 
-<div style="max-width:960px; margin:32px auto 40px; padding:0 24px; display:flex; align-items:flex-end; justify-content:space-between; border-bottom:1px solid var(--border2); padding-bottom:20px;">
+<div class="main">
+<div style="max-width:960px; margin:32px auto 40px; display:flex; align-items:flex-end; justify-content:space-between; border-bottom:1px solid var(--border2); padding-bottom:20px;">
   <div class="header-title">ACRO<br><span>YOGA</span></div>
   <div class="header-sub" style="text-align:right;">
     Fab &amp; Rita<br>
@@ -103,8 +109,6 @@
     <span data-fr="Force · Équilibre · Confiance" data-en="Strength · Balance · Trust"></span>
   </div>
 </div>
-
-<div class="main">
   <section>
     <div class="intro-card" data-fr="&lt;strong&gt;Avant de commencer :&lt;/strong&gt; l'acro yoga repose sur la confiance mutuelle. Commencez toujours par l'échauffement, communiquez pendant chaque figure, et ne forcez jamais une position. Le &lt;strong&gt;flyer&lt;/strong&gt; (en l'air) fait confiance à la solidité de la base, la &lt;strong&gt;base&lt;/strong&gt; (au sol) porte et guide." data-en="&lt;strong&gt;Before you start:&lt;/strong&gt; acroyoga is built on mutual trust. Always begin with a warm-up, communicate throughout each pose, and never force a position. The &lt;strong&gt;flyer&lt;/strong&gt; (in the air) trusts the base's stability; the &lt;strong&gt;base&lt;/strong&gt; (on the ground) supports and guides."></div>
   </section>
@@ -347,14 +351,9 @@ function applyLang() {
     if (val !== null) el.innerHTML = val;
   });
   // Update button active states
-  const btnFr = document.getElementById('btn-fr');
-  const btnEn = document.getElementById('btn-en');
-  if (btnFr && btnEn) {
-    const activeStyle = 'font-family:\'DM Mono\',monospace;font-size:9px;font-weight:600;letter-spacing:.08em;background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:4px;color:var(--accent);padding:3px 8px;cursor:pointer;';
-    const inactiveStyle = 'font-family:\'DM Mono\',monospace;font-size:9px;font-weight:600;letter-spacing:.08em;background:none;border:1px solid var(--border2);border-radius:4px;color:var(--muted);padding:3px 8px;cursor:pointer;';
-    btnFr.style.cssText = lang === 'fr' ? activeStyle : inactiveStyle;
-    btnEn.style.cssText = lang === 'en' ? activeStyle : inactiveStyle;
-  }
+  document.querySelectorAll('.lang-mini button').forEach(b => {
+    b.classList.toggle('active', b.id === 'btn-' + lang);
+  });
   document.documentElement.lang = lang;
   renderExercises();
   renderSession();
