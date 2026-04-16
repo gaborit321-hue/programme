@@ -647,13 +647,17 @@ function renderExoList() {
   const exos = getExos();
   const list = document.getElementById('exo-list');
   const isYellow = sessionKey === 'sat';
-  list.innerHTML = exos.map((name, i) => `
-    <div class="exo-item ${i === currentExoIndex && currentPhase === 'work' ? 'active-exo' + (isYellow ? ' yellow' : '') : ''} ${i < currentExoIndex || (currentPhase !== 'ready' && i < currentExoIndex) ? 'completed' : ''}" id="exo-item-${i}">
+  list.innerHTML = exos.map((name, i) => {
+    const isCompleted = i < currentExoIndex
+      || (i === currentExoIndex && (currentPhase === 'rest' || currentPhase === 'roundRest'))
+      || (currentPhase === 'done');
+    const isActive = i === currentExoIndex && currentPhase === 'work';
+    return `<div class="exo-item ${isActive ? 'active-exo' + (isYellow ? ' yellow' : '') : ''} ${isCompleted ? 'completed' : ''}" id="exo-item-${i}">
       <div class="exo-num">${i+1}</div>
       <div class="exo-item-name">${name}</div>
       <div class="exo-item-done">✓</div>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 }
 
 function renderRoundDots() {
