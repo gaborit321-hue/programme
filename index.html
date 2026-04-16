@@ -99,71 +99,137 @@
     background: var(--border);
   }
 
-  /* WEEK GRID */
-  .week-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .week-row {
-    display: grid;
-    gap: 8px;
-  }
+  /* WEEK GRID — Option 3 : cards colorées */
+  .week-grid { display: flex; flex-direction: column; gap: 8px; }
+  .week-row { display: grid; gap: 8px; }
   .week-row-top  { grid-template-columns: repeat(4, 1fr); }
   .week-row-bot  { grid-template-columns: repeat(3, 1fr); width: 75%; margin: 0 auto; }
+
   .day-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 12px 8px;
+    border-radius: 12px;
+    padding: 10px 8px;
     text-align: center;
-    transition: border-color .2s;
+    transition: border-color .2s, transform .15s;
+    position: relative;
   }
-  .day-card:hover { border-color: var(--border2); }
+  .day-card:active { transform: scale(.97); }
+
+  /* Couleur de fond par type d'activité */
+  .day-card.card-hiit   { background: rgba(201,58,31,.08);  border: 1px solid rgba(201,58,31,.2); }
+  .day-card.card-squash { background: rgba(37,99,196,.08);  border: 1px solid rgba(37,99,196,.2); }
+  .day-card.card-ride   { background: rgba(26,158,74,.08);  border: 1px solid rgba(26,158,74,.2); }
+  .day-card.card-walk   { background: rgba(109,40,217,.06); border: 1px solid rgba(109,40,217,.18); }
+  .day-card.card-rando  { background: rgba(161,98,7,.07);   border: 1px solid rgba(161,98,7,.2); }
+  .day-card.card-yoga   { background: rgba(190,24,93,.06);  border: 1px solid rgba(190,24,93,.18); }
+  .day-card.card-rest   { background: var(--bg2);           border: 1px solid var(--border); }
+
+  /* Jour actuel — bordure accentuée */
+  .day-card.today { box-shadow: 0 0 0 2px var(--accent); border-color: var(--accent); }
+
   .day-name {
     font-family: 'DM Mono', monospace;
-    font-size: 10px;
+    font-size: 9px;
     letter-spacing: .1em;
     text-transform: uppercase;
     color: var(--muted);
-    margin-bottom: 10px;
+    margin-bottom: 6px;
   }
+  .day-name.today-label { color: var(--accent); font-weight: 600; }
+
   .day-badge {
     display: inline-block;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 600;
-    padding: 5px 8px;
+    padding: 4px 6px;
     border-radius: 6px;
     letter-spacing: .02em;
     width: 100%;
     line-height: 1.3;
   }
-  .badge-hiit { background: var(--hiit-bg); color: var(--hiit); border: 1px solid rgba(229,69,42,.2); }
-  .badge-squash { background: var(--squash-bg); color: var(--squash); border: 1px solid rgba(59,130,246,.2); }
-  .badge-ride { background: var(--ride-bg); color: var(--ride); border: 1px solid rgba(34,197,94,.2); }
-  .day-note {
-    font-size: 10px;
-    color: var(--muted);
-    margin-top: 6px;
-    line-height: 1.4;
-  }
+  .badge-hiit   { background: rgba(201,58,31,.15);  color: var(--hiit);   border: 1px solid rgba(229,69,42,.25); }
+  .badge-squash { background: rgba(37,99,196,.15);  color: var(--squash); border: 1px solid rgba(59,130,246,.25); }
+  .badge-ride   { background: rgba(26,158,74,.15);  color: var(--ride);   border: 1px solid rgba(34,197,94,.25); }
+  .day-note { font-size: 10px; color: var(--muted); margin-top: 6px; line-height: 1.4; }
 
-  /* HIIT BLOCKS */
-  .hiit-grid { display: flex; flex-direction: column; gap: 8px; }
-
+  /* HIIT ACCORDION */
+  .hiit-grid { display: flex; flex-direction: column; gap: 6px; }
   .hiit-row {
     background: var(--bg2);
     border: 1px solid var(--border);
     border-radius: 10px;
-    padding: 14px 18px;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    align-items: center;
-    gap: 16px;
+    overflow: hidden;
     transition: border-color .2s;
+    cursor: pointer;
   }
   .hiit-row:hover { border-color: var(--border2); }
   .hiit-row.alt-week { border-left: 3px solid var(--accent); }
+  .hiit-row-header {
+    padding: 12px 18px;
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    gap: 12px;
+  }
+  .hiit-row-body {
+    display: none;
+    padding: 0 18px 12px;
+    border-top: 1px solid var(--border);
+  }
+  .hiit-row.open .hiit-row-body { display: block; }
+  .hiit-chevron { font-size: 10px; color: var(--dim); transition: transform .2s; }
+  .hiit-row.open .hiit-chevron { transform: rotate(180deg); }
+  .hiit-detail { font-size: 12px; color: var(--muted); line-height: 1.7; padding-top: 10px; }
+
+  /* MEAL ACCORDION */
+  .meal-list { display: flex; flex-direction: column; gap: 6px; }
+  .meal-row {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: border-color .2s;
+  }
+  .meal-row-header {
+    padding: 12px 18px;
+    display: grid;
+    grid-template-columns: 80px 1fr auto;
+    gap: 16px;
+    align-items: center;
+    cursor: pointer;
+  }
+  .meal-row-header:hover { }
+  .meal-row:hover { border-color: var(--border2); }
+  .meal-row.post-hiit {
+    border-color: rgba(229,69,42,.3);
+    background: rgba(229,69,42,.05);
+  }
+  .meal-row-body {
+    display: none;
+    padding: 0 18px 14px;
+    border-top: 1px solid var(--border);
+  }
+  .meal-row.open .meal-row-body { display: block; }
+  .meal-chevron { font-size: 10px; color: var(--dim); transition: transform .2s; }
+  .meal-row.open .meal-chevron { transform: rotate(180deg); }
+  .meal-body-content { font-size: 13px; color: var(--text); line-height: 1.8; padding-top: 10px; }
+
+  .meal-time {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .meal-time .label {
+    display: block;
+    font-size: 10px;
+    color: var(--dim);
+    margin-top: 2px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+  }
+  .meal-summary { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .meal-content { font-size: 13px; color: var(--text); line-height: 1.8; }
 
   .exo-name {
     font-size: 13px;
@@ -195,41 +261,7 @@
     text-align: right;
   }
 
-  /* NUTRITION */
-  .meal-list { display: flex; flex-direction: column; gap: 8px; }
-  .meal-row {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 14px 18px;
-    display: grid;
-    grid-template-columns: 80px 1fr;
-    gap: 16px;
-    align-items: start;
-    transition: border-color .2s;
-  }
-  .meal-row:hover { border-color: var(--border2); }
-  .meal-row.post-hiit {
-    border-color: rgba(229,69,42,.3);
-    background: rgba(229,69,42,.05);
-  }
-  .meal-time {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--muted);
-    padding-top: 2px;
-    line-height: 1.5;
-  }
-  .meal-time .label {
-    display: block;
-    font-size: 10px;
-    color: var(--dim);
-    margin-top: 2px;
-    letter-spacing: .06em;
-    text-transform: uppercase;
-  }
-  .meal-content { font-size: 13px; color: var(--text); line-height: 1.8; }
+  /* NUTRITION TAGS */
   .tag {
     display: inline-block;
     font-family: 'DM Mono', monospace;
@@ -762,71 +794,23 @@
     .header-sub { text-align: left; }
     .header-sub:last-child { align-self: flex-end; text-align: right; }
 
-    /* WEEK GRID — liste compacte sur mobile */
+    /* WEEK GRID mobile — option 3 garde la grille */
     .week-grid { gap: 6px; }
     .week-row-top,
     .week-row-bot {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-      grid-template-columns: unset;
-      width: 100% !important;
+      gap: 6px;
     }
-    .day-card {
-      display: grid;
-      grid-template-columns: 40px 1fr auto;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 12px;
-      text-align: left;
-      border-radius: 8px;
-    }
-    .day-name {
-      font-size: 10px;
-      margin-bottom: 0;
-      text-align: center;
-    }
-    .day-badge {
-      font-size: 11px;
-      padding: 4px 8px;
-      width: auto;
-    }
-    .extra-list {
-      grid-column: 2;
-      margin-top: 0;
-      flex-direction: row;
-      flex-wrap: wrap;
-      gap: 3px;
-    }
-    .day-select {
-      font-size: 9px;
-      padding: 4px 6px;
-      margin-top: 0;
-      width: auto;
-      grid-column: 3;
-    }
-    /* réorganisation des éléments dans la card mobile */
-    .day-card > .day-badge { grid-column: 2; grid-row: 1; }
-    .day-card > .extra-list { grid-column: 2; grid-row: 2; }
-    .day-card > .day-select { grid-column: 3; grid-row: 1 / 3; align-self: center; }
+    .day-card { padding: 8px 6px; }
+    .day-badge { font-size: 9px; padding: 3px 4px; }
 
-    /* HIIT */
-    .hiit-row { padding: 12px 14px; gap: 10px; }
+    /* HIIT + MEAL mobile */
+    .hiit-row-header { padding: 10px 14px; gap: 8px; }
     .exo-name { font-size: 12px; }
-    .exo-sub { font-size: 11px; }
     .sets-badge { font-size: 17px; min-width: 32px; }
-
-    /* HIIT section label — wrap gracefully */
-    #hiit-section-label { flex-wrap: wrap; gap: 4px; }
-
-    /* PLAN JOURNALIER */
-    .meal-row {
-      grid-template-columns: 64px 1fr;
-      gap: 10px;
-      padding: 12px 14px;
-    }
+    .meal-row-header { grid-template-columns: 60px 1fr auto; gap: 10px; padding: 10px 14px; }
     .meal-time { font-size: 10px; }
-    .meal-content { font-size: 12px; }
+    .meal-summary { font-size: 11px; }
+    .meal-body-content { font-size: 12px; }
     .meal-warn { font-size: 10px; }
 
     /* TIPS */
@@ -1003,84 +987,108 @@
     <div class="section-label" id="hiit-section-label">Séances HIIT — structure des exercices</div>
     <div class="hiit-grid">
 
-      <div class="hiit-row alt-week sem-a">
-        <div>
-          <div class="exo-name">
-            <span class="week-pill">SEM A</span>25 Pompes lestées + Squats parallèles
+      <div class="hiit-row alt-week sem-a" onclick="toggleHiit(this)">
+        <div class="hiit-row-header">
+          <div>
+            <div class="exo-name"><span class="week-pill">SEM A</span>Pompes lestées + Squats parallèles</div>
           </div>
-          <div class="exo-sub">Gilet lesté · 1 min repos · si genoux au sol → garder le même poids</div>
+          <div class="sets-badge">×6</div>
+          <span class="hiit-chevron">▼</span>
         </div>
-        <div class="sets-badge">×6</div>
+        <div class="hiit-row-body">
+          <div class="hiit-detail">25 pompes lestées + squats parallèles · Gilet lesté · 1 min repos · si genoux au sol → garder le même poids</div>
+        </div>
       </div>
 
-      <div class="hiit-row alt-week sem-b">
-        <div>
-          <div class="exo-name">
-            <span class="week-pill b">SEM B</span>25 Pompes lestées + 25 Soulevé de terre roumain unilatéral
+      <div class="hiit-row alt-week sem-b" onclick="toggleHiit(this)">
+        <div class="hiit-row-header">
+          <div>
+            <div class="exo-name"><span class="week-pill b">SEM B</span>Pompes lestées + Soulevé de terre roumain</div>
           </div>
-          <div class="exo-sub">Gilet lesté · 1 min repos · travail stabilisation unilatérale</div>
+          <div class="sets-badge">×6</div>
+          <span class="hiit-chevron">▼</span>
         </div>
-        <div class="sets-badge">×6</div>
+        <div class="hiit-row-body">
+          <div class="hiit-detail">25 pompes lestées + 25 soulevé de terre roumain unilatéral · Gilet lesté · 1 min repos · travail stabilisation unilatérale</div>
+        </div>
       </div>
 
-      <div class="hiit-row alt-week sem-a">
-        <div>
-          <div class="exo-name">
-            <span class="week-pill">SEM A</span>Gainage latéral 45s/côté + 25 crunchs bicycle
+      <div class="hiit-row alt-week sem-a" onclick="toggleHiit(this)">
+        <div class="hiit-row-header">
+          <div>
+            <div class="exo-name"><span class="week-pill">SEM A</span>Gainage latéral + Crunchs bicycle</div>
           </div>
-          <div class="exo-sub">1 min repos · obliques + stabilisation latérale</div>
+          <div class="sets-badge">×4</div>
+          <span class="hiit-chevron">▼</span>
         </div>
-        <div class="sets-badge">×4</div>
+        <div class="hiit-row-body">
+          <div class="hiit-detail">Gainage latéral 45s/côté + 25 crunchs bicycle · 1 min repos · obliques + stabilisation latérale</div>
+        </div>
       </div>
 
-      <div class="hiit-row alt-week sem-b">
-        <div>
-          <div class="exo-name">
-            <span class="week-pill b">SEM B</span>Planche haute 1 min + 25 relevés jambes/bassin
+      <div class="hiit-row alt-week sem-b" onclick="toggleHiit(this)">
+        <div class="hiit-row-header">
+          <div>
+            <div class="exo-name"><span class="week-pill b">SEM B</span>Planche haute + Relevés jambes/bassin</div>
           </div>
-          <div class="exo-sub">1 min repos · gainage + chaîne postérieure</div>
+          <div class="sets-badge">×4</div>
+          <span class="hiit-chevron">▼</span>
         </div>
-        <div class="sets-badge">×4</div>
+        <div class="hiit-row-body">
+          <div class="hiit-detail">Planche haute 1 min + 25 relevés jambes/bassin · 1 min repos · gainage + chaîne postérieure</div>
+        </div>
       </div>
 
-      <div class="hiit-row alt-week sem-a">
-        <div>
-          <div class="exo-name">
-            <span class="week-pill">SEM A</span>Dead bug 10 reps/côté + 20 crunchs hollow hold 3s
+      <div class="hiit-row alt-week sem-a" onclick="toggleHiit(this)">
+        <div class="hiit-row-header">
+          <div>
+            <div class="exo-name"><span class="week-pill">SEM A</span>Dead bug + Crunchs hollow hold</div>
           </div>
-          <div class="exo-sub">1 min repos · transverse + core profond · zéro matériel</div>
+          <div class="sets-badge">×4</div>
+          <span class="hiit-chevron">▼</span>
         </div>
-        <div class="sets-badge">×4</div>
+        <div class="hiit-row-body">
+          <div class="hiit-detail">Dead bug 10 reps/côté + 20 crunchs hollow hold 3s · 1 min repos · transverse + core profond · zéro matériel</div>
+        </div>
       </div>
 
-      <div class="hiit-row alt-week sem-b">
-        <div>
-          <div class="exo-name">
-            <span class="week-pill b">SEM B</span>25 relevés de jambe + 6 rollouts
+      <div class="hiit-row alt-week sem-b" onclick="toggleHiit(this)">
+        <div class="hiit-row-header">
+          <div>
+            <div class="exo-name"><span class="week-pill b">SEM B</span>Relevés de jambe + Rollouts</div>
           </div>
-          <div class="exo-sub">1 min repos · abdos profonds · excellent exercice core</div>
+          <div class="sets-badge">×4</div>
+          <span class="hiit-chevron">▼</span>
         </div>
-        <div class="sets-badge">×4</div>
+        <div class="hiit-row-body">
+          <div class="hiit-detail">25 relevés de jambe + 6 rollouts · 1 min repos · abdos profonds · excellent exercice core</div>
+        </div>
       </div>
 
-      <div class="hiit-row alt-week sem-a">
-        <div>
-          <div class="exo-name">
-            <span class="week-pill">SEM A</span>10 Curl classique (prise supination) + 10 Superman
+      <div class="hiit-row alt-week sem-a" onclick="toggleHiit(this)">
+        <div class="hiit-row-header">
+          <div>
+            <div class="exo-name"><span class="week-pill">SEM A</span>Curl classique + Superman</div>
           </div>
-          <div class="exo-sub">Curl : sur banc · chef court du biceps · enchaîné sans pause → Superman : 1 sec contraction en haut · lombaires + trapèzes inférieurs</div>
+          <div class="sets-badge">×4</div>
+          <span class="hiit-chevron">▼</span>
         </div>
-        <div class="sets-badge">×4</div>
+        <div class="hiit-row-body">
+          <div class="hiit-detail">10 Curl classique (prise supination) + 10 Superman · sur banc · chef court du biceps · enchaîné sans pause → Superman : 1 sec contraction en haut · lombaires + trapèzes inférieurs</div>
+        </div>
       </div>
 
-      <div class="hiit-row alt-week sem-b">
-        <div>
-          <div class="exo-name">
-            <span class="week-pill b">SEM B</span>10 Curl marteau (prise neutre) + 10 Rowing unilatéral
+      <div class="hiit-row alt-week sem-b" onclick="toggleHiit(this)">
+        <div class="hiit-row-header">
+          <div>
+            <div class="exo-name"><span class="week-pill b">SEM B</span>Curl marteau + Rowing unilatéral</div>
           </div>
-          <div class="exo-sub">Curl : sur banc · brachial + avant-bras · enchaîné sans pause → Rowing : coude vers le plafond · grand dorsal · appui banc</div>
+          <div class="sets-badge">×4</div>
+          <span class="hiit-chevron">▼</span>
         </div>
-        <div class="sets-badge">×4</div>
+        <div class="hiit-row-body">
+          <div class="hiit-detail">10 Curl marteau (prise neutre) + 10 Rowing unilatéral · sur banc · brachial + avant-bras · enchaîné sans pause → Rowing : coude vers le plafond · grand dorsal · appui banc</div>
+        </div>
       </div>
 
     </div>
@@ -1088,7 +1096,7 @@
 
   <!-- PLAN JOURNALIER -->
   <section>
-    <div class="section-label">Plan journalier <span style="font-size:9px; color:var(--muted); text-transform:none; letter-spacing:0; font-family:'DM Sans',sans-serif;">(lun–ven · le week-end peut varier : lever, repas…)</span></div>
+    <div class="section-label">Plan journalier <span style="font-size:9px; color:var(--muted); text-transform:none; letter-spacing:0; font-family:'DM Sans',sans-serif;">(lun–ven · le week-end peut varier)</span></div>
     <div class="legend">
       <div class="leg"><div class="leg-dot" style="background:var(--pro)"></div>Protéines</div>
       <div class="leg"><div class="leg-dot" style="background:var(--glu)"></div>Glucides</div>
@@ -1096,56 +1104,104 @@
     </div>
     <div class="meal-list">
 
-      <div class="meal-row">
-        <div class="meal-time">07h00<span class="label">Réveil</span></div>
-        <div class="meal-content" style="color:var(--muted)">Lever · hydratation</div>
-      </div>
-
-      <div class="meal-row">
-        <div class="meal-time">08h00<span class="label">Petit déj</span></div>
-        <div class="meal-content">
-          Checker lait d'amande + whey<span class="tag tag-p">PRO</span> + créatine · café<br>
-          Croque : 2 toasts<span class="tag tag-g">GLU</span> · philadelphia light · 2 tranches blanc de poulet<span class="tag tag-p">PRO</span> · emmental<span class="tag tag-f">LIP</span>
+      <div class="meal-row" onclick="toggleMeal(this)">
+        <div class="meal-row-header">
+          <div class="meal-time">07h00<span class="label">Réveil</span></div>
+          <div class="meal-summary" style="color:var(--muted)">Lever · hydratation</div>
+          <span class="meal-chevron">▼</span>
+        </div>
+        <div class="meal-row-body">
+          <div class="meal-body-content" style="color:var(--muted)">Lever · hydratation · verre d'eau dès le réveil</div>
         </div>
       </div>
 
-      <div class="meal-row">
-        <div class="meal-time">10h00<span class="label">Collation</span></div>
-        <div class="meal-content">Café</div>
-      </div>
-
-      <div class="meal-row">
-        <div class="meal-time">12h30<span class="label">Déjeuner</span></div>
-        <div class="meal-content">
-          1 avocat<span class="tag tag-f">LIP</span> · fromage<span class="tag tag-p">PRO</span><span class="tag tag-f">LIP</span><br>
-          3 œufs mollets<span class="tag tag-p">PRO</span><span class="tag tag-f">LIP</span><br>
-          2 tranches de pain<span class="tag tag-g">GLU</span>
-          <div class="meal-warn">⚠ Jours intenses (squash, bike, run) : ajouter riz ou patate douce</div>
+      <div class="meal-row" onclick="toggleMeal(this)">
+        <div class="meal-row-header">
+          <div class="meal-time">08h00<span class="label">Petit déj</span></div>
+          <div class="meal-summary">Whey + Croque poulet</div>
+          <span class="meal-chevron">▼</span>
+        </div>
+        <div class="meal-row-body">
+          <div class="meal-body-content">
+            Checker lait d'amande + whey<span class="tag tag-p">PRO</span> + créatine · café<br>
+            Croque : 2 toasts<span class="tag tag-g">GLU</span> · philadelphia light · 2 tranches blanc de poulet<span class="tag tag-p">PRO</span> · emmental<span class="tag tag-f">LIP</span>
+          </div>
         </div>
       </div>
 
-      <div class="meal-row">
-        <div class="meal-time">19h00<span class="label">Dîner</span></div>
-        <div class="meal-content">
-          200g poulet<span class="tag tag-p">PRO</span><br>
-          70g riz cru<span class="tag tag-g">GLU</span> · ½ concombre
-          <div class="meal-warn">⚠ Soirs de séance intense : monter à 100–120g de riz</div>
+      <div class="meal-row" onclick="toggleMeal(this)">
+        <div class="meal-row-header">
+          <div class="meal-time">10h00<span class="label">Collation</span></div>
+          <div class="meal-summary" style="color:var(--muted)">Café</div>
+          <span class="meal-chevron">▼</span>
+        </div>
+        <div class="meal-row-body">
+          <div class="meal-body-content" style="color:var(--muted)">Café · pause active</div>
         </div>
       </div>
 
-      <div class="meal-row">
-        <div class="meal-time">21h00<span class="label">Snack</span></div>
-        <div class="meal-content">Yaourt protéiné<span class="tag tag-p">PRO</span> — synthèse protéique nocturne</div>
+      <div class="meal-row" onclick="toggleMeal(this)">
+        <div class="meal-row-header">
+          <div class="meal-time">12h30<span class="label">Déjeuner</span></div>
+          <div class="meal-summary">Avocat · Œufs · Pain</div>
+          <span class="meal-chevron">▼</span>
+        </div>
+        <div class="meal-row-body">
+          <div class="meal-body-content">
+            1 avocat<span class="tag tag-f">LIP</span> · fromage<span class="tag tag-p">PRO</span><span class="tag tag-f">LIP</span><br>
+            3 œufs mollets<span class="tag tag-p">PRO</span><span class="tag tag-f">LIP</span><br>
+            2 tranches de pain<span class="tag tag-g">GLU</span>
+            <div class="meal-warn">⚠ Jours intenses (squash, bike, run) : ajouter riz ou patate douce</div>
+          </div>
+        </div>
       </div>
 
-      <div class="meal-row post-hiit">
-        <div class="meal-time" style="color:var(--accent)">Post-HIIT<span class="label" style="color:rgba(229,69,42,.5)">Récup</span></div>
-        <div class="meal-content">Checker lait d'amande + whey<span class="tag tag-p">PRO</span></div>
+      <div class="meal-row" onclick="toggleMeal(this)">
+        <div class="meal-row-header">
+          <div class="meal-time">19h00<span class="label">Dîner</span></div>
+          <div class="meal-summary">Poulet · Riz · Concombre</div>
+          <span class="meal-chevron">▼</span>
+        </div>
+        <div class="meal-row-body">
+          <div class="meal-body-content">
+            200g poulet<span class="tag tag-p">PRO</span><br>
+            70g riz cru<span class="tag tag-g">GLU</span> · ½ concombre
+            <div class="meal-warn">⚠ Soirs de séance intense : monter à 100–120g de riz</div>
+          </div>
+        </div>
       </div>
 
-      <div class="meal-row">
-        <div class="meal-time">22h00<span class="label">Couché</span></div>
-        <div class="meal-content" style="color:var(--muted)">Lecture · 1h max</div>
+      <div class="meal-row" onclick="toggleMeal(this)">
+        <div class="meal-row-header">
+          <div class="meal-time">21h00<span class="label">Snack</span></div>
+          <div class="meal-summary">Yaourt protéiné</div>
+          <span class="meal-chevron">▼</span>
+        </div>
+        <div class="meal-row-body">
+          <div class="meal-body-content">Yaourt protéiné<span class="tag tag-p">PRO</span> — synthèse protéique nocturne</div>
+        </div>
+      </div>
+
+      <div class="meal-row post-hiit" onclick="toggleMeal(this)">
+        <div class="meal-row-header">
+          <div class="meal-time" style="color:var(--accent)">Post-HIIT<span class="label" style="color:rgba(229,69,42,.5)">Récup</span></div>
+          <div class="meal-summary">Whey recovery</div>
+          <span class="meal-chevron">▼</span>
+        </div>
+        <div class="meal-row-body">
+          <div class="meal-body-content">Checker lait d'amande + whey<span class="tag tag-p">PRO</span></div>
+        </div>
+      </div>
+
+      <div class="meal-row" onclick="toggleMeal(this)">
+        <div class="meal-row-header">
+          <div class="meal-time">22h00<span class="label">Couché</span></div>
+          <div class="meal-summary" style="color:var(--muted)">Lecture · 1h max</div>
+          <span class="meal-chevron">▼</span>
+        </div>
+        <div class="meal-row-body">
+          <div class="meal-body-content" style="color:var(--muted)">Lecture · 1h max · pas d'écrans</div>
+        </div>
       </div>
 
     </div>
@@ -1271,12 +1327,14 @@
     dayActivities[day].push(val);
     savePlanning();
     renderDay(day);
+    updateCardColors();
   }
 
   function removeActivity(day, val) {
     dayActivities[day] = (dayActivities[day] || []).filter(v => v !== val);
     savePlanning();
     renderDay(day);
+    updateCardColors();
   }
 
   function renderDay(day) {
@@ -1324,9 +1382,36 @@
     </div>`;
   }
 
+  // ── COULEUR DE CARD + AUJOURD'HUI ────────────────────────────────
+  const CARD_COLOR_MAP = {
+    hiit:'card-hiit', squash:'card-squash', run:'card-ride', bike:'card-ride',
+    walk:'card-walk', rando:'card-rando', yoga:'card-yoga'
+  };
+  const TODAY_IDX = { 0:'dim',1:'lun',2:'mar',3:'mer',4:'jeu',5:'ven',6:'sam' };
+
+  function updateCardColors() {
+    const todayDay = TODAY_IDX[new Date().getDay()];
+    ALL_DAYS.forEach(day => {
+      const card = document.querySelector(`[id="main-badge-${day}"]`)?.closest('.day-card')
+                || document.getElementById('card-' + day);
+      if (!card) return;
+      card.classList.remove('card-hiit','card-squash','card-ride','card-walk','card-rando','card-yoga','card-rest','today');
+      const acts = dayActivities[day] || [];
+      const main = acts[0];
+      card.classList.add(main && CARD_COLOR_MAP[main] ? CARD_COLOR_MAP[main] : 'card-rest');
+      if (day === todayDay) card.classList.add('today');
+      const nameEl = card.querySelector('.day-name');
+      if (nameEl) nameEl.classList.toggle('today-label', day === todayDay);
+    });
+  }
+
+  function toggleHiit(row) { row.classList.toggle('open'); }
+  function toggleMeal(row) { row.classList.toggle('open'); }
+
   // Restaurer toutes les cartes au chargement
   function initPlanning() {
     ALL_DAYS.forEach(day => renderDay(day));
+    updateCardColors();
   }
   initPlanning();
 
