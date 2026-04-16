@@ -1254,7 +1254,8 @@
   // ── MAKE WEBHOOK ───────────────────────────────────────────────────
   const MAKE_WRITE_URL = 'https://hook.eu2.make.com/j9hw9pjwd515ym98h1so9qwnnvw2iy2a';
   const MAKE_PHOTO_URL = 'REMPLACER_PAR_URL_WEBHOOK_PHOTO';
-  const MAKE_READ_URL  = 'https://hook.eu2.make.com/s75w457yogkdl8oynqer79olnid741t8';
+  const SHEET_ID = '1z-sM1momPAl1cXMUDgV4C2nVfN3i2T7rUm18TWJXTkA';
+  const SHEET_READ_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Feuille%201`;
 
   function setSyncStatus(state, msg) {
     const dot = document.getElementById('sync-dot');
@@ -1343,18 +1344,18 @@
     if (btn) btn.disabled = true;
     if (lbl) { lbl.textContent = 'Restauration en cours…'; lbl.style.color = 'var(--squash)'; }
     try {
-      const res = await fetch(MAKE_READ_URL);
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      const rows = await res.json();
-      // rows = tableau d'objets avec les colonnes du Sheet
+      const res = await fetch(SHEET_READ_URL);
+      const text = await res.text();
+      // Google renvoie du JSONP : /*O_o*/\ngoogle.visualization.Query.setResponse({...})
+      const json = JSON.parse(text.replace(/^.*?google\.visualization\.Query\.setResponse\(/, '').replace(/\);?\s*$/, ''));
+      const rows = json.table.rows;
       const entries = rows
-        .filter(r => r[0] && r[1]) // date + poids obligatoires
         .map(r => ({
-          date:  r[0].toString().trim(),
-          poids: parseFloat(r[1]),
-          kcal:  r[2] ? parseInt(r[2]) : null
+          date:  r.c[0] && r.c[0].v ? r.c[0].v.toString().trim() : null,
+          poids: r.c[1] && r.c[1].v ? parseFloat(r.c[1].v) : null,
+          kcal:  r.c[2] && r.c[2].v ? parseInt(r.c[2].v) : null
         }))
-        .filter(r => r.date && !isNaN(r.poids))
+        .filter(r => r.date && !isNaN(r.poids) && r.poids > 0)
         .sort((a,b) => a.date.localeCompare(b.date));
       saveEntries(entries);
       renderSuivi();
@@ -1362,7 +1363,7 @@
       if (lbl) { lbl.textContent = '✓ ' + entries.length + ' entrées restaurées'; lbl.style.color = 'var(--ride)'; }
       if (btn) btn.disabled = false;
     } catch(e) {
-      if (lbl) { lbl.textContent = '✗ Erreur : ' + e.message; lbl.style.color = 'var(--warn)'; }
+      if (lbl) { lbl.textContent = '✗ ' + e.message; lbl.style.color = 'var(--warn)'; }
       if (btn) btn.disabled = false;
     }
   }
