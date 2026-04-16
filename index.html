@@ -1858,19 +1858,34 @@
   <button id="photo-modal-close" onclick="closePhotoModal()">✕ Fermer</button>
   <img id="photo-modal-img" src="" alt="photo">
   <div id="photo-modal-date"></div>
+  <button id="photo-modal-del" onclick="deletePhoto(event)" style="font-family:'DM Mono',monospace; font-size:11px; background:rgba(201,58,31,.8); border:1px solid rgba(201,58,31,.9); border-radius:8px; color:#fff; padding:8px 20px; cursor:pointer; letter-spacing:.08em; text-transform:uppercase; transition:background .2s;">🗑 Supprimer la photo</button>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
+  let _modalDate = null;
+
   function openPhotoModal(date) {
     const photos = getPhotos();
     if (!photos[date]) return;
+    _modalDate = date;
     document.getElementById('photo-modal-img').src = photos[date];
     document.getElementById('photo-modal-date').textContent = fmtDate(date);
     document.getElementById('photo-modal').classList.add('open');
   }
   function closePhotoModal() {
     document.getElementById('photo-modal').classList.remove('open');
+    _modalDate = null;
+  }
+  function deletePhoto(e) {
+    e.stopPropagation(); // ne pas déclencher closePhotoModal
+    if (!_modalDate) return;
+    if (!confirm('Supprimer la photo du ' + fmtDate(_modalDate) + ' ?')) return;
+    const photos = getPhotos();
+    delete photos[_modalDate];
+    savePhotos(photos);
+    closePhotoModal();
+    renderSuivi();
   }
 
   // Ajouter une photo directement depuis l'historique
