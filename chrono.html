@@ -369,6 +369,9 @@
   }
   .finish-sub { font-size:13px; color:var(--muted); }
 
+  .rc-preset { font-family:'DM Mono',monospace; font-size:11px; font-weight:600; letter-spacing:.06em; background:var(--bg3); border:1px solid var(--border2); border-radius:8px; color:var(--muted); padding:8px 14px; cursor:pointer; transition:all .18s; }
+  .rc-preset:hover, .rc-preset.active { background:var(--teal-bg); border-color:rgba(14,122,138,.35); color:var(--teal); }
+
   @media (max-width: 380px) {
     .timer-display { font-size:80px; }
     .choice-title { font-size:30px; }
@@ -392,24 +395,51 @@
   <div class="choice-sub" data-i18n="choice_sub">Choose your session</div>
   <div class="session-cards">
 
-    <div class="session-card thu" onclick="loadSession('thu')">
+    <div class="session-card thu" onclick="selectSession('thu')">
       <div class="session-card-info">
-        <div class="session-card-day" data-i18n="thu_day">Thursday</div>
-        <div class="session-card-name" data-i18n="thu_name">HIIT CARDIO</div>
-        <div class="session-card-meta" data-i18n="thu_meta">8 exercises · 20s work / 10s rest · 5 rounds</div>
+        <div class="session-card-day" data-i18n="thu_day">Additionnel 1</div>
+        <div class="session-card-name" data-i18n="thu_name">HIIT ADD. 1</div>
+        <div class="session-card-meta" data-i18n="thu_meta">8 exercices · 20s travail / 10s repos · 5 rounds</div>
       </div>
       <div class="session-card-arrow">→</div>
     </div>
 
-    <div class="session-card sat" onclick="loadSession('sat')">
+    <div class="session-card sat" onclick="selectSession('sat')">
       <div class="session-card-info">
-        <div class="session-card-day" data-i18n="sat_day">Saturday</div>
-        <div class="session-card-name" data-i18n="sat_name">HIIT + GLUTES</div>
-        <div class="session-card-meta" data-i18n="sat_meta">3 exercises · 45s work / 15s rest · 5 rounds</div>
+        <div class="session-card-day" data-i18n="sat_day">Additionnel 2</div>
+        <div class="session-card-name" data-i18n="sat_name">HIIT ADD. 2</div>
+        <div class="session-card-meta" data-i18n="sat_meta">3 exercices · 45s travail / 15s repos · 5 rounds</div>
       </div>
       <div class="session-card-arrow">→</div>
     </div>
 
+  </div>
+</div>
+
+<!-- PAGE 1.5: REST CONFIG -->
+<div class="page" id="page-rest-config">
+  <div class="choice-title" id="rc-title">HIIT<br><span>ADD. 1</span></div>
+  <div class="choice-sub" data-i18n="rc_sub">Repos inter-séries</div>
+  <div style="background:var(--bg2); border:1px solid var(--border); border-radius:14px; padding:24px 20px; margin-bottom:16px;">
+    <div style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:16px;" data-i18n="rc_label">Temps de récupération entre les rounds</div>
+    <div style="display:flex; align-items:center; gap:16px; margin-bottom:20px;">
+      <button onclick="changeRest(-15)" style="font-family:'DM Mono',monospace; font-size:18px; font-weight:600; background:var(--bg3); border:1px solid var(--border2); border-radius:10px; color:var(--muted); width:48px; height:48px; cursor:pointer; flex-shrink:0;">−</button>
+      <div style="flex:1; text-align:center;">
+        <div style="font-family:'Bebas Neue',sans-serif; font-size:72px; letter-spacing:.02em; line-height:1; color:var(--teal);" id="rc-display">60</div>
+        <div style="font-family:'DM Mono',monospace; font-size:11px; color:var(--muted); letter-spacing:.08em;" data-i18n="rc_seconds">secondes</div>
+      </div>
+      <button onclick="changeRest(+15)" style="font-family:'DM Mono',monospace; font-size:18px; font-weight:600; background:var(--bg3); border:1px solid var(--border2); border-radius:10px; color:var(--muted); width:48px; height:48px; cursor:pointer; flex-shrink:0;">+</button>
+    </div>
+    <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:center;">
+      <button class="rc-preset" onclick="setRest(10)">10s</button>
+      <button class="rc-preset" onclick="setRest(30)">30s</button>
+      <button class="rc-preset" onclick="setRest(45)">45s</button>
+      <button class="rc-preset" onclick="setRest(60)">60s</button>
+    </div>
+  </div>
+  <div style="display:flex; gap:10px;">
+    <button onclick="showPage('page-choice')" style="font-family:'DM Mono',monospace; font-size:11px; letter-spacing:.08em; text-transform:uppercase; background:none; color:var(--muted); border:1px solid var(--border2); border-radius:10px; padding:14px 20px; cursor:pointer;">← Retour</button>
+    <button id="rc-start-btn" onclick="confirmRest()" style="font-family:'DM Mono',monospace; font-size:12px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; background:var(--teal); color:#fff; border:none; border-radius:10px; padding:14px 32px; cursor:pointer; flex:1;" data-i18n="rc_go">C'EST PARTI →</button>
   </div>
 </div>
 
@@ -509,8 +539,8 @@ function setLang(lang) {
 
 // ── SESSION DEFINITIONS ────────────────────────────────────────────
 const SESSIONS = {
-  thu: { workTime: 20, restTime: 10, rounds: 5, color: 'teal', btnClass: '' },
-  sat: { workTime: 45, restTime: 15, rounds: 5, color: 'yellow', btnClass: 'yellow' },
+  thu: { workTime: 20, restTime: 10, roundRestTime: 60, rounds: 5, color: 'teal', btnClass: '' },
+  sat: { workTime: 45, restTime: 15, roundRestTime: 60, rounds: 5, color: 'yellow', btnClass: 'yellow' },
 };
 
 // ── TIMER STATE ────────────────────────────────────────────────────
@@ -528,6 +558,44 @@ let stepsDone = 0;
 // Prepare a countdown with 3-2-1 start
 let countdownActive = false;
 let countdownVal = 0;
+
+let pendingSessionKey = null;
+let pendingRestTime = 60;
+
+function selectSession(key) {
+  pendingSessionKey = key;
+  pendingRestTime = 60;
+  const d = T[currentLang];
+  const title = document.getElementById('rc-title');
+  if (title) title.innerHTML = 'HIIT<br><span>' + (key === 'thu' ? d.thu_name : d.sat_name) + '</span>';
+  const btn = document.getElementById('rc-start-btn');
+  if (btn) btn.style.background = key === 'sat' ? 'var(--yellow)' : 'var(--teal)';
+  updateRestDisplay();
+  showPage('page-rest-config');
+}
+
+function updateRestDisplay() {
+  const el = document.getElementById('rc-display');
+  if (el) el.textContent = pendingRestTime;
+  document.querySelectorAll('.rc-preset').forEach(b => {
+    b.classList.toggle('active', parseInt(b.textContent) === pendingRestTime);
+  });
+}
+
+function changeRest(delta) {
+  pendingRestTime = Math.max(10, Math.min(180, pendingRestTime + delta));
+  updateRestDisplay();
+}
+
+function setRest(val) {
+  pendingRestTime = val;
+  updateRestDisplay();
+}
+
+function confirmRest() {
+  SESSIONS[pendingSessionKey].roundRestTime = pendingRestTime;
+  loadSession(pendingSessionKey);
+}
 
 function loadSession(key) {
   sessionKey = key;
@@ -557,13 +625,17 @@ function renderExoList() {
   const exos = getExos();
   const list = document.getElementById('exo-list');
   const isYellow = sessionKey === 'sat';
-  list.innerHTML = exos.map((name, i) => `
-    <div class="exo-item ${i === currentExoIndex && currentPhase === 'work' ? 'active-exo' + (isYellow ? ' yellow' : '') : ''} ${i < currentExoIndex || (currentPhase !== 'ready' && i < currentExoIndex) ? 'completed' : ''}" id="exo-item-${i}">
+  list.innerHTML = exos.map((name, i) => {
+    const isCompleted = i < currentExoIndex
+      || (i === currentExoIndex && (currentPhase === 'rest' || currentPhase === 'roundRest'))
+      || (currentPhase === 'done');
+    const isActive = i === currentExoIndex && currentPhase === 'work';
+    return `<div class="exo-item ${isActive ? 'active-exo' + (isYellow ? ' yellow' : '') : ''} ${isCompleted ? 'completed' : ''}" id="exo-item-${i}">
       <div class="exo-num">${i+1}</div>
       <div class="exo-item-name">${name}</div>
       <div class="exo-item-done">✓</div>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 }
 
 function renderRoundDots() {
@@ -611,11 +683,24 @@ function updateDisplay() {
     badge.textContent = d.phase_rest;
     timerEl.className = 'timer-display rest';
     timerEl.textContent = timeLeft;
-    const nextIdx = currentExoIndex < exos.length ? currentExoIndex : 0;
-    document.getElementById('current-exo-name').textContent = d.next_exo_prefix + ' ' + (exos[nextIdx] || '—');
+    // Next exo = currentExoIndex + 1 (not yet incremented)
+    const nextRestIdx = currentExoIndex + 1;
+    document.getElementById('current-exo-name').textContent = d.next_exo_prefix + ' ' + (exos[nextRestIdx] || exos[0] || '—');
     document.getElementById('next-exo-name').textContent = '';
     const pct = ((currentSession.restTime - timeLeft) / currentSession.restTime) * 100;
     prog.style.width = pct + '%';
+    prog.className = 'progress-bar rest';
+    startBtn.textContent = isRunning ? d.btn_pause : d.btn_resume;
+
+  } else if (currentPhase === 'roundRest') {
+    badge.className = 'phase-badge phase-rest';
+    badge.textContent = (d.phase_round_rest || 'REPOS INTER-SÉRIE') + ' · ' + d.round_label + ' ' + (currentRound + 1) + ' ' + d.of_label + ' ' + currentSession.rounds;
+    timerEl.className = 'timer-display rest';
+    timerEl.textContent = timeLeft;
+    document.getElementById('current-exo-name').textContent = (d.next_round_prefix || 'Prochain →') + ' ' + d.round_label + ' ' + (currentRound + 2);
+    document.getElementById('next-exo-name').textContent = d.next_exo_prefix + ' ' + (exos[0] || '—');
+    const pct2 = ((currentSession.roundRestTime - timeLeft) / currentSession.roundRestTime) * 100;
+    prog.style.width = pct2 + '%';
     prog.className = 'progress-bar rest';
     startBtn.textContent = isRunning ? d.btn_pause : d.btn_resume;
 
@@ -641,14 +726,17 @@ function toggleTimer() {
   if (currentPhase === 'done') { resetTimer(); return; }
   if (!isRunning) {
     if (currentPhase === 'ready') {
+      requestWakeLock();
       startCountdown();
     } else {
+      requestWakeLock();
       isRunning = true;
       runInterval();
     }
   } else {
     isRunning = false;
     clearInterval(intervalId);
+    releaseWakeLock();
     updateDisplay();
   }
 }
@@ -699,33 +787,46 @@ function advance() {
   const exos = getExos();
 
   if (currentPhase === 'work') {
-    // Mark current exo as done if last round OR move to rest
     beep('rest');
-    currentPhase = 'rest';
-    timeLeft = currentSession.restTime;
-    // Advance exo index AFTER rest
+    const isLastExoInRound = (currentExoIndex + 1 >= exos.length);
+    const isLastRound = (currentRound + 1 >= currentSession.rounds);
+    if (isLastExoInRound && !isLastRound) {
+      currentPhase = 'roundRest';
+      timeLeft = currentSession.roundRestTime;
+      currentExoIndex++;
+    } else {
+      currentPhase = 'rest';
+      timeLeft = currentSession.restTime;
+    }
   } else if (currentPhase === 'rest') {
     beep('work');
-    // Advance to next exercise
     currentExoIndex++;
     if (currentExoIndex >= exos.length) {
-      // Finished all exercises in this round
       currentRound++;
       currentExoIndex = 0;
-      if (currentRound >= currentSession.rounds) {
-        // ALL DONE
-        currentPhase = 'done';
-        isRunning = false;
-        clearInterval(intervalId);
-        beep('done');
-        updateDisplay();
-        return;
-      }
+      if (currentRound >= currentSession.rounds) { finishSession(); return; }
     }
+    currentPhase = 'work';
+    timeLeft = currentSession.workTime;
+  } else if (currentPhase === 'roundRest') {
+    beep('work');
+    currentRound++;
+    currentExoIndex = 0;
+    if (currentRound >= currentSession.rounds) { finishSession(); return; }
     currentPhase = 'work';
     timeLeft = currentSession.workTime;
   }
   updateDisplay();
+}
+
+function finishSession() {
+  currentPhase = 'done';
+  isRunning = false;
+  clearInterval(intervalId);
+  beep('done');
+  updateDisplay();
+  launchConfetti();
+  releaseWakeLock();
 }
 
 function resetTimer() {
@@ -779,6 +880,57 @@ function beep(type) {
 }
 
 // ── NAVIGATION ─────────────────────────────────────────────────────
+// ── WAKE LOCK ──────────────────────────────────────────────────────
+let wakeLock = null;
+async function requestWakeLock() {
+  try { if ('wakeLock' in navigator) wakeLock = await navigator.wakeLock.request('screen'); } catch(e) {}
+}
+async function releaseWakeLock() {
+  try { if (wakeLock) { await wakeLock.release(); wakeLock = null; } } catch(e) {}
+}
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && isRunning) requestWakeLock();
+});
+
+// ── CONFETTI ───────────────────────────────────────────────────────
+let confettiAnim = null;
+function launchConfetti() {
+  let canvas = document.getElementById('confetti-canvas');
+  if (!canvas) {
+    canvas = document.createElement('canvas');
+    canvas.id = 'confetti-canvas';
+    canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:999;';
+    document.body.appendChild(canvas);
+  }
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const ctx = canvas.getContext('2d');
+  const pieces = Array.from({length: 120}, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * -canvas.height,
+    w: Math.random() * 10 + 5, h: Math.random() * 6 + 3,
+    r: Math.random() * Math.PI * 2,
+    vx: (Math.random() - 0.5) * 3, vy: Math.random() * 4 + 2,
+    vr: (Math.random() - 0.5) * 0.15,
+    color: ['#0e7a8a','#2563c4','#1a9e4a','#b08800','#d04a2a'][Math.floor(Math.random()*5)]
+  }));
+  let frame = 0;
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    pieces.forEach(p => {
+      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r);
+      ctx.fillStyle = p.color; ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+      ctx.restore();
+      p.x += p.vx; p.y += p.vy; p.r += p.vr; p.vy += 0.05;
+    });
+    frame++;
+    if (frame < 200) confettiAnim = requestAnimationFrame(draw);
+    else { ctx.clearRect(0,0,canvas.width,canvas.height); }
+  }
+  if (confettiAnim) cancelAnimationFrame(confettiAnim);
+  draw();
+}
+
 function showPage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
