@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Acro Yoga — Fab & Rita</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#f2f0eb; --bg2:#eceae4; --bg3:#e4e1da;
+    --border:rgba(0,0,0,0.07); --border2:rgba(0,0,0,0.13);
+    --text:#1e1d1a; --muted:#7a7670; --dim:#b0ada7;
+    --accent:#be185d; --accent-bg:rgba(190,24,93,0.08); --accent-border:rgba(190,24,93,0.2);
+    --lvl1:#1a9e4a; --lvl1-bg:rgba(26,158,74,0.08);
+    --lvl2:#d4620a; --lvl2-bg:rgba(212,98,10,0.08);
+    --lvl3:#c93a1f; --lvl3-bg:rgba(201,58,31,0.08);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; font-size:14px; line-height:1.6; min-height:100vh; padding:40px 24px 80px; }
+  header { max-width:960px; margin:0 auto 48px; display:flex; align-items:flex-end; justify-content:space-between; border-bottom:1px solid var(--border2); padding-bottom:20px; }
+  .header-title { font-family:'Bebas Neue',sans-serif; font-size:52px; letter-spacing:.04em; line-height:1; }
+  .header-title span { color:var(--accent); }
+  .header-sub { font-family:'DM Mono',monospace; font-size:11px; color:var(--muted); letter-spacing:.08em; text-transform:uppercase; line-height:1.8; }
+  .header-actions { display:flex; align-items:center; gap:8px; margin-bottom:8px; justify-content:flex-end; }
+  .btn-back { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); background:var(--bg2); border:1px solid var(--border2); padding:8px 16px; border-radius:8px; cursor:pointer; text-decoration:none; transition:color .2s,border-color .2s; display:inline-block; }
+  .btn-back:hover { color:var(--text); border-color:var(--accent); }
+  .btn-lang { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); background:var(--accent-bg); border:1px solid var(--accent-border); padding:8px 16px; border-radius:8px; cursor:pointer; transition:background .2s; }
+  .btn-lang:hover { background:rgba(190,24,93,.14); }
+  .main { max-width:960px; margin:0 auto; display:flex; flex-direction:column; gap:40px; }
+  .section-label { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin-bottom:14px; display:flex; align-items:center; gap:10px; }
+  .section-label::after { content:''; flex:1; height:1px; background:var(--border); }
+  .intro-card { background:var(--accent-bg); border:1px solid var(--accent-border); border-radius:12px; padding:20px 24px; font-size:13px; color:var(--muted); line-height:1.7; }
+  .intro-card strong { color:var(--text); }
+  .level-legend { display:flex; gap:16px; flex-wrap:wrap; margin-bottom:16px; }
+  .lvl-badge { font-family:'DM Mono',monospace; font-size:10px; font-weight:500; padding:3px 10px; border-radius:5px; letter-spacing:.06em; }
+  .lvl-1 { background:var(--lvl1-bg); color:var(--lvl1); border:1px solid rgba(26,158,74,.25); }
+  .lvl-2 { background:var(--lvl2-bg); color:var(--lvl2); border:1px solid rgba(212,98,10,.25); }
+  .lvl-3 { background:var(--lvl3-bg); color:var(--lvl3); border:1px solid rgba(201,58,31,.25); }
+  .exercises { display:flex; flex-direction:column; gap:10px; }
+  .exo-card { background:var(--bg2); border:1px solid var(--border); border-radius:12px; overflow:hidden; transition:border-color .2s; }
+  .exo-card:hover { border-color:var(--border2); }
+  .exo-card.open { border-color:var(--accent-border); }
+  .exo-header { display:grid; grid-template-columns:auto 1fr auto auto; align-items:center; gap:14px; padding:16px 18px; cursor:pointer; user-select:none; }
+  .exo-number { font-family:'Bebas Neue',sans-serif; font-size:24px; color:var(--dim); line-height:1; min-width:28px; }
+  .exo-title { font-size:14px; font-weight:600; color:var(--text); }
+  .exo-sub { font-size:11px; color:var(--muted); margin-top:2px; }
+  .exo-chevron { font-size:12px; color:var(--dim); transition:transform .25s; }
+  .exo-card.open .exo-chevron { transform:rotate(180deg); }
+  .exo-body { display:none; padding:0 18px 18px; border-top:1px solid var(--border); }
+  .exo-card.open .exo-body { display:block; }
+  .exo-desc { font-size:13px; color:var(--muted); line-height:1.7; margin-top:14px; margin-bottom:14px; }
+  .roles-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; }
+  .role-box { background:var(--bg3); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .role-label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.1em; text-transform:uppercase; color:var(--accent); margin-bottom:6px; }
+  .role-text { font-size:12px; color:var(--muted); line-height:1.6; }
+  .tips-list { margin-bottom:14px; }
+  .tips-list li { font-size:12px; color:var(--muted); line-height:1.6; margin-left:16px; margin-bottom:4px; }
+  .video-link { display:inline-flex; align-items:center; gap:8px; font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.06em; color:var(--accent); text-decoration:none; background:var(--accent-bg); border:1px solid var(--accent-border); padding:6px 12px; border-radius:6px; margin-right:8px; margin-bottom:6px; transition:background .2s; }
+  .video-link:hover { background:rgba(190,24,93,.14); }
+  .session-card { background:var(--bg2); border:1px solid var(--border); border-radius:12px; padding:20px 24px; }
+  .session-row { display:flex; align-items:baseline; gap:12px; padding:10px 0; border-bottom:1px solid var(--border); }
+  .session-row:last-child { border-bottom:none; }
+  .session-time { font-family:'DM Mono',monospace; font-size:10px; color:var(--dim); min-width:40px; }
+  .session-name { font-size:13px; color:var(--text); font-weight:500; flex:1; }
+  .session-note { font-size:11px; color:var(--muted); }
+  footer { max-width:960px; margin:60px auto 0; padding-top:20px; border-top:1px solid var(--border); font-family:'DM Mono',monospace; font-size:10px; color:var(--dim); letter-spacing:.08em; display:flex; justify-content:space-between; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+  .main > * { animation:fadeUp .4s ease both; }
+  .main > *:nth-child(1){animation-delay:.05s} .main > *:nth-child(2){animation-delay:.1s}
+  .main > *:nth-child(3){animation-delay:.15s} .main > *:nth-child(4){animation-delay:.2s}
+  .main > *:nth-child(5){animation-delay:.25s}
+  @media (max-width:640px) {
+    body { padding:20px 14px 60px; }
+    header { flex-direction:column; align-items:flex-start; gap:12px; margin-bottom:28px; }
+    .header-title { font-size:38px; }
+    .header-actions { justify-content:flex-start; }
+    .roles-grid { grid-template-columns:1fr; }
+    .exo-header { grid-template-columns:auto 1fr auto; gap:10px; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div><div class="header-title">ACRO<br><span>YOGA</span></div></div>
+  <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
+    <div class="header-actions">
+      <button class="btn-lang" onclick="toggleLang()" id="btn-lang">🇬🇧 English</button>
+      <a href="index.html" class="btn-back">← Programme</a>
+    </div>
+    <div class="header-sub">
+      Fab &amp; Rita<br>
+      <span data-fr="Débutants · Progression douce" data-en="Beginners · Gentle Progression"></span><br>
+      <span data-fr="Force · Équilibre · Confiance" data-en="Strength · Balance · Trust"></span>
+    </div>
+  </div>
+</header>
+
+<div class="main">
+  <section>
+    <div class="intro-card" data-fr="&lt;strong&gt;Avant de commencer :&lt;/strong&gt; l'acro yoga repose sur la confiance mutuelle. Commencez toujours par l'échauffement, communiquez pendant chaque figure, et ne forcez jamais une position. Le &lt;strong&gt;flyer&lt;/strong&gt; (en l'air) fait confiance à la solidité de la base, la &lt;strong&gt;base&lt;/strong&gt; (au sol) porte et guide." data-en="&lt;strong&gt;Before you start:&lt;/strong&gt; acroyoga is built on mutual trust. Always begin with a warm-up, communicate throughout each pose, and never force a position. The &lt;strong&gt;flyer&lt;/strong&gt; (in the air) trusts the base's stability; the &lt;strong&gt;base&lt;/strong&gt; (on the ground) supports and guides."></div>
+  </section>
+
+  <section>
+    <div class="section-label" data-fr="Niveau de difficulté" data-en="Difficulty Level"></div>
+    <div class="level-legend">
+      <span class="lvl-badge lvl-1" data-fr="Niveau 1 · Débutant" data-en="Level 1 · Beginner"></span>
+      <span class="lvl-badge lvl-2" data-fr="Niveau 2 · Intermédiaire" data-en="Level 2 · Intermediate"></span>
+      <span class="lvl-badge lvl-3" data-fr="Niveau 3 · Avancé" data-en="Level 3 · Advanced"></span>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-label" data-fr="Exercices" data-en="Exercises"></div>
+    <div class="exercises" id="exercises-container"></div>
+  </section>
+
+  <section>
+    <div class="section-label" data-fr="Structure d'une session débutant (45 min)" data-en="Beginner session structure (45 min)"></div>
+    <div class="session-card" id="session-card"></div>
+  </section>
+
+  <section>
+    <div class="section-label" data-fr="Ressources pour aller plus loin" data-en="Resources to go further"></div>
+    <div class="session-card">
+      <div class="session-row">
+        <div style="flex:1">
+          <div class="session-name">AcroYoga International</div>
+          <div class="session-note" data-fr="Cours officiels, trouver des jams près de chez vous" data-en="Official classes, find jams near you"></div>
+        </div>
+        <a href="https://www.acroyoga.org" target="_blank" class="video-link" style="margin:0">↗ acroyoga.org</a>
+      </div>
+      <div class="session-row">
+        <div style="flex:1">
+          <div class="session-name" data-fr="Playlist YouTube débutants" data-en="Beginner YouTube Playlist"></div>
+          <div class="session-note" data-fr="Tutoriels progressifs en vidéo" data-en="Progressive video tutorials"></div>
+        </div>
+        <a href="https://www.youtube.com/@AcroYogaInternational" target="_blank" class="video-link" style="margin:0">▶ YouTube</a>
+      </div>
+      <div class="session-row">
+        <div style="flex:1">
+          <div class="session-name">AcroYoga App — Pose Library</div>
+          <div class="session-note" data-fr="Bibliothèque de figures avec démos" data-en="Pose library with demos"></div>
+        </div>
+        <a href="https://apps.apple.com/app/acroyoga/id1440737484" target="_blank" class="video-link" style="margin:0">↗ App Store</a>
+      </div>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <span>PROGRAMME FAB · ACRO YOGA · FAB &amp; RITA</span>
+  <span>v1.1</span>
+</footer>
+
+<script>
+let lang = localStorage.getItem('ay_lang') || 'fr';
+
+const EXERCISES = [
+  {
+    num:'01', lvl:1,
+    fr:{ title:'Échauffement & contact', sub:'5–10 min · Avant chaque session',
+      desc:'Mobilisation articulaire, étirements doux, et exercices de confiance pour établir la connexion physique et mentale avant les figures.',
+      r1l:'Les deux', r1t:'Rotations des chevilles, genoux, hanches. Étirements des poignets (base surtout). Massage des épaules mutuellement.',
+      r2l:'Exercice de confiance', r2t:"Se tenir face à face, mains jointes, s'asseoir lentement ensemble en équilibre puis se relever. Répéter 5×.",
+      tips:[], videos:[{url:'https://www.youtube.com/watch?v=ow_3JGiKFpE',label:'▶ Échauffement acro yoga'}] },
+    en:{ title:'Warm-up & contact', sub:'5–10 min · Before every session',
+      desc:'Joint mobilization, gentle stretches, and trust exercises to build physical and mental connection before poses.',
+      r1l:'Both', r1t:'Ankle, knee, and hip rotations. Wrist stretches (especially for the base). Shoulder massage for each other.',
+      r2l:'Trust exercise', r2t:'Stand facing each other, hold hands, slowly sit down together in balance, then stand back up. Repeat 5×.',
+      tips:[], videos:[{url:'https://www.youtube.com/watch?v=ow_3JGiKFpE',label:'▶ AcroYoga warm-up'}] }
+  },
+  {
+    num:'02', lvl:1,
+    fr:{ title:'Front Plank (Planche frontale)', sub:"Figure de base · Premier contact en l'air",
+      desc:"La figure de départ de tout acro yoga. La base allongée sur le dos, pieds dans les hanches du flyer en position planche horizontale. Excellent pour développer la confiance.",
+      r1l:'Base (Fab)', r1t:"Allongé sur le dos, jambes perpendiculaires au sol, pieds à plat dans les hanches du flyer. Bras tendus vers le haut. Dos plaqué au sol.",
+      r2l:'Flyer (Rita)', r2t:"Debout face à la base, placer les hanches sur les pieds. Prendre les mains de la base. S'incliner en position planche, corps gainé.",
+      tips:["La base garde les orteils pointés vers le haut","Le flyer serre les fessiers et les abdos — corps rigide","Monter progressivement, ne pas sauter",'Signal clair pour descendre : "descente"'],
+      videos:[{url:'https://www.youtube.com/watch?v=ZKfGqnN-i48',label:'▶ Front Plank tutoriel'},{url:'https://www.youtube.com/watch?v=rqxHSswYzgE',label:'▶ Variantes débutants'}] },
+    en:{ title:'Front Plank', sub:'Base pose · First contact in the air',
+      desc:'The starting pose of all acroyoga. Base lies on back, feet in flyer hips, flyer in horizontal plank. Excellent for building trust and communication.',
+      r1l:'Base (Fab)', r1t:"Lie on your back, legs perpendicular to the floor, feet flat on the flyer's hips. Arms extended upward. Back flat on the ground.",
+      r2l:'Flyer (Rita)', r2t:"Stand facing the base, place your hips on their feet. Take the base's hands. Lean into a plank position, core engaged.",
+      tips:['Base keeps toes pointing up, not heels','Flyer squeeze glutes and core — rigid body','Rise progressively, don\'t jump','Clear signal to come down: say "down"'],
+      videos:[{url:'https://www.youtube.com/watch?v=ZKfGqnN-i48',label:'▶ Front Plank tutorial'},{url:'https://www.youtube.com/watch?v=rqxHSswYzgE',label:'▶ Beginner variations'}] }
+  },
+  {
+    num:'03', lvl:1,
+    fr:{ title:'Throne (Le Trône)', sub:'Équilibre assis · Figure emblématique',
+      desc:'Le flyer est assis sur les pieds de la base, comme sur un trône. Très accessible et photogénique pour commencer.',
+      r1l:'Base (Fab)', r1t:'Allongé sur le dos, jambes en l\'air, genoux légèrement fléchis. Pieds à plat côte à côte. Bras tendus pour tenir les mains du flyer.',
+      r2l:'Flyer (Rita)', r2t:'Debout dos à la base, asseoir les ischions sur les pieds. Tenir les mains, puis lâcher progressivement pour trouver l\'équilibre.',
+      tips:['Le flyer regarde droit devant, pas vers le bas','La base pousse activement vers le plafond','Commencer avec les mains tenues, lâcher seulement quand stable'],
+      videos:[{url:'https://www.youtube.com/watch?v=IG2_0qVpFuk',label:'▶ Throne tutoriel'}] },
+    en:{ title:'Throne', sub:'Seated balance · Iconic pose',
+      desc:"The flyer sits on the base's feet, like sitting on a throne. Very accessible and photogenic for beginners.",
+      r1l:'Base (Fab)', r1t:"Lie on your back, legs in the air, knees slightly bent. Feet flat side by side. Arms extended to hold the flyer's hands.",
+      r2l:'Flyer (Rita)', r2t:"Stand with your back to the base, sit your sit bones on their feet. Hold hands, then gradually let go to find balance.",
+      tips:['Flyer looks straight ahead, not down','Base actively pushes toward the ceiling','Start with hands held, only let go when stable'],
+      videos:[{url:'https://www.youtube.com/watch?v=IG2_0qVpFuk',label:'▶ Throne tutorial'}] }
+  },
+  {
+    num:'04', lvl:1,
+    fr:{ title:"Bird (L'Oiseau)", sub:'Figure classique · Corps en extension',
+      desc:"La figure la plus connue de l'acro yoga. Le flyer est en extension horizontale, soutenu par les pieds de la base dans le bas-ventre, bras et jambes écartés comme un oiseau.",
+      r1l:'Base (Fab)', r1t:'Allongé, jambes en l\'air. Pieds dans le bas-ventre du flyer (entre nombril et hanches). Tenir les mains pendant la montée, puis lâcher.',
+      r2l:'Flyer (Rita)', r2t:"Monter en front plank d'abord. Déplacer le poids sur le bas-ventre, laisser jambes et bras se lever naturellement. Corps gainé.",
+      tips:['Partir du front plank — ne pas monter directement en bird','Le flyer pousse activement en arrière avec les épaules','Orteils pointés, jambes droites ou légèrement écartées','La base garde les chevilles flexibles'],
+      videos:[{url:'https://www.youtube.com/watch?v=ILs5OV9xAY0',label:'▶ Bird pour débutants'},{url:'https://www.youtube.com/watch?v=E9W5lOs8eiA',label:'▶ Progressions bird'}] },
+    en:{ title:'Bird', sub:'Classic pose · Full body extension',
+      desc:"The most iconic acroyoga pose. The flyer is in a horizontal extension, supported by the base's feet in the lower abdomen, arms and legs spread like a bird.",
+      r1l:'Base (Fab)', r1t:"Lie down, legs in the air. Feet in flyer's lower belly (between navel and hips). Hold hands during mount, then release when balanced.",
+      r2l:'Flyer (Rita)', r2t:'Start from front plank. Shift weight onto your lower belly, let legs and arms rise naturally. Core engaged, look forward.',
+      tips:["Start from front plank — don't try to mount directly into bird","Flyer actively pushes back with the shoulders","Toes pointed, legs straight or slightly apart","Base keeps ankles flexible to adjust balance"],
+      videos:[{url:'https://www.youtube.com/watch?v=ILs5OV9xAY0',label:'▶ Bird for beginners'},{url:'https://www.youtube.com/watch?v=E9W5lOs8eiA',label:'▶ Bird progressions'}] }
+  },
+  {
+    num:'05', lvl:2,
+    fr:{ title:"Star (L'Étoile)", sub:'Équilibre debout · À deux mains',
+      desc:"Le flyer est debout sur les pieds de la base. Très visuel, excellent pour développer la proprioception et l'équilibre.",
+      r1l:'Base (Fab)', r1t:'Allongé, jambes perpendiculaires. Pieds à plat côte à côte, chevilles solides. Tenir les mains du flyer pendant toute la figure.',
+      r2l:'Flyer (Rita)', r2t:'Monter debout depuis le Throne. Poser un pied à la fois sur les pieds de la base. Tenir les mains, puis chercher l\'équilibre bras écartés.',
+      tips:['La base ne lâche pas avant que ce soit demandé','Le flyer fléchit légèrement les genoux — jamais les jambes raides','Progresser depuis le Throne'],
+      videos:[{url:'https://www.youtube.com/watch?v=jjV52K_9yfU',label:'▶ Star tutoriel'}] },
+    en:{ title:'Star', sub:'Standing balance · Two-handed',
+      desc:"The flyer stands on the base's feet. Very visual, excellent for developing proprioception and balance.",
+      r1l:'Base (Fab)', r1t:"Lie down, legs perpendicular in the air. Feet flat side by side, solid ankles. Hold the flyer's hands throughout.",
+      r2l:'Flyer (Rita)', r2t:"Rise to standing gradually from Throne. Place one foot at a time on the base's feet. Hold hands, then seek balance with arms spread.",
+      tips:["Base does not release hands until asked","Flyer slightly bends the knees — never straight legs","Progress from Throne, don't mount directly"],
+      videos:[{url:'https://www.youtube.com/watch?v=jjV52K_9yfU',label:'▶ Star tutorial'}] }
+  },
+  {
+    num:'06', lvl:1,
+    fr:{ title:'Folded Leaf (Feuille pliée)', sub:'Étirement passif · Récupération',
+      desc:'Position de récupération et étirement profond. Le flyer relâche le dos vers le bas depuis le Bird, créant un étirement intense du dos et des ischio-jambiers.',
+      r1l:'Base (Fab)', r1t:'Depuis le Bird, tenir les chevilles du flyer. Maintenir les jambes perpendiculaires et stables.',
+      r2l:'Flyer (Rita)', r2t:'Depuis le Bird, relâcher progressivement le haut du corps vers le bas. Bras qui pendent, tête relâchée. Tenir 30–60 secondes.',
+      tips:['Descendre lentement — ne pas tomber brusquement','La base tient les chevilles fermement','Excellent pour finir une session ou récupérer'],
+      videos:[{url:'https://www.youtube.com/watch?v=Jf3bUBQJIXc',label:'▶ Folded Leaf tutoriel'}] },
+    en:{ title:'Folded Leaf', sub:'Passive stretch · Recovery',
+      desc:'A recovery and deep-stretch position. The flyer releases the upper body downward from Bird, creating an intense stretch of the back and hamstrings.',
+      r1l:'Base (Fab)', r1t:"From Bird, hold the flyer's ankles. Keep legs perpendicular and steady.",
+      r2l:'Flyer (Rita)', r2t:'From Bird, gradually release the upper body downward. Arms hanging, head relaxed. Hold for 30–60 seconds.',
+      tips:["Lower slowly — don't drop suddenly","Base holds the ankles firmly","Great for ending a session or recovering between poses"],
+      videos:[{url:'https://www.youtube.com/watch?v=Jf3bUBQJIXc',label:'▶ Folded Leaf tutorial'}] }
+  },
+  {
+    num:'07', lvl:2,
+    fr:{ title:'Whale (La Baleine)', sub:'Backbend passif · Ouverture du cœur',
+      desc:'Magnifique figure de thérapie. Le flyer est allongé en extension dorsale profonde sur les pieds de la base. Très libérateur pour le dos et les épaules.',
+      r1l:'Base (Fab)', r1t:'Allongé, pieds dans le dos du flyer (entre les omoplates). Tenir les mains au départ. Ajuster selon le confort.',
+      r2l:'Flyer (Rita)', r2t:"S'allonger en arrière sur les pieds, bras tombant vers le sol. Relâcher complètement. Respiration profonde.",
+      tips:['Ne pas forcer si douleur dans le dos ou les cervicales','La base ajuste la hauteur progressivement','Tenir 30–90 secondes'],
+      videos:[{url:'https://www.youtube.com/watch?v=3rKcQWRcaBA',label:'▶ Whale tutoriel'}] },
+    en:{ title:'Whale', sub:'Passive backbend · Heart opener',
+      desc:"A beautiful therapeutic pose. The flyer lies on their back on the base's feet in a deep spinal extension. Very releasing for the back and shoulders.",
+      r1l:'Base (Fab)', r1t:"Lie down, feet in flyer's back (between shoulder blades). Hold hands at first. Adjust foot position based on flyer's comfort.",
+      r2l:'Flyer (Rita)', r2t:'Lean back onto the base\'s feet, arms falling toward the floor. Completely release the back. Deep breathing.',
+      tips:['Do not force if there is back or neck pain','Base adjusts foot height progressively','Hold 30–90 seconds for a deep stretch'],
+      videos:[{url:'https://www.youtube.com/watch?v=3rKcQWRcaBA',label:'▶ Whale tutorial'}] }
+  },
+  {
+    num:'08', lvl:3,
+    fr:{ title:'Candlestick (La Chandelle)', sub:'Vertical · Figure impressionnante',
+      desc:"Le flyer est en équilibre vertical sur les pieds de la base. Figure avancée — à pratiquer une fois les niveaux 1 et 2 maîtrisés.",
+      r1l:'Base (Fab)', r1t:'Allongé, jambes en l\'air. Pieds dans les hanches du flyer. Bras tendus pour tenir les chevilles. Jambes solides et actives.',
+      r2l:'Flyer (Rita)', r2t:'Monter en Bird, puis transférer le poids sur les hanches et monter les jambes vers le plafond. Corps gainé, regard vers le haut.',
+      tips:['À pratiquer seulement après Bird et Star maîtrisés','Avoir un spotter pour les premières fois','Progresser lentement'],
+      videos:[{url:'https://www.youtube.com/watch?v=FzLkPjMQpZM',label:'▶ Candlestick tutoriel'}] },
+    en:{ title:'Candlestick', sub:'Vertical · Impressive pose',
+      desc:'The flyer balances vertically on the base\'s feet. An advanced pose — only practice once Level 1 and 2 are mastered.',
+      r1l:'Base (Fab)', r1t:"Lie down, legs in the air. Place both feet in the flyer's hips. Arms extended to hold ankles. Legs solid and active.",
+      r2l:'Flyer (Rita)', r2t:'Start in Bird, then shift weight onto hips and lift legs toward the ceiling. Core tight, look upward. Don\'t arch.',
+      tips:['Only practice after mastering Bird and Star','Have a spotter for the first attempts','Progress slowly'],
+      videos:[{url:'https://www.youtube.com/watch?v=FzLkPjMQpZM',label:'▶ Candlestick tutorial'}] }
+  }
+];
+
+const SESSION = [
+  { time:"0–10'", fr:{ name:"Échauffement & contact", note:"Exercice 01" }, en:{ name:"Warm-up & contact", note:"Exercise 01" } },
+  { time:"10–20'", name:"Front Plank → Bird", fr:{ note:"Exercices 02 + 04 · 3–5 montées chacun" }, en:{ note:"Exercises 02 + 04 · 3–5 mounts each" } },
+  { time:"20–30'", name:"Throne → Star", fr:{ note:"Exercices 03 + 05 · prendre le temps" }, en:{ note:"Exercises 03 + 05 · take your time" } },
+  { time:"30–40'", name:"Folded Leaf + Whale", fr:{ note:"Exercices 06 + 07 · récupération active" }, en:{ note:"Exercises 06 + 07 · active recovery" } },
+  { time:"40–45'", fr:{ name:"Étirements & retour au calme", note:"Dos, épaules, hanches" }, en:{ name:"Stretching & cool-down", note:"Back, shoulders, hips" } }
+];
+
+const LVL_LABELS = { fr:{ 1:'Niveau 1', 2:'Niveau 2', 3:'Niveau 3' }, en:{ 1:'Level 1', 2:'Level 2', 3:'Level 3' } };
+const LVL_CLS = { 1:'lvl-1', 2:'lvl-2', 3:'lvl-3' };
+
+function renderExercises() {
+  const c = document.getElementById('exercises-container');
+  c.innerHTML = EXERCISES.map((e,i) => {
+    const d = e[lang];
+    const lvlLabel = LVL_LABELS[lang][e.lvl];
+    const lvlCls = LVL_CLS[e.lvl];
+    const tips = d.tips.map(t => `<li>${t}</li>`).join('');
+    const videos = d.videos.map(v => `<a href="${v.url}" target="_blank" class="video-link">${v.label}</a>`).join('');
+    return `<div class="exo-card" onclick="toggleExo(this)">
+      <div class="exo-header">
+        <div class="exo-number">${e.num}</div>
+        <div>
+          <div class="exo-title">${d.title}</div>
+          <div class="exo-sub">${d.sub}</div>
+        </div>
+        <span class="lvl-badge ${lvlCls}">${lvlLabel}</span>
+        <span class="exo-chevron">▼</span>
+      </div>
+      <div class="exo-body">
+        <p class="exo-desc">${d.desc}</p>
+        <div class="roles-grid">
+          <div class="role-box"><div class="role-label">${d.r1l}</div><div class="role-text">${d.r1t}</div></div>
+          <div class="role-box"><div class="role-label">${d.r2l}</div><div class="role-text">${d.r2t}</div></div>
+        </div>
+        ${tips ? `<ul class="tips-list">${tips}</ul>` : ''}
+        ${videos}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderSession() {
+  const c = document.getElementById('session-card');
+  c.innerHTML = SESSION.map(s => {
+    const d = s[lang] || {};
+    const name = d.name || s.name || '';
+    const note = d.note || '';
+    return `<div class="session-row">
+      <div class="session-time">${s.time}</div>
+      <div class="session-name">${name}</div>
+      <div class="session-note">${note}</div>
+    </div>`;
+  }).join('');
+}
+
+function applyLang() {
+  document.querySelectorAll('[data-fr]').forEach(el => {
+    const val = el.getAttribute('data-' + lang);
+    if (val !== null) el.innerHTML = val;
+  });
+  document.getElementById('btn-lang').textContent = lang === 'fr' ? '🇬🇧 English' : '🇫🇷 Français';
+  document.documentElement.lang = lang;
+  renderExercises();
+  renderSession();
+}
+
+function toggleLang() {
+  lang = lang === 'fr' ? 'en' : 'fr';
+  localStorage.setItem('ay_lang', lang);
+  applyLang();
+}
+
+function toggleExo(card) { card.classList.toggle('open'); }
+
+applyLang();
+</script>
+</body>
+</html>
