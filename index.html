@@ -2090,6 +2090,11 @@
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('./sw.js');
+      // Ouvrir le suivi si l'URL contient #suivi
+      if (window.location.hash === '#suivi') {
+        setTimeout(() => openSuivi(), 300);
+        history.replaceState(null, '', window.location.pathname);
+      }
     });
   }
   // Lire la version depuis sw.js
