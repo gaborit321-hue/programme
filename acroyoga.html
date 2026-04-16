@@ -16,7 +16,7 @@
     --lvl3:#c93a1f; --lvl3-bg:rgba(201,58,31,0.08);
   }
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-  body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; font-size:14px; line-height:1.6; min-height:100vh; padding:40px 24px 100px; }
+  body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; font-size:14px; line-height:1.6; min-height:100vh; padding:24px 24px 100px; }
   header { max-width:960px; margin:0 auto 48px; display:flex; align-items:flex-end; justify-content:space-between; border-bottom:1px solid var(--border2); padding-bottom:20px; }
   .header-title { font-family:'Bebas Neue',sans-serif; font-size:52px; letter-spacing:.04em; line-height:1; }
   .header-title span { color:var(--accent); }
@@ -86,19 +86,23 @@
 </style>
 </head>
 <body>
-<header>
-  <div><div class="header-title">ACRO<br><span>YOGA</span></div></div>
-  <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
-    <div class="header-actions">
-      <button class="btn-lang" onclick="toggleLang()" id="btn-lang">🇬🇧 English</button>
-    </div>
-    <div class="header-sub">
-      Fab &amp; Rita<br>
-      <span data-fr="Débutants · Progression douce" data-en="Beginners · Gentle Progression"></span><br>
-      <span data-fr="Force · Équilibre · Confiance" data-en="Strength · Balance · Trust"></span>
-    </div>
+<header style="background:var(--bg2); border-bottom:1px solid var(--border2); display:flex; align-items:center; justify-content:space-between; padding:10px 20px; margin:0 0 0 0; max-width:none;">
+  <span style="width:44px;"></span>
+  <span style="font-family:'DM Mono',monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted);">Acro Yoga</span>
+  <div style="display:flex; gap:4px;">
+    <button id="btn-fr" onclick="setLang('fr')" style="font-family:'DM Mono',monospace; font-size:9px; font-weight:600; letter-spacing:.08em; background:var(--accent-bg); border:1px solid var(--accent-border); border-radius:4px; color:var(--accent); padding:3px 8px; cursor:pointer; transition:all .18s;">FR</button>
+    <button id="btn-en" onclick="setLang('en')" style="font-family:'DM Mono',monospace; font-size:9px; font-weight:600; letter-spacing:.08em; background:none; border:1px solid var(--border2); border-radius:4px; color:var(--muted); padding:3px 8px; cursor:pointer; transition:all .18s;">EN</button>
   </div>
 </header>
+
+<div style="max-width:960px; margin:32px auto 40px; padding:0 24px; display:flex; align-items:flex-end; justify-content:space-between; border-bottom:1px solid var(--border2); padding-bottom:20px;">
+  <div class="header-title">ACRO<br><span>YOGA</span></div>
+  <div class="header-sub" style="text-align:right;">
+    Fab &amp; Rita<br>
+    <span data-fr="Débutants · Progression douce" data-en="Beginners · Gentle Progression"></span><br>
+    <span data-fr="Force · Équilibre · Confiance" data-en="Strength · Balance · Trust"></span>
+  </div>
+</div>
 
 <div class="main">
   <section>
@@ -342,14 +346,22 @@ function applyLang() {
     const val = el.getAttribute('data-' + lang);
     if (val !== null) el.innerHTML = val;
   });
-  document.getElementById('btn-lang').textContent = lang === 'fr' ? '🇬🇧 English' : '🇫🇷 Français';
+  // Update button active states
+  const btnFr = document.getElementById('btn-fr');
+  const btnEn = document.getElementById('btn-en');
+  if (btnFr && btnEn) {
+    const activeStyle = 'font-family:\'DM Mono\',monospace;font-size:9px;font-weight:600;letter-spacing:.08em;background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:4px;color:var(--accent);padding:3px 8px;cursor:pointer;';
+    const inactiveStyle = 'font-family:\'DM Mono\',monospace;font-size:9px;font-weight:600;letter-spacing:.08em;background:none;border:1px solid var(--border2);border-radius:4px;color:var(--muted);padding:3px 8px;cursor:pointer;';
+    btnFr.style.cssText = lang === 'fr' ? activeStyle : inactiveStyle;
+    btnEn.style.cssText = lang === 'en' ? activeStyle : inactiveStyle;
+  }
   document.documentElement.lang = lang;
   renderExercises();
   renderSession();
 }
 
-function toggleLang() {
-  lang = lang === 'fr' ? 'en' : 'fr';
+function setLang(l) {
+  lang = l;
   localStorage.setItem('ay_lang', lang);
   applyLang();
 }
