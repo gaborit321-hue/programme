@@ -1347,7 +1347,7 @@
       const res = await fetch(SHEET_READ_URL);
       const text = await res.text();
       // Google renvoie du JSONP : /*O_o*/\ngoogle.visualization.Query.setResponse({...})
-      const json = JSON.parse(text.replace(/^.*?google\.visualization\.Query\.setResponse\(/, '').replace(/\);?\s*$/, ''));
+      const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/)[1]);
       const rows = json.table.rows;
       const entries = rows
         .map(r => ({
