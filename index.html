@@ -696,13 +696,44 @@
   .log-table td {
     font-size: 12px;
     color: var(--text);
-    padding: 10px 0;
+    padding: 10px 4px;
     border-bottom: 1px solid var(--border);
     font-family: 'DM Mono', monospace;
+    vertical-align: middle;
   }
   .log-table td.muted { color: var(--muted); }
   .log-table td.delta-up { color: #ef4444; }
   .log-table td.delta-down { color: var(--ride); }
+  /* Photo cell */
+  .log-table td.photo-cell {
+    width: 48px;
+    padding: 6px 8px 6px 0;
+  }
+  .log-photo-thumb {
+    width: 44px;
+    height: 44px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid var(--border2);
+    cursor: pointer;
+    display: block;
+    transition: opacity .2s;
+  }
+  .log-photo-thumb:hover { opacity: .8; }
+  .log-photo-placeholder {
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    border: 1px dashed var(--border2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: var(--dim);
+    cursor: pointer;
+    transition: border-color .2s, color .2s;
+  }
+  .log-photo-placeholder:hover { border-color: var(--accent); color: var(--accent); }
   .log-del {
     background: none;
     border: none;
@@ -839,7 +870,10 @@
   <div class="header-sub" style="text-align:right; min-width:140px;">
     <span id="hdr-date" style="color:var(--text); font-size:12px;"></span><br>
     <span id="hdr-age" style="color:var(--muted); font-size:10px;"></span><br>
-    <span style="font-family:'DM Mono',monospace; font-size:11px; color:var(--muted); letter-spacing:.04em; margin-right:6px;">183 cm</span><span id="hdr-weight" onclick="openSuivi()" style="cursor:pointer; margin-top:4px; display:inline-block;"></span>
+    <div style="display:flex; align-items:center; gap:8px; justify-content:flex-end; margin-top:4px;">
+      <a href="acroyoga.html" style="font-family:'DM Mono',monospace; font-size:10px; color:#be185d; text-decoration:none; letter-spacing:.06em; background:rgba(190,24,93,.08); border:1px solid rgba(190,24,93,.2); padding:3px 10px; border-radius:5px; transition:background .2s;" onmouseover="this.style.background='rgba(190,24,93,.14)'" onmouseout="this.style.background='rgba(190,24,93,.08)'">🤸 Acro Yoga</a>
+      <span style="font-family:'DM Mono',monospace; font-size:11px; color:var(--muted); letter-spacing:.04em;">183 cm</span><span id="hdr-weight" onclick="openSuivi()" style="cursor:pointer; display:inline-block;"></span>
+    </div>
   </div>
 </header>
 
@@ -1708,8 +1742,8 @@
         deltaHtml = `<td class="${cls}">${d>0?'+':''}${d} kg</td>`;
       }
       const photoHtml = photos[e.date]
-        ? `<td><img src="${photos[e.date]}" style="width:40px;height:40px;object-fit:cover;border-radius:6px;border:1px solid var(--border2);cursor:pointer;" onclick="openPhotoModal('${e.date}')" title="Voir la photo"></td>`
-        : `<td></td>`;
+        ? `<td class="photo-cell"><img class="log-photo-thumb" src="${photos[e.date]}" onclick="openPhotoModal('${e.date}')" title="Voir la photo"></td>`
+        : `<td class="photo-cell"><div class="log-photo-placeholder" onclick="addPhotoForDate('${e.date}')" title="Ajouter une photo">📷</div></td>`;
       return `<tr>
         ${photoHtml}
         <td class="muted">${fmtDate(e.date)}</td>
@@ -1819,6 +1853,7 @@
 </div>
 
 <!-- PHOTO MODAL -->
+<input type="file" id="inp-photo-history" accept="image/*" capture="environment" style="display:none" onchange="onHistoryPhotoSelected(this)">
 <div id="photo-modal" onclick="closePhotoModal()">
   <button id="photo-modal-close" onclick="closePhotoModal()">✕ Fermer</button>
   <img id="photo-modal-img" src="" alt="photo">
@@ -1836,6 +1871,30 @@
   }
   function closePhotoModal() {
     document.getElementById('photo-modal').classList.remove('open');
+  }
+
+  // Ajouter une photo directement depuis l'historique
+  let _photoTargetDate = null;
+  function addPhotoForDate(date) {
+    _photoTargetDate = date;
+    const inp = document.getElementById('inp-photo-history');
+    if (inp) inp.click();
+  }
+  function onHistoryPhotoSelected(input) {
+    const file = input.files[0];
+    if (!file || !_photoTargetDate) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      compressPhoto(e.target.result, 600, 0.7, compressed => {
+        const photos = getPhotos();
+        photos[_photoTargetDate] = compressed;
+        savePhotos(photos);
+        renderSuivi();
+        _photoTargetDate = null;
+      });
+    };
+    reader.readAsDataURL(file);
+    input.value = '';
   }
 
   if ('serviceWorker' in navigator) {
