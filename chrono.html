@@ -91,7 +91,7 @@
     cursor:pointer;
     transition:all .18s;
   }
-  .lang-mini button.active { background:var(--yellow-bg); border-color:var(--yellow-border); color:var(--yellow); }
+  .lang-mini button.active { background:rgba(14,122,138,.1); border-color:rgba(14,122,138,.3); color:var(--teal); }
 
   /* ── PAGES ── */
   .page { display:none; padding:32px 20px 80px; max-width:600px; margin:0 auto; }
@@ -132,6 +132,7 @@
   .session-card:hover { border-color:var(--border2); transform:translateY(-1px); }
   .session-card.thu { border-left:4px solid var(--teal); }
   .session-card.sat { border-left:4px solid var(--yellow); }
+  .session-card.abs { border-left:4px solid var(--green); }
   .session-card-info {}
   .session-card-day {
     font-family:'DM Mono',monospace;
@@ -150,6 +151,7 @@
   }
   .session-card.thu .session-card-name { color:var(--teal); }
   .session-card.sat .session-card-name { color:var(--yellow); }
+  .session-card.abs .session-card-name { color:var(--green); }
   .session-card-meta {
     font-size:11px;
     color:var(--muted);
@@ -295,6 +297,7 @@
     flex:1;
   }
   .btn-start.yellow { background:var(--yellow); }
+  .btn-start.green  { background:var(--green); }
   .btn-start:hover { opacity:.85; }
   .btn-reset {
     font-family:'DM Mono',monospace;
@@ -351,6 +354,8 @@
   }
   .exo-item.active-exo .exo-num { color:var(--teal); }
   .exo-item.active-exo.yellow .exo-num { color:var(--yellow); }
+  .exo-item.active-exo.green  { background:var(--green-bg); border-color:rgba(26,158,74,.3); }
+  .exo-item.active-exo.green  .exo-num { color:var(--green); }
   .exo-item-name { font-size:13px; font-weight:500; color:var(--text); }
   .exo-item-done { margin-left:auto; font-size:14px; opacity:0; transition:opacity .2s; }
   .exo-item.completed .exo-item-done { opacity:1; }
@@ -410,6 +415,15 @@
         <div class="session-card-day" data-i18n="sat_day">Additionnel 2</div>
         <div class="session-card-name" data-i18n="sat_name">HIIT ADD. 2</div>
         <div class="session-card-meta" data-i18n="sat_meta">3 exercices · 45s travail / 15s repos · 5 rounds</div>
+      </div>
+      <div class="session-card-arrow">→</div>
+    </div>
+
+    <div class="session-card abs" onclick="selectSession('abs')">
+      <div class="session-card-info">
+        <div class="session-card-day" data-i18n="abs_day">Additionnel 3</div>
+        <div class="session-card-name" data-i18n="abs_name">ABDOS</div>
+        <div class="session-card-meta" data-i18n="abs_meta">6 exercices · 40s travail / 20s repos · 4 rounds</div>
       </div>
       <div class="session-card-arrow">→</div>
     </div>
@@ -488,6 +502,7 @@ const T = {
     choice_title: 'TIMER', choice_sub: 'Choose your session',
     thu_day: 'Thursday', thu_name: 'HIIT CARDIO', thu_meta: '8 exercises · 20s work / 10s rest · 5 rounds',
     sat_day: 'Saturday', sat_name: 'HIIT + GLUTES', sat_meta: '3 exercises · 45s work / 15s rest · 5 rounds',
+    abs_day: 'Additional 3', abs_name: 'ABS', abs_meta: '6 exercises · 40s work / 20s rest · 4 rounds',
     exo_label: 'Exercise', next_label: 'Next →',
     round_label: 'Round', of_label: 'of',
     btn_start: 'START', btn_pause: 'PAUSE', btn_resume: 'RESUME', btn_reset: 'Reset',
@@ -497,14 +512,17 @@ const T = {
     next_exo_prefix: 'Next →',
     thu_exos: ['Jumping jacks','Mountain climbers','Squat jumps','High knees','Modified burpees','Reverse lunges','Push-ups','Plank shoulder taps'],
     sat_exos: ['Squat jumps','Burpees','Jump lunges'],
+    abs_exos: ['Classic crunches','Bicycle crunches','Leg raises','Russian twists','Toe touches','Slow mountain climbers'],
     thu_day_label: 'THU · HIIT',
     sat_day_label: 'SAT · HIIT',
+    abs_day_label: 'HIIT ADD. 3 · ABS',
   },
   fr: {
     back: 'Retour', top_title: 'Chrono',
     choice_title: 'TIMER', choice_sub: 'Choisir la séance',
     thu_day: 'Additionnel 1', thu_name: 'HIIT ADD. 1', thu_meta: '8 exercices · 20s travail / 10s repos · 5 rounds',
     sat_day: 'Additionnel 2', sat_name: 'HIIT ADD. 2', sat_meta: '3 exercices · 45s travail / 15s repos · 5 rounds',
+    abs_day: 'Additionnel 3', abs_name: 'ABDOS', abs_meta: '6 exercices · 40s travail / 20s repos · 4 rounds',
     exo_label: 'Exercice', next_label: 'Suivant →',
     round_label: 'Round', of_label: '/',
     btn_start: 'DÉMARRER', btn_pause: 'PAUSE', btn_resume: 'REPRENDRE', btn_reset: 'Reset',
@@ -515,8 +533,10 @@ const T = {
     next_exo_prefix: 'Suivant →',
     thu_exos: ['Jumping jacks','Mountain climbers','Squat jumps','High knees','Modified burpees','Reverse lunges','Push-ups','Plank shoulder taps'],
     sat_exos: ['Squat jumps','Burpees','Jump lunges'],
+    abs_exos: ['Crunchs classiques','Crunchs bicycle','Relevés de jambes','Russian twists','Toe touches','Mountain climbers lents'],
     thu_day_label: 'HIIT ADDITIONNEL 1',
     sat_day_label: 'HIIT ADDITIONNEL 2',
+    abs_day_label: 'HIIT ADDITIONNEL 3 · ABDOS',
     rc_sub: 'Repos inter-séries', rc_label: 'Temps de récupération entre les rounds', rc_seconds: 'secondes', rc_go: "C'EST PARTI →",
   }
 };
@@ -542,6 +562,7 @@ function setLang(lang) {
 const SESSIONS = {
   thu: { workTime: 20, restTime: 10, roundRestTime: 60, rounds: 5, color: 'teal', btnClass: '' },
   sat: { workTime: 45, restTime: 15, roundRestTime: 60, rounds: 5, color: 'yellow', btnClass: 'yellow' },
+  abs: { workTime: 40, restTime: 20, roundRestTime: 60, rounds: 4, color: 'green', btnClass: 'green' },
 };
 
 // ── TIMER STATE ────────────────────────────────────────────────────
@@ -568,9 +589,10 @@ function selectSession(key) {
   pendingRestTime = 60;
   const d = T[currentLang];
   const title = document.getElementById('rc-title');
-  if (title) title.innerHTML = 'HIIT<br><span>' + (key === 'thu' ? d.thu_name : d.sat_name) + '</span>';
+  const nameKey = key === 'thu' ? 'thu_name' : key === 'sat' ? 'sat_name' : 'abs_name';
+  if (title) title.innerHTML = 'HIIT<br><span>' + d[nameKey] + '</span>';
   const btn = document.getElementById('rc-start-btn');
-  if (btn) btn.style.background = key === 'sat' ? 'var(--yellow)' : 'var(--teal)';
+  if (btn) btn.style.background = key === 'sat' ? 'var(--yellow)' : key === 'abs' ? 'var(--green)' : 'var(--teal)';
   updateRestDisplay();
   showPage('page-rest-config');
 }
@@ -584,7 +606,7 @@ function updateRestDisplay() {
 }
 
 function changeRest(delta) {
-  pendingRestTime = Math.max(10, Math.min(180, pendingRestTime + delta));
+  pendingRestTime = Math.max(10, Math.min(180, pendingRestTime + (delta > 0 ? 10 : -10)));
   updateRestDisplay();
 }
 
@@ -605,10 +627,9 @@ function loadSession(key) {
   showPage('page-chrono');
 
   const d = T[currentLang];
-  document.getElementById('chrono-day-label').textContent = key === 'thu' ? d.thu_day_label : d.sat_day_label;
-  document.getElementById('chrono-session-name').textContent = key === 'thu' ? d.thu_name : d.sat_name;
+  document.getElementById('chrono-day-label').textContent = key === 'thu' ? d.thu_day_label : key === 'sat' ? d.sat_day_label : d.abs_day_label;
+  document.getElementById('chrono-session-name').textContent = key === 'thu' ? d.thu_name : key === 'sat' ? d.sat_name : d.abs_name;
 
-  // Style start button
   const btn = document.getElementById('btn-start');
   btn.className = 'btn-start' + (currentSession.btnClass ? ' ' + currentSession.btnClass : '');
 
@@ -619,19 +640,22 @@ function loadSession(key) {
 
 function getExos() {
   const d = T[currentLang];
-  return sessionKey === 'thu' ? d.thu_exos : d.sat_exos;
+  if (sessionKey === 'thu') return d.thu_exos;
+  if (sessionKey === 'sat') return d.sat_exos;
+  return d.abs_exos;
 }
 
 function renderExoList() {
   const exos = getExos();
   const list = document.getElementById('exo-list');
   const isYellow = sessionKey === 'sat';
+  const colorClass = sessionKey === 'sat' ? ' yellow' : sessionKey === 'abs' ? ' green' : '';
   list.innerHTML = exos.map((name, i) => {
     const isCompleted = i < currentExoIndex
       || (i === currentExoIndex && (currentPhase === 'rest' || currentPhase === 'roundRest'))
       || (currentPhase === 'done');
     const isActive = i === currentExoIndex && currentPhase === 'work';
-    return `<div class="exo-item ${isActive ? 'active-exo' + (isYellow ? ' yellow' : '') : ''} ${isCompleted ? 'completed' : ''}" id="exo-item-${i}">
+    return `<div class="exo-item ${isActive ? 'active-exo' + colorClass : ''} ${isCompleted ? 'completed' : ''}" id="exo-item-${i}">
       <div class="exo-num">${i+1}</div>
       <div class="exo-item-name">${name}</div>
       <div class="exo-item-done">✓</div>
