@@ -329,36 +329,22 @@
   }
   .exo-section-label::after { content:''; flex:1; height:1px; background:var(--border); }
   .exo-list { display:flex; flex-direction:column; gap:6px; }
-  .exo-item {
-    background:var(--bg2);
-    border:1px solid var(--border);
-    border-radius:8px;
-    padding:10px 14px;
-    display:flex;
-    align-items:center;
-    gap:12px;
-    transition:all .2s;
-  }
-  .exo-item.active-exo {
-    background:var(--teal-bg);
-    border-color:rgba(14,122,138,.3);
-  }
+  .exo-item { background:var(--bg2); border:1px solid var(--border); border-radius:8px; overflow:hidden; transition:all .2s; }
+  .exo-item-header { padding:10px 14px; display:flex; align-items:center; gap:12px; cursor:pointer; user-select:none; }
+  .exo-item.active-exo { background:var(--teal-bg); border-color:rgba(14,122,138,.3); }
   .exo-item.active-exo.yellow { background:var(--yellow-bg); border-color:var(--yellow-border); }
-  .exo-num {
-    font-family:'Bebas Neue',sans-serif;
-    font-size:18px;
-    color:var(--dim);
-    min-width:20px;
-    text-align:center;
-    line-height:1;
-  }
+  .exo-item.active-exo.green  { background:var(--green-bg); border-color:rgba(26,158,74,.3); }
+  .exo-num { font-family:'Bebas Neue',sans-serif; font-size:18px; color:var(--dim); min-width:20px; text-align:center; line-height:1; }
   .exo-item.active-exo .exo-num { color:var(--teal); }
   .exo-item.active-exo.yellow .exo-num { color:var(--yellow); }
-  .exo-item.active-exo.green  { background:var(--green-bg); border-color:rgba(26,158,74,.3); }
   .exo-item.active-exo.green  .exo-num { color:var(--green); }
-  .exo-item-name { font-size:13px; font-weight:500; color:var(--text); }
-  .exo-item-done { margin-left:auto; font-size:14px; opacity:0; transition:opacity .2s; }
+  .exo-item-name { font-size:13px; font-weight:500; color:var(--text); flex:1; }
+  .exo-item-done { font-size:14px; opacity:0; transition:opacity .2s; }
   .exo-item.completed .exo-item-done { opacity:1; }
+  .exo-chevron { font-size:10px; color:var(--dim); transition:transform .2s; margin-left:4px; }
+  .exo-item.exo-open .exo-chevron { transform:rotate(180deg); }
+  .exo-item-desc { display:none; font-size:12px; color:var(--muted); line-height:1.6; padding:0 14px 12px 46px; border-top:1px solid var(--border); padding-top:8px; }
+  .exo-item.exo-open .exo-item-desc { display:block; }
 
   /* Finish message */
   .finish-msg {
@@ -404,7 +390,7 @@
     <div class="session-card thu" onclick="selectSession('thu')">
       <div class="session-card-info">
         <div class="session-card-day" data-i18n="thu_day">Additionnel 1</div>
-        <div class="session-card-name" data-i18n="thu_name">HIIT ADD. 1</div>
+        <div class="session-card-name" data-i18n="thu_name">CARDIO TABATA</div>
         <div class="session-card-meta" data-i18n="thu_meta">8 exercices · 20s travail / 10s repos · 5 rounds</div>
       </div>
       <div class="session-card-arrow">→</div>
@@ -413,8 +399,8 @@
     <div class="session-card sat" onclick="selectSession('sat')">
       <div class="session-card-info">
         <div class="session-card-day" data-i18n="sat_day">Additionnel 2</div>
-        <div class="session-card-name" data-i18n="sat_name">HIIT ADD. 2</div>
-        <div class="session-card-meta" data-i18n="sat_meta">3 exercices · 45s travail / 15s repos · 5 rounds</div>
+        <div class="session-card-name" data-i18n="sat_name">CALLISTHÉNIE</div>
+        <div class="session-card-meta" data-i18n="sat_meta">6 exercices · 45s travail / 15s repos · 4 rounds</div>
       </div>
       <div class="session-card-arrow">→</div>
     </div>
@@ -446,7 +432,7 @@
       <button onclick="changeRest(+15)" style="font-family:'DM Mono',monospace; font-size:18px; font-weight:600; background:var(--bg3); border:1px solid var(--border2); border-radius:10px; color:var(--muted); width:48px; height:48px; cursor:pointer; flex-shrink:0;">+</button>
     </div>
     <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:center;">
-      <button class="rc-preset" onclick="setRest(10)">10s</button>
+      <button class="rc-preset" onclick="setRest(15)">15s</button>
       <button class="rc-preset" onclick="setRest(30)">30s</button>
       <button class="rc-preset" onclick="setRest(45)">45s</button>
       <button class="rc-preset" onclick="setRest(60)">60s</button>
@@ -500,8 +486,8 @@ const T = {
   en: {
     back: 'Back', top_title: 'Chrono',
     choice_title: 'TIMER', choice_sub: 'Choose your session',
-    thu_day: 'Thursday', thu_name: 'HIIT CARDIO', thu_meta: '8 exercises · 20s work / 10s rest · 5 rounds',
-    sat_day: 'Saturday', sat_name: 'HIIT + GLUTES', sat_meta: '3 exercises · 45s work / 15s rest · 5 rounds',
+    thu_day: 'Thursday', thu_name: 'CARDIO TABATA', thu_meta: '8 exercises · 20s work / 10s rest · 5 rounds',
+    sat_day: 'Additional 2', sat_name: 'CALISTHENICS', sat_meta: '6 exercises · 45s work / 15s rest · 4 rounds',
     abs_day: 'Additional 3', abs_name: 'ABS', abs_meta: '6 exercises · 40s work / 20s rest · 4 rounds',
     exo_label: 'Exercise', next_label: 'Next →',
     round_label: 'Round', of_label: 'of',
@@ -511,17 +497,20 @@ const T = {
     finish_title: 'SESSION COMPLETE!', finish_sub: 'Great work 💪',
     next_exo_prefix: 'Next →',
     thu_exos: ['Jumping jacks','Mountain climbers','Squat jumps','High knees','Modified burpees','Reverse lunges','Push-ups','Plank shoulder taps'],
-    sat_exos: ['Squat jumps','Burpees','Jump lunges'],
+    sat_exos: ['Pike push-ups','Bulgarian split squats','Dips (chair)','Archer push-ups','Tuck jumps','Wall sit'],
     abs_exos: ['Classic crunches','Bicycle crunches','Leg raises','Russian twists','Toe touches','Slow mountain climbers'],
-    thu_day_label: 'THU · HIIT',
-    sat_day_label: 'SAT · HIIT',
+    thu_desc: ['Arms out, jump feet wide then together. Keep a steady rhythm.','From plank, alternate driving each knee to your chest quickly.','Jump up, land in a squat. Explode upward each rep.','Run in place, lifting knees to hip height. Fast pace.','From standing: squat, hands to floor, jump back to plank, jump forward, stand.','Step one foot back into a lunge. Alternate legs. Controlled movement.','Standard push-up. Scale by going to knees if needed.','In high plank, tap each shoulder alternately. Keep hips stable.'],
+    sat_desc: ['In downward dog position, bend elbows to lower your head toward the floor. Targets shoulders.','One foot on chair behind you, lower into a deep lunge. 22s each leg — signal will sound.','Hands on chair edge, lower your body by bending elbows. Keep back close to chair.','Wide push-up: shift weight to one side, the other arm stays nearly straight. Alternate sides.','Jump and pull both knees to your chest at the top. Land softly.','Back against wall, thighs parallel to floor. Hold the position. Burn is normal.'],
+    abs_desc: ['Lie on back, knees bent. Curl your upper body toward your knees. Focus on squeezing abs.','Lie on back, legs off floor. Bring opposite elbow to opposite knee in a cycling motion.','Lie flat, legs straight. Lift legs to 90° then lower slowly without touching the floor.','Sit up, feet slightly off ground, twist your torso side to side. Add weight for challenge.','Legs straight up at 90°. Reach hands toward your toes by lifting your shoulders off the ground.','From plank, drive knees to chest slowly and deliberately. Controlled, not fast.'],
+    thu_day_label: 'ADD. 1 · CARDIO TABATA',
+    sat_day_label: 'ADD. 2 · CALISTHENICS',
     abs_day_label: 'HIIT ADD. 3 · ABS',
   },
   fr: {
     back: 'Retour', top_title: 'Chrono',
     choice_title: 'TIMER', choice_sub: 'Choisir la séance',
-    thu_day: 'Additionnel 1', thu_name: 'HIIT ADD. 1', thu_meta: '8 exercices · 20s travail / 10s repos · 5 rounds',
-    sat_day: 'Additionnel 2', sat_name: 'HIIT ADD. 2', sat_meta: '3 exercices · 45s travail / 15s repos · 5 rounds',
+    thu_day: 'Additionnel 1', thu_name: 'CARDIO TABATA', thu_meta: '8 exercices · 20s travail / 10s repos · 5 rounds',
+    sat_day: 'Additionnel 2', sat_name: 'CALLISTHÉNIE', sat_meta: '6 exercices · 45s travail / 15s repos · 4 rounds',
     abs_day: 'Additionnel 3', abs_name: 'ABDOS', abs_meta: '6 exercices · 40s travail / 20s repos · 4 rounds',
     exo_label: 'Exercice', next_label: 'Suivant →',
     round_label: 'Round', of_label: '/',
@@ -532,10 +521,13 @@ const T = {
     finish_title: 'SÉANCE TERMINÉE !', finish_sub: 'Beau travail 💪',
     next_exo_prefix: 'Suivant →',
     thu_exos: ['Jumping jacks','Mountain climbers','Squat jumps','High knees','Modified burpees','Reverse lunges','Push-ups','Plank shoulder taps'],
-    sat_exos: ['Squat jumps','Burpees','Jump lunges'],
+    sat_exos: ['Pike push-ups','Bulgarian split squats','Dips (chaise)','Archer push-ups','Tuck jumps','Wall sit'],
     abs_exos: ['Crunchs classiques','Crunchs bicycle','Relevés de jambes','Russian twists','Toe touches','Mountain climbers lents'],
-    thu_day_label: 'HIIT ADDITIONNEL 1',
-    sat_day_label: 'HIIT ADDITIONNEL 2',
+    thu_desc: ['Bras tendus, sauter les pieds écartés puis joints. Rythme régulier.','En planche, alterner les genoux vers la poitrine rapidement.','Sauter vers le haut en partant dun squat. Exploser à chaque rep.','Courir sur place en montant les genoux à hauteur des hanches. Rythme rapide.','Depuis debout : squat, mains au sol, pieds arrière, pieds avant, debout.','Reculer un pied en fente. Alterner. Mouvement contrôlé.','Pompe standard. Genoux au sol si besoin.','En planche haute, toucher chaque épaule alternativement. Hanches stables.'],
+    sat_desc: ['En position chien tête en bas, fléchir les coudes pour descendre la tête vers le sol. Cible les épaules.','Un pied sur la chaise derrière, descendre en fente profonde. 22s par jambe — signal sonore au changement.','Mains sur le bord de la chaise, descendre en fléchissant les coudes. Dos proche de la chaise.','Pompe large : reporter le poids sur un côté, lautre bras reste presque tendu. Alterner.','Sauter et ramener les deux genoux vers la poitrine en haut. Réception douce.','Dos au mur, cuisses parallèles au sol. Tenir la position. La brûlure est normale.'],
+    abs_desc: ['Sur le dos, genoux fléchis. Enrouler le haut du corps vers les genoux. Contracter les abdos.','Sur le dos, jambes levées. Amener le coude opposé au genou opposé en pédalant.','Allongé, jambes tendues. Monter les jambes à 90° puis redescendre sans toucher le sol.','Assis, pieds légèrement levés, tourner le buste de gauche à droite. Ajouter du poids pour plus de difficulté.','Jambes verticales à 90°. Tendre les mains vers les orteils en décollant les épaules du sol.','En planche, ramener les genoux vers la poitrine lentement et de façon contrôlée.'],
+    thu_day_label: 'ADD. 1 · CARDIO TABATA',
+    sat_day_label: 'ADD. 2 · CALLISTHÉNIE',
     abs_day_label: 'HIIT ADDITIONNEL 3 · ABDOS',
     rc_sub: 'Repos inter-séries', rc_label: 'Temps de récupération entre les rounds', rc_seconds: 'secondes', rc_go: "C'EST PARTI →",
   }
@@ -561,7 +553,7 @@ function setLang(lang) {
 // ── SESSION DEFINITIONS ────────────────────────────────────────────
 const SESSIONS = {
   thu: { workTime: 20, restTime: 10, roundRestTime: 60, rounds: 5, color: 'teal', btnClass: '' },
-  sat: { workTime: 45, restTime: 15, roundRestTime: 60, rounds: 5, color: 'yellow', btnClass: 'yellow' },
+  sat: { workTime: 45, restTime: 15, roundRestTime: 60, rounds: 4, color: 'yellow', btnClass: 'yellow' },
   abs: { workTime: 40, restTime: 20, roundRestTime: 60, rounds: 4, color: 'green', btnClass: 'green' },
 };
 
@@ -580,6 +572,10 @@ let stepsDone = 0;
 // Prepare a countdown with 3-2-1 start
 let countdownActive = false;
 let countdownVal = 0;
+let splitLeg = 0; // 0=none, 1=left, 2=right (for bilateral exercises)
+
+// Exercises that require leg switch (index in sat_exos)
+const SPLIT_EXO = { sat: [1] }; // index 1 = Bulgarian split squats
 
 let pendingSessionKey = null;
 let pendingRestTime = 60;
@@ -647,20 +643,31 @@ function getExos() {
 
 function renderExoList() {
   const exos = getExos();
+  const d = T[currentLang];
+  const descKey = sessionKey === 'thu' ? 'thu_desc' : sessionKey === 'sat' ? 'sat_desc' : 'abs_desc';
+  const descs = d[descKey] || [];
   const list = document.getElementById('exo-list');
-  const isYellow = sessionKey === 'sat';
   const colorClass = sessionKey === 'sat' ? ' yellow' : sessionKey === 'abs' ? ' green' : '';
   list.innerHTML = exos.map((name, i) => {
     const isCompleted = i < currentExoIndex
       || (i === currentExoIndex && (currentPhase === 'rest' || currentPhase === 'roundRest'))
       || (currentPhase === 'done');
     const isActive = i === currentExoIndex && currentPhase === 'work';
+    const desc = descs[i] || '';
     return `<div class="exo-item ${isActive ? 'active-exo' + colorClass : ''} ${isCompleted ? 'completed' : ''}" id="exo-item-${i}">
-      <div class="exo-num">${i+1}</div>
-      <div class="exo-item-name">${name}</div>
-      <div class="exo-item-done">✓</div>
+      <div class="exo-item-header" onclick="toggleExoDesc(this.parentElement)">
+        <div class="exo-num">${i+1}</div>
+        <div class="exo-item-name">${name}</div>
+        <div class="exo-item-done">✓</div>
+        ${desc ? '<span class="exo-chevron">▼</span>' : ''}
+      </div>
+      ${desc ? `<div class="exo-item-desc">${desc}</div>` : ''}
     </div>`;
   }).join('');
+}
+
+function toggleExoDesc(item) {
+  item.classList.toggle('exo-open');
 }
 
 function renderRoundDots() {
@@ -695,7 +702,14 @@ function updateDisplay() {
     badge.textContent = d.phase_work + ' · ' + d.round_label + ' ' + (currentRound + 1) + ' ' + d.of_label + ' ' + currentSession.rounds;
     timerEl.className = 'timer-display work';
     timerEl.textContent = timeLeft;
-    document.getElementById('current-exo-name').textContent = exos[currentExoIndex] || '—';
+    const splitIdxs = SPLIT_EXO[sessionKey] || [];
+    let exoLabel = exos[currentExoIndex] || '—';
+    if (splitIdxs.includes(currentExoIndex) && splitLeg > 0) {
+      const legFr = splitLeg === 1 ? '🦵 Jambe gauche' : '🦵 Jambe droite';
+      const legEn = splitLeg === 1 ? '🦵 Left leg' : '🦵 Right leg';
+      exoLabel = exos[currentExoIndex] + ' — ' + (currentLang === 'fr' ? legFr : legEn);
+    }
+    document.getElementById('current-exo-name').textContent = exoLabel;
     const nextIdx = currentExoIndex + 1 < exos.length ? currentExoIndex + 1 : (currentRound + 1 < currentSession.rounds ? 0 : null);
     document.getElementById('next-exo-name').textContent = nextIdx !== null ? d.next_exo_prefix + ' ' + exos[nextIdx] : '';
     const pct = ((currentSession.workTime - timeLeft) / currentSession.workTime) * 100;
@@ -782,11 +796,11 @@ function startCountdown() {
     } else {
       clearInterval(intervalId);
       countdownActive = false;
-      // Start first work phase
       currentPhase = 'work';
       currentRound = 0;
       currentExoIndex = 0;
       timeLeft = currentSession.workTime;
+      splitLeg = (SPLIT_EXO[sessionKey] || []).includes(0) ? 1 : 0;
       runInterval();
       updateDisplay();
     }
@@ -801,7 +815,21 @@ function runInterval() {
 function tick() {
   if (!isRunning) return;
   timeLeft--;
+
+  // Split exercise: beep and switch leg at halfway
+  const splitIdxs = SPLIT_EXO[sessionKey] || [];
+  if (currentPhase === 'work' && splitIdxs.includes(currentExoIndex)) {
+    const half = Math.floor(currentSession.workTime / 2);
+    if (timeLeft === half) {
+      splitLeg = 2;
+      beep('switch');
+      updateDisplay();
+      return;
+    }
+  }
+
   if (timeLeft <= 0) {
+    splitLeg = 0;
     advance();
   } else {
     updateDisplay();
@@ -833,6 +861,7 @@ function advance() {
     }
     currentPhase = 'work';
     timeLeft = currentSession.workTime;
+    splitLeg = (SPLIT_EXO[sessionKey] || []).includes(currentExoIndex) ? 1 : 0;
   } else if (currentPhase === 'roundRest') {
     beep('work');
     currentRound++;
@@ -840,6 +869,7 @@ function advance() {
     if (currentRound >= currentSession.rounds) { finishSession(); return; }
     currentPhase = 'work';
     timeLeft = currentSession.workTime;
+    splitLeg = (SPLIT_EXO[sessionKey] || []).includes(currentExoIndex) ? 1 : 0;
   }
   updateDisplay();
 }
@@ -888,6 +918,18 @@ function beep(type) {
       gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
       osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+    } else if (type === 'switch') {
+      // Double beep — leg switch signal
+      [880, 880].forEach((freq, i) => {
+        const o = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        o.connect(g); g.connect(audioCtx.destination);
+        o.frequency.value = freq;
+        const t = audioCtx.currentTime + i * 0.2;
+        g.gain.setValueAtTime(0.3, t);
+        g.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+        o.start(t); o.stop(t + 0.12);
+      });
     } else if (type === 'done') {
       // Victory melody: 3 ascending beeps
       [523, 659, 784].forEach((freq, i) => {
