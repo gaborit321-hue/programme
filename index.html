@@ -1464,7 +1464,7 @@
   const MAKE_WRITE_URL = 'https://hook.eu2.make.com/j9hw9pjwd515ym98h1so9qwnnvw2iy2a';
   const MAKE_PHOTO_URL = 'REMPLACER_PAR_URL_WEBHOOK_PHOTO';
   const SHEET_ID = '1z-sM1momPAl1cXMUDgV4C2nVfN3i2T7rUm18TWJXTkA';
-  const SHEET_READ_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Feuille%201`;
+  const SHEET_READ_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Feuille%201&tq=select%20*%20limit%201000`;
 
   function setSyncStatus(state, msg) {
     const dot = document.getElementById('sync-dot');
@@ -1594,7 +1594,18 @@
         .filter(r => r.date && !isNaN(r.poids) && r.poids > 0)
         .reduce((acc, r) => {
           const idx = acc.findIndex(e => e.date === r.date);
-          if (idx >= 0) acc[idx] = r; else acc.push(r);
+          if (idx >= 0) {
+            // Garder l'entrée la plus complète (poids + kcal + activites)
+            const existing = acc[idx];
+            acc[idx] = {
+              date: r.date,
+              poids: r.poids || existing.poids,
+              kcal: r.kcal || existing.kcal,
+              activites: r.activites || existing.activites
+            };
+          } else {
+            acc.push(r);
+          }
           return acc;
         }, [])
         .sort((a,b) => a.date.localeCompare(b.date));
