@@ -1,5 +1,5 @@
 const CACHE_NAME = 'programme-v3';
-const VERSION = '5.5';
+const VERSION = '5.6';
 
 const STATIC_ASSETS = [
   '/programme/icon.png',
