@@ -1700,24 +1700,23 @@ Fournis une analyse structurée avec :
 
 Sois direct et précis. Maximum 250 mots.`;
 
+    const MAKE_ANALYSE_URL = 'https://hook.eu2.make.com/4ibdcpgpd8zhw4qhpf8phucfgaqtu60w';
+
     try {
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
+      const response = await fetch(MAKE_ANALYSE_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 1000,
-          messages: [{ role: 'user', content: prompt }]
-        })
+        body: JSON.stringify({ prompt })
       });
-      const data = await response.json();
-      const text = data.content?.[0]?.text || 'Erreur lors de l\'analyse.';
-
-      // Render with basic markdown bold
+      const text = await response.text();
+      if (!text || text === 'Accepted') {
+        output.className = 'analysis-output';
+        output.innerHTML = '<span class="analysis-empty">Scénario Make pas encore actif — active le toggle ON.</span>';
+        return;
+      }
       const html = text
         .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
         .replace(/\n/g, '<br>');
-
       output.className = 'analysis-output';
       output.innerHTML = `<div class="analysis-text">${html}</div>`;
     } catch(e) {
