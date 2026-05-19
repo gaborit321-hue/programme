@@ -1700,7 +1700,7 @@ Fournis une analyse structurée avec :
 
 Sois direct et précis. Maximum 250 mots.`;
 
-    const MAKE_ANALYSE_URL = 'https://script.google.com/macros/s/AKfycbwHnMZm1kAJ_zndua4q0LRzbBxJvoTq3JnhvviA3aSybF4DZeDcA7_oENYLxA-H6jgP/exec';
+    const MAKE_ANALYSE_URL = 'https://script.google.com/macros/s/AKfycbzeoT_ipkXXe4oU9kApPLNjLO5IriU6xUwCNLuHsDv1iN0RfOeBZiKRA3iRJrCcI2qj/exec';
 
     try {
       const anthropicBody = JSON.stringify({
@@ -1710,7 +1710,7 @@ Sois direct et précis. Maximum 250 mots.`;
       });
       const response = await fetch(MAKE_ANALYSE_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'text/plain' },
         body: anthropicBody,
         redirect: 'follow'
       });
