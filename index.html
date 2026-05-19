@@ -84,6 +84,70 @@
   .nav-item.active { color: var(--accent); }
   .nav-item svg { width: 20px; height: 20px; stroke-width: 1.5; fill: none; stroke: currentColor; }
 
+  /* COACH CHAT */
+  .coach-fab {
+    position: fixed;
+    bottom: calc(70px + env(safe-area-inset-bottom));
+    right: 20px;
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    background: #1a9e4a;
+    border: none;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    box-shadow: 0 4px 16px rgba(26,158,74,0.35);
+    z-index: 55;
+    transition: transform .2s, box-shadow .2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .coach-fab:hover { transform: scale(1.08); }
+  .coach-fab.open { background: var(--bg3); box-shadow: 0 2px 8px rgba(0,0,0,.1); font-size: 18px; }
+
+  #coach-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    z-index: 54;
+    flex-direction: column;
+    animation: fadeUp .25s ease both;
+  }
+  #coach-overlay.open { display: flex; }
+
+  .coach-header {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border2);
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .coach-avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1a9e4a, #0e7a8a);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+  .coach-header-info { flex: 1; }
+  .coach-name { font-size: 14px; font-weight: 600; color: var(--text); }
+  .coach-status { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--green); letter-spacing: .06em; }
+  .coach-reset { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); background: none; border: 1px solid var(--border2); border-radius: 6px; padding: 5px 10px; cursor: pointer; transition: all .2s; }
+  .coach-reset:hover { color: var(--text); }
+
+  .coach-messages { flex: 1; overflow-y: auto; padding: 16px 16px 8px; display: flex; flex-direction: column; gap: 12px; }
+  .coach-msg { max-width: 85%; font-size: 13px; line-height: 1.6; padding: 10px 14px; border-radius: 14px; word-wrap: break-word; }
+  .coach-msg.coach { background: var(--bg2); border: 1px solid var(--border); color: var(--text); align-self: flex-start; border-radius: 4px 14px 14px 14px; }
+  .coach-msg.user  { background: #1a9e4a; color: #fff; align-self: flex-end; border-radius: 14px 4px 14px 14px; }
+  .coach-msg.typing { color: var(--muted); font-style: italic; border: 1px dashed var(--border2); }
+
+  .coach-input-bar { padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); background: var(--bg2); border-top: 1px solid var(--border2); display: flex; gap: 8px; align-items: flex-end; }
+  .coach-input { flex: 1; background: var(--bg3); border: 1px solid var(--border2); border-radius: 20px; padding: 10px 16px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text); outline: none; resize: none; max-height: 100px; transition: border-color .2s; line-height: 1.4; }
+  .coach-input:focus { border-color: #1a9e4a; }
+  .coach-send { width: 40px; height: 40px; border-radius: 50%; background: #1a9e4a; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: opacity .2s; color: #fff; font-size: 16px; }
+  .coach-send:disabled { opacity: .4; cursor: default; }
+
   /* HEADER */
   header {
     max-width: 960px;
@@ -1730,6 +1794,102 @@ Sois direct et précis. Maximum 250 mots.`;
       output.innerHTML = '<span class="analysis-empty">Erreur réseau. Réessaie.</span>';
     }
   }
+  // ── COACH IA ──────────────────────────────────────────────────────
+  const COACH_URL = 'https://script.google.com/macros/s/AKfycbwhy-md5gYray6mWkCUXPH3WT7efNgqv82IQ3e_H5HhnKxKzRROy2AiswNQErjhOy21/exec';
+  let coachHistory = [];
+  let coachOpen = false;
+
+  function buildCoachContext() {
+    const entries = getEntries();
+    const last30 = entries.slice(-30);
+    const dataLines = last30.map(e =>
+      `${fmtDate(e.date)}: ${e.poids ? e.poids+'kg' : '—'}${e.kcal ? ', '+e.kcal+' kcal' : ''}${e.activites ? ', '+e.activites : ''}`
+    ).join('\n');
+    return `Tu es un coach sportif et nutritionnel expert, bienveillant et direct. Tu t'adresses à Fabien.
+
+PROFIL :
+- Fabien, 36 ans, 183 cm
+- Objectif : lean bulk jusqu'à 73 kg (max 75 kg)
+- Programme : HIIT lun/mer/ven + squash mar/jeu
+- Protéines cible : 140-160g/jour
+- Nutrition : whey post-HIIT, yaourt protéiné le soir, poulet/œufs/avocat
+
+DONNÉES 30 DERNIERS JOURS :
+${dataLines}
+
+Réponds de façon concise et pratique. Maximum 150 mots par réponse. Tutoie Fabien.`;
+  }
+
+  function toggleCoach() {
+    coachOpen = !coachOpen;
+    const overlay = document.getElementById('coach-overlay');
+    const fab = document.getElementById('coach-fab');
+    overlay.classList.toggle('open', coachOpen);
+    fab.classList.toggle('open', coachOpen);
+    fab.textContent = coachOpen ? '✕' : '💬';
+    if (coachOpen && coachHistory.length === 0) {
+      appendCoachMsg('coach', 'Salut Fab ! Je suis ton coach. Pose-moi tes questions sur ton entraînement, ta nutrition ou tes objectifs 💪');
+    }
+    if (coachOpen) setTimeout(() => document.getElementById('coach-input').focus(), 300);
+  }
+
+  function resetCoach() {
+    coachHistory = [];
+    document.getElementById('coach-messages').innerHTML = '';
+    appendCoachMsg('coach', "Nouvelle conversation. Qu'est-ce que je peux faire pour toi ?");
+  }
+
+  function appendCoachMsg(role, text) {
+    const container = document.getElementById('coach-messages');
+    const div = document.createElement('div');
+    div.className = 'coach-msg ' + role;
+    div.innerHTML = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+    return div;
+  }
+
+  function autoResize(el) {
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 100) + 'px';
+  }
+
+  async function sendCoachMsg() {
+    const input = document.getElementById('coach-input');
+    const sendBtn = document.getElementById('coach-send');
+    const text = input.value.trim();
+    if (!text) return;
+    input.value = '';
+    input.style.height = 'auto';
+    appendCoachMsg('user', text);
+    coachHistory.push({ role: 'user', content: text });
+    sendBtn.disabled = true;
+    const typingDiv = appendCoachMsg('coach typing', '…');
+    try {
+      const response = await fetch(COACH_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({
+          model: 'claude-haiku-4-5-20251001',
+          max_tokens: 500,
+          system: buildCoachContext(),
+          messages: coachHistory
+        }),
+        redirect: 'follow'
+      });
+      const reply = await response.text();
+      typingDiv.className = 'coach-msg coach';
+      typingDiv.innerHTML = reply.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+      coachHistory.push({ role: 'assistant', content: reply });
+      document.getElementById('coach-messages').scrollTop = 99999;
+    } catch(e) {
+      typingDiv.className = 'coach-msg coach';
+      typingDiv.textContent = 'Erreur réseau. Réessaie.';
+    }
+    sendBtn.disabled = false;
+    input.focus();
+  }
+
   function autoRestoreIfEmpty() {
     const entries = getEntries();
     if (entries.length === 0) restoreFromSheets();
@@ -2155,6 +2315,28 @@ Sois direct et précis. Maximum 250 mots.`;
       </div>
     </div>
 
+  </div>
+</div>
+
+<!-- COACH FAB -->
+<button class="coach-fab" id="coach-fab" onclick="toggleCoach()">💬</button>
+
+<!-- COACH OVERLAY -->
+<div id="coach-overlay">
+  <div class="coach-header">
+    <div class="coach-avatar">🏋️</div>
+    <div class="coach-header-info">
+      <div class="coach-name">Coach IA</div>
+      <div class="coach-status">● EN LIGNE</div>
+    </div>
+    <button class="coach-reset" onclick="resetCoach()">↺ Reset</button>
+  </div>
+  <div class="coach-messages" id="coach-messages"></div>
+  <div class="coach-input-bar">
+    <textarea class="coach-input" id="coach-input" placeholder="Pose ta question au coach…" rows="1"
+      onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendCoachMsg()}"
+      oninput="autoResize(this)"></textarea>
+    <button class="coach-send" id="coach-send" onclick="sendCoachMsg()">➤</button>
   </div>
 </div>
 
