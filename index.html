@@ -747,6 +747,30 @@
   .chart-wrap { position: relative; height: 220px; margin-top: 16px; }
   canvas { width: 100% !important; }
 
+  /* AI ANALYSIS */
+  .analysis-card { background:var(--bg2); border:1px solid var(--border); border-radius:12px; padding:24px; }
+  .analysis-periods { display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap; }
+  .period-btn {
+    font-family:'DM Mono',monospace; font-size:10px; font-weight:600; letter-spacing:.08em;
+    text-transform:uppercase; background:var(--bg3); border:1px solid var(--border2);
+    border-radius:8px; color:var(--muted); padding:8px 16px; cursor:pointer; transition:all .2s;
+  }
+  .period-btn:hover { border-color:var(--accent); color:var(--accent); }
+  .period-btn.active { background:var(--accent-bg); border-color:rgba(201,58,31,.3); color:var(--accent); }
+  .analysis-output {
+    font-size:13px; color:var(--text); line-height:1.8;
+    min-height:60px; position:relative;
+  }
+  .analysis-output.loading { color:var(--muted); }
+  .analysis-output.loading::after {
+    content:''; display:inline-block; width:8px; height:8px;
+    border-radius:50%; background:var(--accent);
+    animation:pulse 1s infinite; margin-left:6px; vertical-align:middle;
+  }
+  .analysis-empty { color:var(--dim); font-family:'DM Mono',monospace; font-size:11px; }
+  .analysis-text { white-space:pre-wrap; }
+  .analysis-text strong { color:var(--text); font-weight:600; }
+
   /* LOG TABLE */
   .log-table { width: 100%; border-collapse: collapse; }
   .log-table th {
@@ -1621,7 +1645,86 @@
     }
   }
 
-  // Auto-restauration si localStorage vide au démarrage du suivi
+  // ── ANALYSE IA ────────────────────────────────────────────────────
+  async function runAnalysis(days) {
+    const output = document.getElementById('analysis-output');
+    // Update active button
+    document.querySelectorAll('.period-btn').forEach(b => {
+      b.classList.toggle('active', b.textContent === days + ' jours');
+    });
+
+    output.className = 'analysis-output loading';
+    output.innerHTML = 'Analyse en cours…';
+
+    const entries = getEntries();
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - days);
+    const cutoffStr = cutoff.toISOString().slice(0, 10);
+    const recent = entries.filter(e => e.date >= cutoffStr);
+
+    if (recent.length === 0) {
+      output.className = 'analysis-output';
+      output.innerHTML = '<span class="analysis-empty">Pas de données sur cette période.</span>';
+      return;
+    }
+
+    // Build data summary
+    const dataLines = recent.map(e =>
+      `- ${fmtDate(e.date)} : poids ${e.poids ? e.poids + 'kg' : 'non renseigné'}${e.kcal ? ', ' + e.kcal + ' kcal dépensées' : ''}${e.activites ? ', activité : ' + e.activites : ''}`
+    ).join('\n');
+
+    const weights = recent.filter(e => e.poids).map(e => e.poids);
+    const deltaTotal = weights.length >= 2 ? (weights[weights.length-1] - weights[0]).toFixed(1) : null;
+
+    const prompt = `Tu es un coach sportif et nutritionnel expert. Analyse les données suivantes d'un athlète et donne un retour concis, bienveillant et actionnable en français.
+
+PROFIL :
+- Fabien, 36 ans, 183 cm
+- Objectif : lean bulk jusqu'à 73 kg (prise de muscle propre, sans dépasser 75 kg)
+- Programme : HIIT lundi/mercredi/vendredi + squash mardi/jeudi
+- Cible protéines : 140-160g/jour
+- Nutrition : whey post-HIIT, yaourt protéiné le soir, poulet/œufs/avocat
+- Activités additionnelles possibles : run, bike, rando
+
+DONNÉES SUR LES ${days} DERNIERS JOURS :
+${dataLines}
+
+${deltaTotal !== null ? `Évolution du poids sur la période : ${deltaTotal > 0 ? '+' : ''}${deltaTotal} kg` : ''}
+
+Fournis une analyse structurée avec :
+1. **Évolution du poids** — tendance et commentaire
+2. **Activités** — régularité, points forts, manques
+3. **Kcal** — cohérence avec les activités
+4. **Points d'attention** — 1-2 recommandations concrètes
+5. **Point positif** — ce qui va bien
+
+Sois direct et précis. Maximum 250 mots.`;
+
+    try {
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1000,
+          messages: [{ role: 'user', content: prompt }]
+        })
+      });
+      const data = await response.json();
+      const text = data.content?.[0]?.text || 'Erreur lors de l\'analyse.';
+
+      // Render with basic markdown bold
+      const html = text
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\n/g, '<br>');
+
+      output.className = 'analysis-output';
+      output.innerHTML = `<div class="analysis-text">${html}</div>`;
+    } catch(e) {
+      output.className = 'analysis-output';
+      output.innerHTML = '<span class="analysis-empty">Erreur réseau. Réessaie.</span>';
+    }
+  }
   function autoRestoreIfEmpty() {
     const entries = getEntries();
     if (entries.length === 0) restoreFromSheets();
@@ -2032,6 +2135,19 @@
         <tbody id="log-tbody"></tbody>
         <tfoot><tr id="log-toggle-row"></tr></tfoot>
       </table>
+    </div>
+
+    <!-- Analyse IA -->
+    <div class="analysis-card">
+      <div class="entry-card-title">Analyse IA</div>
+      <div class="analysis-periods">
+        <button class="period-btn" onclick="runAnalysis(7)">7 jours</button>
+        <button class="period-btn" onclick="runAnalysis(14)">14 jours</button>
+        <button class="period-btn" onclick="runAnalysis(30)">30 jours</button>
+      </div>
+      <div class="analysis-output" id="analysis-output">
+        <span class="analysis-empty">Choisis une période pour lancer l'analyse…</span>
+      </div>
     </div>
 
   </div>
