@@ -1711,7 +1711,8 @@ Sois direct et précis. Maximum 250 mots.`;
       const response = await fetch(MAKE_ANALYSE_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ body: anthropicBody })
+        body: anthropicBody,
+        redirect: 'follow'
       });
       const text = await response.text();
       if (!text || text === 'Accepted') {
@@ -2145,9 +2146,9 @@ Sois direct et précis. Maximum 250 mots.`;
     <div class="analysis-card">
       <div class="entry-card-title">Analyse IA</div>
       <div class="analysis-periods">
-        <button class="period-btn" onclick="runAnalysis(7)">7 jours</button>
-        <button class="period-btn" onclick="runAnalysis(14)">14 jours</button>
-        <button class="period-btn" onclick="runAnalysis(30)">30 jours</button>
+        <button class="period-btn" onclick="event.stopPropagation(); runAnalysis(7)">7 jours</button>
+        <button class="period-btn" onclick="event.stopPropagation(); runAnalysis(14)">14 jours</button>
+        <button class="period-btn" onclick="event.stopPropagation(); runAnalysis(30)">30 jours</button>
       </div>
       <div class="analysis-output" id="analysis-output">
         <span class="analysis-empty">Choisis une période pour lancer l'analyse…</span>
