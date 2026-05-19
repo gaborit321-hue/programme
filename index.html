@@ -1703,10 +1703,15 @@ Sois direct et précis. Maximum 250 mots.`;
     const MAKE_ANALYSE_URL = 'https://hook.eu2.make.com/4ibdcpgpd8zhw4qhpf8phucfgaqtu60w';
 
     try {
+      const anthropicBody = JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      });
       const response = await fetch(MAKE_ANALYSE_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt })
+        body: JSON.stringify({ body: anthropicBody })
       });
       const text = await response.text();
       if (!text || text === 'Accepted') {
